@@ -1,0 +1,25 @@
+version: '3'
+services:
+  api:
+    container_name: api
+    build:
+      context: ./server
+    ports:
+      - "8000:8000"
+    env_file:
+      - api-variables.env
+    networks:
+      - area
+  app:
+    container_name: app
+    build:
+      context: ./client
+    ports:
+      - "8080:80"
+    env_file:
+      - app-variables.env
+    networks:
+      - area
+networks:
+  area:
+    driver: bridge
