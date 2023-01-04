@@ -10,14 +10,14 @@ services:
       - api-variables.env
     networks:
       - area
-  app:
-    container_name: app
+  app-web:
+    container_name: app-web
     build:
-      context: ./client
+      context: ./client-web
     ports:
       - "8080:80"
     env_file:
-      - app-variables.env
+      - app-web-variables.env
     networks:
       - area
 networks:
