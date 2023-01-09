@@ -18,7 +18,7 @@ jobs:
         with:
           source-directory: .
           destination-github-username: 'EpitechPromo2025'
-          destination-repository-name: 'B-DEV-500-TLS-5-2-area-cyril.dehaese'
-          user-email: cyril.dehaese@epitech.eu
+          destination-repository-name: 'B-DEV-500-TLS-5-2-area-antoine.penot'
+          user-email: antoine.penot@epitech.eu
           commit-message: See ORIGIN_COMMIT from $GITHUB_REF
           target-branch: main
