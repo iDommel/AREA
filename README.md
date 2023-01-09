@@ -1,9 +1,9 @@
-# TrendAnalyzer
-HUB Project for EPITECH promotion 2025, in collaboration with Camille MAUX
+# AREA
+EPITECH Project on service-based web and mobile developpement.
 
-Hello world
+# BUILDING
+## To create a build version of the project, run the following:
 
-# Compilation
 You only need docker and docker-compose installed
 
 after that run
