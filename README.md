@@ -4,7 +4,17 @@ EPITECH Project on service-based web and mobile developpement.
 # BUILDING
 ## To create a build version of the project, run the following:
 
-You only need docker and docker-compose installed
+
+You need a .env file containing you expo credentials such as:
+`
+EXPO_USERNAME=
+EXPO_PASSWORD=
+`
+----------
+
+
+
+After that you only need docker and docker-compose installed
 
 after that run
 

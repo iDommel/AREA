@@ -5,21 +5,43 @@ services:
     build:
       context: ./server
     ports:
-      - "8000:8000"
+      - "8080:8080"
     env_file:
       - api-variables.env
     networks:
       - area
-  app-web:
-    container_name: app-web
+    volumes:
+      - mobile-apk:/usr/src/app/apk
+  client-web:
+    container_name: client-web
     build:
       context: ./client-web
     ports:
-      - "8080:80"
+      - "8081:80"
     env_file:
-      - app-web-variables.env
+      - client-web-variables.env
     networks:
       - area
+    volumes:
+      - mobile-apk:/usr/src/app/apk
+  client-mobile:
+    container_name: client-mobile
+    build:
+      args:
+        EXPO_TOKEN: "${EXPO_TOKEN}"
+      context: ./client-mobile
+    ports:
+      - "8082:80"
+    env_file:
+      - client-mobile-variables.env
+    networks:
+      - area
+    volumes:
+      - mobile-apk:/usr/src/app/apk
+
 networks:
   area:
     driver: bridge
+
+volumes:
+  mobile-apk:

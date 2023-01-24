@@ -8,11 +8,14 @@ import bookRoutes from './routes/book';
 import aboutRoutes from './routes/about';
 import apkRoutes from './routes/mobile-apk';
 import mongoose from 'mongoose';
+import process from 'process';
 
 const NAMESPACE = 'Server';
 const app = express();
 
-// /** Connect to Mongo */
+const serverPort = process.env.PORT || 8000;
+
+/** Connect to Mongo */
 // mongoose
 //     .connect(config.mongo.url, config.mongo.options)
 //     .then((result) => {
@@ -68,4 +71,4 @@ app.use((req, res, next) => {
 
 const httpServer = http.createServer(app);
 
-httpServer.listen(config.server.port, () => logging.info(NAMESPACE, `Server is running ${config.server.hostname}:${config.server.port}`));
+httpServer.listen(serverPort, () => logging.info(NAMESPACE, `Server is running ${config.server.hostname}:${serverPort}`));
