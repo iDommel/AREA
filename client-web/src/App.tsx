@@ -1,25 +1,39 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
+import Service from './Component/Service';
+import Workflow from './Component/Workflow';
+import User from './User';
+
 function App() {
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <div className="background">
+        <User />
+        <div className="base">
+          <h1 className="title">Workflow</h1>
+          <div className="squareWorkflow">
+            <Workflow id="1" name="+" isActivated="False" />
+            <Workflow id="2" name="Workflow" isActivated="True" />
+          </div>
+
+          <h1 className="title">Services</h1>
+          <div className="squareService">
+            <Service 
+              id="1"
+              name="Spotify"
+              isConnected="True"
+              isActivated="Désactivé"
+            />
+            <Service
+              id="2"
+              name="Twitter"
+              isConnected="True"
+              isActivated="Désactivé"
+            />
+          </div>
+        </div>
+      </div>
   );
 }
 
