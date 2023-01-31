@@ -13,17 +13,17 @@ import process from 'process';
 const NAMESPACE = 'Server';
 const app = express();
 
-const serverPort = process.env.PORT || 8000;
+const serverPort = process.env.PORT || 8080;
 
 /** Connect to Mongo */
-// mongoose
-//     .connect(config.mongo.url, config.mongo.options)
-//     .then((result) => {
-//         logging.info(NAMESPACE, 'Mongo Connected');
-//     })
-//     .catch((error) => {
-//         logging.error(NAMESPACE, error.message, error);
-//     });
+mongoose
+    .connect(config.mongo.url, config.mongo.options)
+    .then((result) => {
+        logging.info(NAMESPACE, 'Mongo Connected');
+    })
+    .catch((error) => {
+        logging.error(NAMESPACE, error.message, error);
+    });
 
 /** Log the request */
 app.use((req, res, next) => {
@@ -59,7 +59,11 @@ app.use((req, res, next) => {
 app.use('/api/books', bookRoutes);
 app.use('/about.json', aboutRoutes);
 app.use('/client.apk', apkRoutes);
-
+app.use('/users', (req, res, next) => {
+    res.status(200).json({
+        mongoose: mongoose.connection.readyState
+    });
+});
 /** Error handling */
 app.use((req, res, next) => {
     const error = new Error('Not found');
