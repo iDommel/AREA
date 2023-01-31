@@ -12,16 +12,20 @@ const MONGO_OPTIONS = {
     retryWrites: false
 };
 
-const MONGO_USERNAME = process.env.MONGO_USERNAME || 'superuser';
-const MONGO_PASSWORD = process.env.MONGO_USERNAME || 'supersecretpassword1';
-const MONGO_HOST = process.env.MONGO_URL || `ds343895.mlab.com:43895/mongobongo`;
+const MONGO_USERNAME = process.env.MONGO_USERNAME || 'admin';
+const MONGO_PASSWORD = process.env.MONGO_PASSWORD || 'admin';
+const MONGO_HOST = process.env.MONGO_HOST || `mongodb:27017`;
+const MONGO_DATABASE = process.env.MONGO_DATABASE || undefined;
+const DATABASE_TYPE = process.env.DATABASE_TYPE || 'local';
 
 const MONGO = {
     host: MONGO_HOST,
     password: MONGO_PASSWORD,
     username: MONGO_USERNAME,
     options: MONGO_OPTIONS,
-    url: `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}`
+    database: MONGO_DATABASE,
+    database_type: DATABASE_TYPE,
+    url: `mongodb${DATABASE_TYPE === 'atlas' ? '+srv' : ''}://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}/${MONGO_DATABASE || ''}`
 };
 
 const SERVER_HOSTNAME = process.env.SERVER_HOSTNAME || 'localhost';

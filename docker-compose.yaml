@@ -1,17 +1,5 @@
 version: '3'
 services:
-  api:
-    container_name: api
-    build:
-      context: ./server
-    ports:
-      - "8080:8080"
-    env_file:
-      - api-variables.env
-    networks:
-      - area
-    volumes:
-      - mobile-apk:/usr/src/app/apk
   client-web:
     container_name: client-web
     build:
@@ -22,13 +10,11 @@ services:
       - client-web-variables.env
     networks:
       - area
-    volumes:
-      - mobile-apk:/usr/src/app/apk
   client-mobile:
     container_name: client-mobile
     build:
       args:
-        EXPO_TOKEN: "${EXPO_TOKEN}"
+        EXPO_TOKEN: ${EXPO_TOKEN}
       context: ./client-mobile
     ports:
       - "8082:80"
@@ -38,10 +24,45 @@ services:
       - area
     volumes:
       - mobile-apk:/usr/src/app/apk
+  api:
+    container_name: api
+    build:
+      context: ./server
+    ports:
+      - "8080:8080"
+    environment:
+      - MONGO_USERNAME=${MONGO_USERNAME:-admin}
+      - MONGO_PASSWORD=${MONGO_PASSWORD:-admin}
+      - MONGO_DATABASE=${MONGO_DATABASE}
+      - MONGO_HOST=${MONGO_HOST:-mongodb:27017}
+      - DATABASE_TYPE=${DATABASE_TYPE:-local}
+
+    networks:
+      - area
+      - db
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo
+    restart: always
+    networks:
+      - db
+    environment:
+        MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:-admin}
+        MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-admin}
+        MONGO_INITDB_DATABASE: ${MONGO_DATABASE:-areadb}
+    volumes:
+      - mongodb_data_container:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    command: [--auth]
 
 networks:
   area:
     driver: bridge
+  db:
+    driver: bridge
 
 volumes:
   mobile-apk:
+  mongodb_data_container:
