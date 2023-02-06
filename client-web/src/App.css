@@ -116,6 +116,17 @@ left = padding */
   margin-top: 5%;
 }
 
+.SubmitButton {
+  margin-left: 55%;
+  width: 10%;
+  background-color: #ffffff;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
 /* workflow.jsx */
 
 .subTitle {
