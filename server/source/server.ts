@@ -4,15 +4,17 @@ import bodyParser from 'body-parser';
 import express from 'express';
 import logging from './config/logging';
 import config from './config/config';
-import bookRoutes from './routes/book';
-import aboutRoutes from './routes/about';
-import spotifyRoutes from './routes/spotify';
-import apkRoutes from './routes/mobile-apk';
 import mongoose from 'mongoose';
 import process from 'process';
 import cors from 'cors';
 import passport from 'passport';
 import session from 'express-session';
+
+import bookRoutes from './routes/book';
+import aboutRoutes from './routes/about';
+import spotifyRoutes from './routes/spotify';
+import apkRoutes from './routes/mobile-apk';
+import userRoutes from './routes/user';
 
 const NAMESPACE = 'Server';
 const app = express();
@@ -70,12 +72,7 @@ app.use('/books', bookRoutes);
 app.use('/about.json', aboutRoutes);
 app.use('/client.apk', apkRoutes);
 app.use('/spotify', spotifyRoutes);
-
-app.use('/users', (req, res, next) => {
-    res.status(200).json({
-        mongoose: mongoose.connection.readyState
-    });
-});
+app.use('/users', userRoutes);
 
 /** Error handling */
 app.use((req, res, next) => {
