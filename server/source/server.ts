@@ -11,6 +11,8 @@ import apkRoutes from './routes/mobile-apk';
 import mongoose from 'mongoose';
 import process from 'process';
 import cors from 'cors';
+import passport from 'passport';
+import session from 'express-session';
 
 const NAMESPACE = 'Server';
 const app = express();
@@ -47,6 +49,21 @@ app.use(bodyParser.json());
 /** Rules of our API */
 app.use(cors());
 app.options('*', cors());
+
+app.use(session({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+
+// Initialize Passport!  Also use passport.session() middleware, to support
+// persistent login sessions (recommended).
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser(function (user, done) {
+    done(null, user);
+});
+
+passport.deserializeUser(function (user: false | Express.User | null | undefined, done) {
+    done(null, user);
+});
 
 /** Routes go here */
 app.use('/books', bookRoutes);
