@@ -9,7 +9,7 @@ import process from 'process';
 import cors from 'cors';
 import passport from 'passport';
 import session from 'express-session';
-
+import { initScheduledJobs } from './utils/cron';
 import bookRoutes from './routes/book';
 import aboutRoutes from './routes/about';
 import spotifyRoutes from './routes/spotify';
@@ -66,6 +66,9 @@ passport.serializeUser(function (user, done) {
 passport.deserializeUser(function (user: false | Express.User | null | undefined, done) {
     done(null, user);
 });
+
+/** cron */
+initScheduledJobs();
 
 /** Routes go here */
 app.use('/books', bookRoutes);
