@@ -7,6 +7,7 @@ import config from './config/config';
 import bookRoutes from './routes/book';
 import aboutRoutes from './routes/about';
 import spotifyRoutes from './routes/spotify';
+import workflowRoutes from './routes/workflow';
 import apkRoutes from './routes/mobile-apk';
 import mongoose from 'mongoose';
 import process from 'process';
@@ -50,6 +51,7 @@ app.options('*', cors());
 
 /** Routes go here */
 app.use('/books', bookRoutes);
+app.use('/workflow', workflowRoutes);
 app.use('/about.json', aboutRoutes);
 app.use('/client.apk', apkRoutes);
 app.use('/spotify', spotifyRoutes);
