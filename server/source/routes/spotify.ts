@@ -27,8 +27,8 @@ passport.use(
     )
 );
 
-router.get('/login', passport.authenticate('spotify'));
-router.get('/callback', passport.authenticate('spotify', { failureRedirect: '/login' }), (req, res) => {
+router.get('/login', passport.authenticate('spotify', { scope: ['user-read-email', 'user-read-private'] }));
+router.get('/callback', passport.authenticate('spotify', { failureRedirect: '/login' }), async (req, res) => {
     res.redirect('http://localhost:3000/Home');
 });
 router.post('/refresh_token', controller.refreshToken);
