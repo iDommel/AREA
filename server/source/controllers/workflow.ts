@@ -30,21 +30,20 @@ const createWorkflow = async (req: Request, res: Response, next: NextFunction) =
         });
 };
 
-const getAllWorkflow = (req: Request, res: Response, next: NextFunction) => {
-    Workflow.find()
-        .exec()
-        .then((Workflow) => {
-            return res.status(200).json({
-                Workflow: Workflow,
-                count: Workflow.length
-            });
-        })
-        .catch((error) => {
-            return res.status(500).json({
-                message: error.message,
-                error
-            });
+const getAllWorkflow = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const workflows = await Workflow.find();
+
+        return res.status(200).json({
+            workflows,
+            count: workflows.length
         });
+    } catch (error: any) {
+        return res.status(500).json({
+            message: error.message,
+            error
+        });
+    }
 };
 
 export default { createWorkflow, getAllWorkflow };
