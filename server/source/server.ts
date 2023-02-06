@@ -6,9 +6,11 @@ import logging from './config/logging';
 import config from './config/config';
 import bookRoutes from './routes/book';
 import aboutRoutes from './routes/about';
+import spotifyRoutes from './routes/spotify';
 import apkRoutes from './routes/mobile-apk';
 import mongoose from 'mongoose';
 import process from 'process';
+import cors from 'cors';
 
 const NAMESPACE = 'Server';
 const app = express();
@@ -43,27 +45,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 /** Rules of our API */
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-
-    if (req.method == 'OPTIONS') {
-        res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
-        return res.status(200).json({});
-    }
-
-    next();
-});
+app.use(cors());
+app.options('*', cors());
 
 /** Routes go here */
-app.use('/api/books', bookRoutes);
+app.use('/books', bookRoutes);
 app.use('/about.json', aboutRoutes);
 app.use('/client.apk', apkRoutes);
+app.use('/spotify', spotifyRoutes);
+
 app.use('/users', (req, res, next) => {
     res.status(200).json({
         mongoose: mongoose.connection.readyState
     });
 });
+
 /** Error handling */
 app.use((req, res, next) => {
     const error = new Error('Not found');
