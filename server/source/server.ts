@@ -51,7 +51,7 @@ app.options('*', cors());
 
 /** Routes go here */
 app.use('/books', bookRoutes);
-app.use('/workflow', workflowRoutes);
+app.use('/workflows', workflowRoutes);
 app.use('/about.json', aboutRoutes);
 app.use('/client.apk', apkRoutes);
 app.use('/spotify', spotifyRoutes);
