@@ -1,16 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Reaction from '../models/reaction';
+import aqp from 'api-query-params';
 
 const createReaction = async (req: Request, res: Response, next: NextFunction) => {
-    let { name, description, service, enabled } = req.body;
+    let { name, description, enabled } = req.body;
 
     try {
         const action = new Reaction({
             _id: new mongoose.Types.ObjectId(),
             name,
             description,
-            service,
             enabled
         });
 
@@ -28,8 +28,10 @@ const createReaction = async (req: Request, res: Response, next: NextFunction) =
 };
 
 const getReactions = async (req: Request, res: Response, next: NextFunction) => {
+    const { filter, skip, limit, sort, projection, population } = aqp(req.query);
+
     try {
-        const actions = await Reaction.find();
+        const actions = await Reaction.find(filter).skip(skip).limit(limit).sort(sort).select(projection).populate(population);
 
         return res.status(200).json({
             actions: actions,
