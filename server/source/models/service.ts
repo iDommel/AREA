@@ -4,6 +4,7 @@ import logging from '../config/logging';
 const ServiceSchema: Schema = new Schema(
     {
         name: { type: String, unique: true, required: true },
+        route: { type: String, unique: true, required: true },
         description: { type: String, default: '' },
         actions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Action' }],
         reactions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reaction' }],
