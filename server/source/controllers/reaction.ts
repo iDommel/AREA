@@ -7,17 +7,17 @@ const createReaction = async (req: Request, res: Response, next: NextFunction) =
     let { name, description, enabled } = req.body;
 
     try {
-        const action = new Reaction({
+        const reaction = new Reaction({
             _id: new mongoose.Types.ObjectId(),
             name,
             description,
             enabled
         });
 
-        const result = await action.save();
+        const result = await reaction.save();
 
         return res.status(201).json({
-            action: result
+            reaction: result
         });
     } catch (error: any) {
         return res.status(500).json({
@@ -31,11 +31,11 @@ const getReactions = async (req: Request, res: Response, next: NextFunction) => 
     const { filter, skip, limit, sort, projection, population } = aqp(req.query);
 
     try {
-        const actions = await Reaction.find(filter).skip(skip).limit(limit).sort(sort).select(projection).populate(population);
+        const reactions = await Reaction.find(filter).skip(skip).limit(limit).sort(sort).select(projection).populate(population);
 
         return res.status(200).json({
-            actions: actions,
-            count: actions.length
+            reactions: reactions,
+            count: reactions.length
         });
     } catch (error: any) {
         return res.status(500).json({
@@ -47,9 +47,9 @@ const getReactions = async (req: Request, res: Response, next: NextFunction) => 
 
 const getReaction = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const action = await Reaction.findById(req.params.id);
+        const reaction = await Reaction.findById(req.params.id);
         return res.status(200).json({
-            action: action
+            reaction: reaction
         });
     } catch (error: any) {
         return res.status(500).json({

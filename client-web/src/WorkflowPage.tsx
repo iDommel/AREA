@@ -1,64 +1,89 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import User from "./User";
+import { Button, Cascader, Form, Input, Typography, Space } from "antd";
+import type { FormInstance } from "antd/es/form";
+
+type SizeType = Parameters<typeof Form>[0]["size"];
+const { TextArea } = Input;
+const { Title } = Typography;
+
+type ActionType = {
+  _id: string;
+  name: string;
+  description: string;
+};
+
+type ReactionType = {
+  _id: string;
+  name: string;
+  description: string;
+};
+
+type ServiceType = {
+  _id: string;
+  name: string;
+  route: string;
+  actions: ActionType[];
+  reactions: ReactionType[];
+  isConnected: string;
+};
 
 const WorkflowPage = () => {
-  const [action, setAction] = useState("0");
-  const [service, setService] = useState("0");
-  const [description, setDescription] = useState("");
-  const [reaction, setReaction] = useState("0");
-  const [service2, setService2] = useState("0");
-  const [description2, setDescription2] = useState("");
+  const [services, setServices] = useState<ServiceType[] | never[]>([]);
 
-  const handleChangeService = (event: any, id: number) => {
-    if (id === 1)
-      setService(event.target.value);
-    else
-      setService2(event.target.value);
+  const formRef = useRef<FormInstance>(null);
+
+  const getServices = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8080/services?populate=actions,reactions",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      if (response.status !== 200 || !data.services) {
+        alert(data.message);
+      } else {
+        setServices(data.services);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const handleChangeAction = (event: any, id: number) => {
-    if (id === 1)
-      setAction(event.target.value);
-    else
-      setReaction(event.target.value);
-  };
+  useEffect(() => {
+    getServices();
+  }, []);
 
-  const handleChangeDescription = (event: any, id: number) => {
-    if (id === 1)
-      setDescription(event.target.value);
-    else
-      setDescription2(event.target.value);
-  };
+  const onSubmit = async (values: any) => {
+    console.log("values", values);
+    const { name, description, action, reaction } = values;
 
-  const send = async (service: string, action: string, description: string, reaction: string, service2: string, description2: string) => {
-    let endpoint = "http://localhost:8080";
-    let route = "/workflow/create";
-    const response = await fetch(endpoint + route, {
+    const workflow = {
+      name,
+      description,
+      actions: [action[1]],
+      reactions: [reaction[1]],
+    };
+
+    const response = await fetch("http://localhost:8080/workflows", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        service1: service,
-        action: action,
-        description: description,
-        service2: service2,
-        reaction: reaction,
-        description2: description2,
-      }),
+      body: JSON.stringify(workflow),
     });
     const data = await response.json();
-    console.log(data);
-  };
-
-  const handleSubmit = (event: any) => {
-    if (service === "0" || action === "0" || reaction === "0" || service2 === "0" || description === "" || description2 === "") {
-      alert("Veuillez remplir tous les champs");
-      event.preventDefault();
+    console.log("data", data);
+    if (response.status !== 200) {
+      alert(data.message);
     } else {
-      send(service, action, description, reaction, service2, description2);
-      event.preventDefault();
+      alert("Workflow created");
     }
   };
 
@@ -66,55 +91,65 @@ const WorkflowPage = () => {
     <div className="background">
       <User />
       <div className="base">
-        <h1 className="title">Création de workflow</h1>
-        <h2 className="subTitle">Les actions</h2>
-        <form onSubmit={(e) => handleSubmit(e)}
-        style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", width: "100%", height: "100%" }}>
-          <div className="action">
-            <select
-              value={service}
-              onChange={(event) => handleChangeService(event, 1)}
-              className="SelectOption"
-            >
-              <option value="0">Choisissez un service</option>
-              <option value="1">Service1</option>
-              <option value="2">Service2</option>
-            </select>
-            <select
-              value={action}
-              onChange={(event) => handleChangeAction(event, 1)}
-              className="SelectOption"
-            >
-              <option value="0">Choisissez une action</option>
-              <option value="1">Action1</option>
-              <option value="2">Action2</option>
-            </select>
-            <input type="text" className="ActionInput" placeholder="Entrez une description" onChange={(event) => handleChangeDescription(event, 1)} />
-          </div>
-          <h2 className="subTitle">Les réactions</h2>
-          <div className="action">
-            <select
-              value={service2}
-              onChange={(event) => handleChangeService(event, 2)}
-              className="SelectOption"
-            >
-              <option value="0">Choisissez un service</option>
-              <option value="1">Service1</option>
-              <option value="2">Service2</option>
-            </select>
-            <select
-              value={reaction}
-              onChange={(event) => handleChangeAction(event, 2)}
-              className="SelectOption"
-            >
-              <option value="0">Choisissez une action</option>
-              <option value="1">Action1</option>
-              <option value="2">Action2</option>
-            </select>
-            <input type="text" className="ActionInput" placeholder="Entrez une description" onChange={(event) => handleChangeDescription(event, 2)} />
-          </div>
-          <input type="submit" value="Sauvegarder" className="SubmitButton" />
-        </form>
+        <Form
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 20 }}
+          layout="horizontal"
+          onFinish={onSubmit}
+          style={{ marginLeft: 20 }}
+        >
+          <Title>Création de Workflow</Title>
+          <Form.Item label="Name" name="name">
+            <Input />
+          </Form.Item>
+          <Form.Item label="Description" name="description">
+            <TextArea rows={3} maxLength={255} />
+          </Form.Item>
+          <Title level={3}>Actions</Title>
+          <Form.Item label="Action" name="action">
+            <Cascader
+              options={services
+                .filter((service) => service.actions.length > 0)
+                .map((service) => {
+                  return {
+                    value: service._id,
+                    label: service.name,
+                    children: service.actions.map((action) => {
+                      return {
+                        value: action._id,
+                        label: action.name,
+                      };
+                    }),
+                  };
+                })}
+            />
+          </Form.Item>
+          <Title level={3}>Reactions</Title>
+          <Form.Item label="Reaction" name="reaction">
+            <Cascader
+              options={services
+                .filter((service) => service.reactions.length > 0)
+                .map((service) => {
+                  return {
+                    value: service._id,
+                    label: service.name,
+                    children: service.reactions.map((action) => {
+                      return {
+                        value: action._id,
+                        label: action.name,
+                      };
+                    }),
+                  };
+                })}
+            />
+          </Form.Item>
+
+          <Form.Item wrapperCol={{ span: 3, offset: 8 }}>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
       </div>
     </div>
   );

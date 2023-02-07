@@ -3,17 +3,15 @@ import mongoose from 'mongoose';
 import Workflow from '../models/workflow';
 
 const createWorkflow = async (req: Request, res: Response, next: NextFunction) => {
-    let { service1, action, description, service2, reaction, description2 } = req.body;
+    let { name, description, actions, reactions } = req.body;
 
     try {
         const workflow = new Workflow({
             _id: new mongoose.Types.ObjectId(),
-            service1,
-            action,
+            name,
             description,
-            service2,
-            reaction,
-            description2
+            actions,
+            reactions
         });
 
         const result = await workflow.save();

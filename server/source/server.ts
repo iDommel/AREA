@@ -78,10 +78,10 @@ initScheduledJobs();
 
 /** Routes go here */
 app.use('/books', bookRoutes);
-app.use('/workflow', workflowRoutes);
 app.use('/about.json', aboutRoutes);
 app.use('/client.apk', apkRoutes);
 app.use('/spotify', spotifyRoutes);
+app.use('/workflows', workflowRoutes);
 app.use('/users', userRoutes);
 app.use('/services', serviceRoutes);
 app.use('/service-statuses', serviceStatusRoutes);
