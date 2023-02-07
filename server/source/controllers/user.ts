@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import User from '../models/user';
+import aqp from 'api-query-params';
 
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
     let { username, password } = req.body;
@@ -26,8 +27,10 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
+    const { filter, skip, limit, sort, projection, population } = aqp(req.query);
+
     try {
-        const users = await User.find();
+        const users = await User.find(filter).skip(skip).limit(limit).sort(sort).select(projection).populate(population);
 
         return res.status(200).json({
             users: users,

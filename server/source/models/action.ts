@@ -5,7 +5,6 @@ const ActionSchema: Schema = new Schema(
     {
         name: { type: String, required: true },
         description: { type: String, default: '' },
-        service: { type: Schema.Types.ObjectId, ref: 'Service', required: true },
         isEnabled: { type: Boolean, default: false },
         needsAuth: { type: Boolean, default: false }
     },

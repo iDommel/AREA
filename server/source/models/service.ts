@@ -3,10 +3,10 @@ import logging from '../config/logging';
 
 const ServiceSchema: Schema = new Schema(
     {
-        name: { type: String, required: true },
+        name: { type: String, unique: true, required: true },
         description: { type: String, default: '' },
-        actions: [],
-        reactions: [],
+        actions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Action' }],
+        reactions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reaction' }],
         globallyEnabled: { type: Boolean, default: false }
     },
     {

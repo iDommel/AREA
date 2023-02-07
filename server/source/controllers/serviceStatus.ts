@@ -1,6 +1,7 @@
 import ServiceStatus from '../models/serviceStatus';
 import mongoose from 'mongoose';
 import { NextFunction, Request, Response } from 'express';
+import aqp from 'api-query-params';
 
 const createServiceStatus = async (req: Request, res: Response, next: NextFunction) => {
     let { service, user } = req.body;
@@ -24,8 +25,10 @@ const createServiceStatus = async (req: Request, res: Response, next: NextFuncti
 };
 
 const getServiceStatuses = async (req: Request, res: Response, next: NextFunction) => {
+    const { filter, skip, limit, sort, projection, population } = aqp(req.query);
+
     try {
-        const serviceStatuses = await ServiceStatus.find();
+        const serviceStatuses = await ServiceStatus.find(filter).skip(skip).limit(limit).sort(sort).select(projection).populate(population);
 
         return res.status(200).json({
             serviceStatuses: serviceStatuses,
