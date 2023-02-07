@@ -4,12 +4,10 @@ import IWorkflow from '../interfaces/workflow';
 
 const WorkflowSchema: Schema = new Schema(
     {
-        service1: { type: String, required: true },
-        action: { type: String, required: true },
-        description: { type: String, required: true },
-        service2: { type: String, required: true },
-        reaction: { type: String, required: true },
-        description2: { type: String, required: true }
+        name: { type: String, required: true },
+        description: { type: String, default: '' },
+        actions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Action' }],
+        reactions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reaction' }]
     },
     {
         timestamps: true
