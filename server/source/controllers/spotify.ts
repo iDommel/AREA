@@ -5,7 +5,7 @@ import axios from 'axios';
 
 let client_id = 'd21affede3984ecea64c0ebaceff41e3'; // Your client id
 let client_secret = '734ebfb934c84261963f5794e5783c9f'; // Your secret
-let endpoint = 'https://bdc3-2a01-e0a-211-2e40-f67b-f1eb-dae7-ec2a.eu.ngrok.io';
+let endpoint = 'http://localhost:8080';
 let redirect_uri = `${endpoint}/spotify/callback`; // Your redirect uri
 
 /**
@@ -34,16 +34,16 @@ const loginFunction = (req: Request, res: Response, next: NextFunction) => {
 
     // your application requests authorization
     let scope = 'user-read-private user-read-email';
-    res.redirect(
+    const url =
         'https://accounts.spotify.com/authorize?' +
-            querystring.stringify({
-                response_type: 'code',
-                client_id: client_id,
-                scope: scope,
-                redirect_uri: redirect_uri,
-                state: state
-            })
-    );
+        querystring.stringify({
+            response_type: 'code',
+            client_id: client_id,
+            scope: scope,
+            redirect_uri: redirect_uri,
+            state: state
+        });
+    res.send({ url });
 };
 
 const callbackFunction = async (req: Request, res: Response, next: NextFunction) => {
@@ -54,6 +54,9 @@ const callbackFunction = async (req: Request, res: Response, next: NextFunction)
     let state = req.query.state || null;
     let storedState = req.cookies ? req.cookies[stateKey] : null;
 
+    console.log('code', code);
+    console.log('state', state);
+    console.log('stateKey', stateKey);
     if (state === null || state !== storedState) {
         res.redirect(
             '/#' +

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 type AppProps = {
   id: string;
@@ -25,14 +26,20 @@ const Service = ({ id, name, route, isConnected, isActivated }: AppProps) => {
   const connectToService = async () => {
     try {
       const response = await fetch(endpoint + route, {
-        method: "POST",
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(service),
       });
       const data = await response.json();
-      console.log(data);
+      if (response.status !== 200) {
+        alert(data.message);
+      } else {
+        console.log(data);
+        setBorderColor("#3AB500");
+        setService({ ...service, status: true });
+        window.location.href = data.url;
+      }
     } catch (error) {
       console.error(error);
     }
@@ -44,20 +51,20 @@ const Service = ({ id, name, route, isConnected, isActivated }: AppProps) => {
       setService({ ...service, status: false });
     } else {
       connectToService();
-      setBorderColor("#3AB500");
-      setService({ ...service, status: true });
     }
   };
   return (
     <div className="service">
-      <button
-        className="buttonservice"
-        onClick={() => HandleClick()}
-        style={{ borderColor: borderColor }}
-      >
-        <img src={imgClass} alt={name} />
-      </button>
-      <h3 className="status">{service.status ? "Activé" : "Désactivé"}</h3>
+      <Link to={`${endpoint}${route}`}>
+        <button
+          className="buttonservice"
+          // onClick={() => HandleClick()}
+          style={{ borderColor: borderColor }}
+        >
+          <img src={imgClass} alt={name} />
+        </button>
+        <h3 className="status">{service.status ? "Activé" : "Désactivé"}</h3>
+      </Link>
     </div>
   );
 };
