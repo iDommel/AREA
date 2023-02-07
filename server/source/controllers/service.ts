@@ -3,12 +3,15 @@ import mongoose from 'mongoose';
 import Service from '../models/service';
 
 const createService = async (req: Request, res: Response, next: NextFunction) => {
-    let { name } = req.body;
+    let { name, description, actions, globallyEnabled } = req.body;
 
     try {
         const service = new Service({
             _id: new mongoose.Types.ObjectId(),
-            name
+            name,
+            description,
+            actions,
+            globallyEnabled
         });
 
         const result = await service.save();
