@@ -33,11 +33,11 @@ const getServices = async (req: Request, res: Response, next: NextFunction) => {
     const { filter, skip, limit, sort, projection, population } = aqp(req.query);
 
     try {
-        const users = await Service.find(filter).skip(skip).limit(limit).sort(sort).select(projection).populate(population);
+        const services = await Service.find(filter).skip(skip).limit(limit).sort(sort).select(projection).populate(population);
 
         return res.status(200).json({
-            users: users,
-            count: users.length
+            services: services,
+            count: services.length
         });
     } catch (error: any) {
         return res.status(500).json({
