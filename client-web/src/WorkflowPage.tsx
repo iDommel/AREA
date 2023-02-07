@@ -3,6 +3,7 @@ import "./App.css";
 import User from "./User";
 import { Button, Cascader, Form, Input, Typography, Space } from "antd";
 import type { FormInstance } from "antd/es/form";
+import { useNavigate } from "react-router-dom";
 
 type SizeType = Parameters<typeof Form>[0]["size"];
 const { TextArea } = Input;
@@ -33,7 +34,7 @@ const WorkflowPage = () => {
   const [services, setServices] = useState<ServiceType[] | never[]>([]);
 
   const formRef = useRef<FormInstance>(null);
-
+  const navigate = useNavigate();
   const getServices = async () => {
     try {
       const response = await fetch(
@@ -46,7 +47,7 @@ const WorkflowPage = () => {
         }
       );
       const data = await response.json();
-      if (response.status !== 200 || !data.services) {
+      if (response.status !== 200) {
         alert(data.message);
       } else {
         setServices(data.services);
@@ -79,11 +80,10 @@ const WorkflowPage = () => {
       body: JSON.stringify(workflow),
     });
     const data = await response.json();
-    console.log("data", data);
-    if (response.status !== 200) {
+    if (response.status !== 201) {
       alert(data.message);
     } else {
-      alert("Workflow created");
+      navigate("/Home");
     }
   };
 
