@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import Service from '../models/service';
 
 const createService = async (req: Request, res: Response, next: NextFunction) => {
-    let { name, description, actions, globallyEnabled } = req.body;
+    let { name, description, actions, reactions, globallyEnabled } = req.body;
 
     try {
         const service = new Service({
@@ -11,6 +11,7 @@ const createService = async (req: Request, res: Response, next: NextFunction) =>
             name,
             description,
             actions,
+            reactions,
             globallyEnabled
         });
 
