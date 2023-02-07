@@ -19,6 +19,8 @@ import apkRoutes from './routes/mobile-apk';
 import userRoutes from './routes/user';
 import serviceRoutes from './routes/service';
 import serviceStatusRoutes from './routes/serviceStatus';
+import actionRoutes from './routes/action';
+import reactionRoutes from './routes/reaction';
 
 const NAMESPACE = 'Server';
 const app = express();
@@ -83,6 +85,8 @@ app.use('/spotify', spotifyRoutes);
 app.use('/users', userRoutes);
 app.use('/services', serviceRoutes);
 app.use('/service-statuses', serviceStatusRoutes);
+app.use('/actions', actionRoutes);
+app.use('/reactions', reactionRoutes);
 
 /** Error handling */
 app.use((req, res, next) => {
