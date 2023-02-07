@@ -6,6 +6,7 @@ const ServiceSchema: Schema = new Schema(
         name: { type: String, required: true },
         description: { type: String, default: '' },
         actions: [],
+        reactions: [],
         globallyEnabled: { type: Boolean, default: false }
     },
     {
