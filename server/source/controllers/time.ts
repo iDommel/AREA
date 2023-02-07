@@ -28,20 +28,20 @@ const getTime = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-const isHourOdd = async (timeZone: String) => {
+const isMinuteEven = async (timeZone: String) => {
     const apiEndpoint = 'https://www.timeapi.io/';
     const apiRoute = 'api/Time/current/zone';
     const apiParams = `?timeZone=${timeZone || 'Europe/Amsterdam'}`;
     try {
         const response = await axios.get(`${apiEndpoint}${apiRoute}${apiParams}`);
-        if (response.data.hour % 2 === 0) {
-            return false;
-        } else {
+        if (response.data.minute % 2 === 0) {
             return true;
+        } else {
+            return false;
         }
     } catch (error: any) {
         return undefined;
     }
 };
 
-export default { getTime, isHourOdd };
+export default { getTime, isMinuteEven };
