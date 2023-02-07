@@ -6,8 +6,8 @@ const WorkflowSchema: Schema = new Schema(
     {
         name: { type: String, required: true },
         description: { type: String, default: '' },
-        actions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Action' }],
-        reactions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Reaction' }]
+        actions: [{ type: mongoose.Types.ObjectId, ref: 'Action' }],
+        reactions: [{ type: mongoose.Types.ObjectId, ref: 'Reaction' }]
     },
     {
         timestamps: true
