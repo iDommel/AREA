@@ -10,12 +10,14 @@ import cors from 'cors';
 import passport from 'passport';
 import session from 'express-session';
 import { initScheduledJobs } from './utils/cron';
+
 import bookRoutes from './routes/book';
 import aboutRoutes from './routes/about';
 import spotifyRoutes from './routes/spotify';
 import workflowRoutes from './routes/workflow';
 import apkRoutes from './routes/mobile-apk';
 import userRoutes from './routes/user';
+import serviceRoutes from './routes/service';
 
 const NAMESPACE = 'Server';
 const app = express();
@@ -78,6 +80,7 @@ app.use('/about.json', aboutRoutes);
 app.use('/client.apk', apkRoutes);
 app.use('/spotify', spotifyRoutes);
 app.use('/users', userRoutes);
+app.use('/services', serviceRoutes);
 
 /** Error handling */
 app.use((req, res, next) => {
