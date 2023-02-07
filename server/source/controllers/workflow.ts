@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Workflow from '../models/workflow';
+import aqp from 'api-query-params';
 
 const createWorkflow = async (req: Request, res: Response, next: NextFunction) => {
     let { name, description, actions, reactions } = req.body;
@@ -28,8 +29,10 @@ const createWorkflow = async (req: Request, res: Response, next: NextFunction) =
 };
 
 const getAllWorkflow = async (req: Request, res: Response, next: NextFunction) => {
+    const { filter, skip, limit, sort, projection, population } = aqp(req.query);
+
     try {
-        const workflows = await Workflow.find();
+        const workflows = await Workflow.find(filter).skip(skip).limit(limit).sort(sort).select(projection).populate(population);
 
         return res.status(200).json({
             workflows: workflows,
@@ -44,8 +47,9 @@ const getAllWorkflow = async (req: Request, res: Response, next: NextFunction) =
 };
 
 const getWorkflow = async (req: Request, res: Response, next: NextFunction) => {
+    const { projection, population } = aqp(req.query);
     try {
-        const workflow = await Workflow.findById(req.params.id);
+        const workflow = await Workflow.findById(req.params.id).populate(population).select(projection);
         return res.status(200).json({
             workflow: workflow
         });
