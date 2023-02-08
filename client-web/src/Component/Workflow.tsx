@@ -12,6 +12,8 @@ const Workflow = ({ id, name, isActivated }: AppProps) => {
   const goToWorkflow = (id: string) => {
     if (id === "1") {
       navigate("/Workflow");
+    } else {
+      navigate("/WorkflowInfo/id=" + id);
     }
   };
 
