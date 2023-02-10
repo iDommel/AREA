@@ -16,6 +16,9 @@ type WorkflowType = {
   _id: string;
   name: string;
   isActivated: string;
+  service1: string;
+  service2: string;
+  preview: string;
 };
 
 const App = () => {
@@ -80,13 +83,36 @@ const App = () => {
         key={workflow._id}
         name={workflow.name}
         isActivated={workflow.isActivated}
+        preview={workflow.preview}
+        service1="time"
+        service2="spotify"
       />
     ));
+  };
+
+  const getRelatedServices = async (workflowId: string) => {
+    try {
+      const response = await fetch("http://localhost:8080/workflows/services/" + workflowId, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      if (response.status !== 200 || !data.services) {
+        alert(data.message);
+      } else {
+        console.log(data.services);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
     getServices();
     getWorkflows();
+    // workflows.map((workflow) => getRelatedServices(workflow._id));
   }, []);
 
   return (
@@ -95,7 +121,7 @@ const App = () => {
       <div className="base">
         <h1 className="title">Workflow</h1>
         <div className="squareWorkflow">
-          <Workflow id="1" name="+" isActivated="False" />
+          <Workflow id="1" name="" isActivated="False" preview="Add a new workflow" service1="" service2="" />
           {renderWorkflows(workflows)}
         </div>
 
