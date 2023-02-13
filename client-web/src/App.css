@@ -180,3 +180,55 @@ body {
   border-radius: 20px;
   background-color: #d9d9d9;
 }
+
+
+/* WorkflowInfo.jsx */
+
+.Info {
+  margin-left: 5%;
+  margin-top: 5%;
+  width: 50%;
+  height: 80%;
+  background-color: #3d3d3d;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.delete {
+  margin-left: 93%;
+}
+
+.WorkflowInfo {
+  margin-left: 5%;
+  width: 90%;
+  height: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.ActionInfo {
+  margin-left: 10%;
+  width: 90%;
+  height: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.ReactionInfo {
+  margin-left: 10%;
+  margin-bottom: 10%;
+  width: 90%;
+  height: 30%;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
