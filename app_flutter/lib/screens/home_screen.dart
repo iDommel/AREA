@@ -10,17 +10,28 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final PageController _pageController = PageController(initialPage: 0);
-  
-  int _currentIndex = 0;
+  final PageController _pageController = PageController(initialPage: 1);
+
+  int _currentIndex = 1;
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('AREA'),
+        centerTitle: true,
       ),
       body: PageView(
+        onPageChanged: (index) {
+          setState(() => _currentIndex = index);
+        },
         controller: _pageController,
         children: const <Widget>[
           HomeView(),
@@ -30,9 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
+          setState(() => _currentIndex = index);
 
           _pageController.jumpToPage(_currentIndex);
         },
