@@ -91,6 +91,25 @@ const WorkflowInfo = () => {
         }
     };
 
+    const deleteWorkflow = async (id: string) => {
+        try {
+            const response = await fetch("http://localhost:8080/workflows/" + id, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const data = await response.json();
+            if (response.status !== 200) {
+                alert(data.message);
+            } else {
+                window.location.href = "/Home";
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     useEffect(() => {
         getWorkflow(id);
     }, []);
@@ -99,17 +118,20 @@ const WorkflowInfo = () => {
         <div className="background">
             <User />
             <div className="base">
-                <div>
-                    <Title level={1}> {workflow.name} </Title>
-                    <h1>Description: {workflow.description}</h1>
-                </div>
-                <div>
-                    <h1>Action: {action.name}</h1>
-                    <h2>Description: {action.description}</h2>
-                </div>
-                <div>
-                    <h1>Reaction: {reaction.name}</h1>
-                    <h2>Description: {reaction.description}</h2>
+                <div className="Info">
+                    <img className="delete" src="https://img.icons8.com/windows/64/delete-trash.png" onClick={() => deleteWorkflow(workflow._id)} />
+                    <div className="WorkflowInfo">
+                        <Title level={1}> {workflow.name} </Title>
+                        <h1>Description: {workflow.description}</h1>
+                    </div>
+                    <div className="ActionInfo">
+                        <h1>Action: {action.name}</h1>
+                        <h2>Description: {action.description}</h2>
+                    </div>
+                    <div className="ReactionInfo">
+                        <h1>Reaction: {reaction.name}</h1>
+                        <h2>Description: {reaction.description}</h2>
+                    </div>
                 </div>
             </div>
         </div>
