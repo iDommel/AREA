@@ -121,7 +121,7 @@ const WorkflowInfo = () => {
                 <div className="Info">
                     <img className="delete" src="https://img.icons8.com/windows/64/delete-trash.png" onClick={() => deleteWorkflow(workflow._id)} />
                     <div className="WorkflowInfo">
-                        <Title level={1}> {workflow.name} </Title>
+                        <Title level={1}> Nom: {workflow.name} </Title>
                         <h1>Description: {workflow.description}</h1>
                     </div>
                     <div className="ActionInfo">
