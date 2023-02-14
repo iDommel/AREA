@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import User from "./User";
+import Menu from "./Component/Menu";
 import { Button, Cascader, Form, Input, Typography, Space } from "antd";
 import type { FormInstance } from "antd/es/form";
 import { useNavigate } from "react-router-dom";
@@ -91,6 +92,7 @@ const WorkflowPage = () => {
     <div className="background">
       <User />
       <div className="base">
+        <Menu />
         <Form
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 20 }}

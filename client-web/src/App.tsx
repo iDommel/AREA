@@ -4,6 +4,7 @@ import "./App.css";
 import Service from "./Component/Service";
 import Workflow from "./Component/Workflow";
 import User from "./User";
+import Menu from "./Component/Menu";
 
 type ServiceType = {
   _id: string;
@@ -119,14 +120,17 @@ const App = () => {
     <div className="background">
       <User />
       <div className="base">
-        <h1 className="title">Workflow</h1>
-        <div className="squareWorkflow">
-          <Workflow id="1" name="" isActivated="False" preview="Add a new workflow" service1="" service2="" />
-          {renderWorkflows(workflows)}
-        </div>
+        <Menu />
+        <div className="content">
+          <h1 className="title">Workflow</h1>
+          <div className="squareWorkflow">
+            <Workflow id="1" name="" isActivated="False" preview="Add a new workflow" service1="" service2="" />
+            {renderWorkflows(workflows)}
+          </div>
 
-        <h1 className="title">Services</h1>
-        <div className="squareService">{renderServices(services)}</div>
+          <h1 className="title">Services</h1>
+          <div className="squareService">{renderServices(services)}</div>
+        </div>
       </div>
     </div>
   );
