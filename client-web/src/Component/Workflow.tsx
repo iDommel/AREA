@@ -23,7 +23,7 @@ const Workflow = ({ id, name, isActivated, preview, service1, service2 }: AppPro
 
   return (
     <div className="workflow">
-      <Card className="button" title={name} onClick={() => goToWorkflow(id)}>
+      <Card className="button" title={name} onClick={() => goToWorkflow(id)} headStyle={{ borderColor : "#000000" }}>
         {preview}
         <img src={"https://img.icons8.com/ios/50/000000/" + service1.toLowerCase() + ".png"} alt={service1} />
         <img src={"https://img.icons8.com/ios/30/000000/arrow.png"} alt="arrow" />
