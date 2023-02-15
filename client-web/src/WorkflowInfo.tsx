@@ -1,5 +1,6 @@
 import React from 'react';
 import User from './User';
+import Menu from './Component/Menu';
 import './App.css';
 import { useState, useEffect } from 'react';
 import { Typography, message } from 'antd';
@@ -118,6 +119,7 @@ const WorkflowInfo = () => {
         <div className="background">
             <User />
             <div className="base">
+                <Menu />
                 <div className="Info">
                     <img className="delete" src="https://img.icons8.com/windows/64/delete-trash.png" onClick={() => deleteWorkflow(workflow._id)} />
                     <div className="WorkflowInfo">
