@@ -25,9 +25,9 @@ const Workflow = ({ id, name, isActivated, preview, service1, service2 }: AppPro
     <div className="workflow">
       <Card className="button" title={name} onClick={() => goToWorkflow(id)} headStyle={{ borderColor : "#000000" }}>
         {preview}
-        <img src={"https://img.icons8.com/ios/50/000000/" + service1.toLowerCase() + ".png"} alt={service1} />
+        <img src={"https://img.icons8.com/ios/40/000000/" + service1.toLowerCase() + ".png"} alt={service1} />
         <img src={"https://img.icons8.com/ios/30/000000/arrow.png"} alt="arrow" />
-        <img src={"https://img.icons8.com/ios/50/000000/" + service2.toLowerCase() + ".png"} alt={service2} />
+        <img src={"https://img.icons8.com/ios/40/000000/" + service2.toLowerCase() + ".png"} alt={service2} />
       </Card>
     </div>
   );
