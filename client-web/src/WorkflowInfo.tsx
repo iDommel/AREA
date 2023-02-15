@@ -2,7 +2,7 @@ import React from 'react';
 import User from './User';
 import './App.css';
 import { useState, useEffect } from 'react';
-import { Typography, Descriptions } from 'antd';
+import { Typography, message } from 'antd';
 
 const { Title } = Typography;
 
@@ -41,7 +41,7 @@ const WorkflowInfo = () => {
             });
             const data = await response.json();
             if (response.status !== 200) {
-                alert(data.message);
+                message.error(data.message);
             } else {
                 setReaction(data.reaction);
             }
@@ -61,7 +61,7 @@ const WorkflowInfo = () => {
             });
             const data = await response.json();
             if (response.status !== 200) {
-                alert(data.message);
+                message.error(data.message);
             } else {
                 setAction(data.action);
             }
@@ -80,7 +80,7 @@ const WorkflowInfo = () => {
             });
             const data = await response.json();
             if (response.status !== 200) {
-                alert(data.message);
+                message.error(data.message);
             } else {
                 setWorkflow(data.workflow);
                 getAction(data.workflow.actions[0]);
@@ -101,7 +101,7 @@ const WorkflowInfo = () => {
             });
             const data = await response.json();
             if (response.status !== 200) {
-                alert(data.message);
+                message.error(data.message);
             } else {
                 window.location.href = "/Home";
             }

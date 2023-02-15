@@ -2,12 +2,17 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./login.css";
+import { message } from "antd";
 
 const OAuth = () => {
   const navigate = useNavigate();
 
   const HandleClick = (event: any) => {
     navigate("/Home");
+  };
+
+  const throwAlert = () => {
+    alert("Not implemented yet")
   };
 
   return (
@@ -71,8 +76,8 @@ const Form = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
         <input className="sendLogin" type="submit" value="Log in" />
-        <p onClick={() => alert("Not implemented yet")}> Forgot password?</p>
-        <p onClick={() => alert("Not implemented yet")}> Don't have an account? Sign up</p>
+        <p onClick={() => message.error("Not implemented yet!")}> Forgot password?</p>
+        <p onClick={() => message.error("Not implemented yet!")}> Don't have an account? Sign up</p>
       </form>
       <OAuth />
     </div>

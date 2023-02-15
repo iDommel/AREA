@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AppstoreOutlined, HomeOutlined, SettingOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Menu } from 'antd';
+import { Menu, message } from 'antd';
 import { Navigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
@@ -43,7 +43,7 @@ const MenuPage: React.FC = () => {
       });
       const data = await response.json();
       if (response.status !== 200 || !data.workflows) {
-        alert(data.message);
+        message.error(data.message);
       } else {
         const workflows = data.workflows;
         const workflowItems: MenuItem[] = [];
@@ -68,7 +68,7 @@ const MenuPage: React.FC = () => {
       });
       const data = await response.json();
       if (response.status !== 200 || !data.services) {
-        alert(data.message);
+        message.error(data.message);
       } else {
         const services = data.services;
         const serviceItems: MenuItem[] = [];
