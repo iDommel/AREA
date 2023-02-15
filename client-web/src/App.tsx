@@ -6,6 +6,8 @@ import Workflow from "./Component/Workflow";
 import User from "./User";
 import Menu from "./Component/Menu";
 
+import { message } from "antd";
+
 type ServiceType = {
   _id: string;
   name: string;
@@ -36,7 +38,7 @@ const App = () => {
       });
       const data = await response.json();
       if (response.status !== 200 || !data.services) {
-        alert(data.message);
+        message.error(data.message);
       } else {
         setServices(data.services);
       }
@@ -68,7 +70,7 @@ const App = () => {
       });
       const data = await response.json();
       if (response.status !== 200 || !data.workflows) {
-        alert(data.message);
+        message.error(data.message);
       } else {
         setWorkflows(data.workflows);
       }
@@ -101,7 +103,7 @@ const App = () => {
       });
       const data = await response.json();
       if (response.status !== 200 || !data.services) {
-        alert(data.message);
+        message.error(data.message);
       } else {
         console.log(data.services);
       }

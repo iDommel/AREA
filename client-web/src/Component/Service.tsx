@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { message } from "antd";
 
 type AppProps = {
   id: string;
@@ -33,7 +34,7 @@ const Service = ({ id, name, route, isConnected, isActivated }: AppProps) => {
       });
       const data = await response.json();
       if (response.status !== 200) {
-        alert(data.message);
+        message.error(data.message);
       } else {
         console.log(data);
         setBorderColor("#3AB500");
