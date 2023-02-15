@@ -11,10 +11,6 @@ const OAuth = () => {
     navigate("/Home");
   };
 
-  const throwAlert = () => {
-    alert("Not implemented yet")
-  };
-
   return (
     <div className="oauth">
       <h3>Connect With</h3>
@@ -49,11 +45,11 @@ const Form = () => {
 
   const handleSubmit = (event: any) => {
     if (user === "" || password === "") {
-      alert("Please fill all the fields");
+      message.error("Please fill all the fields");
       event.preventDefault();
       return;
     }
-    alert("User loged in: " + user + " with password: " + password);
+    message.success("Logged in successfully");
     event.preventDefault();
     navigate("/Home");
   };

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { AppstoreOutlined, HomeOutlined, SettingOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu, message } from 'antd';
-import { Navigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -22,6 +21,8 @@ function getItem(
     type,
   } as MenuItem;
 }
+
+const serviceList = ["63e1a99689b9860fb46d3698", "63e1ab6fe3a0d2130314394b"];
 
 const rootSubmenuKeys = ['sub1', 'sub2'];
 
@@ -98,10 +99,15 @@ const MenuPage: React.FC = () => {
   };
 
   const handleSelect = (e: any) => {
+    console.log(e);
     if (e.key === '1') {
         navigate('/home');
     } else if (e.key === '2-1') {
         navigate('/Workflow');
+    } else if (serviceList.includes(e.key)) {
+        message.info('Service n°' + e.key + ' is not implemented yet');
+    } else {
+        navigate('/WorkflowInfo/id=' + e.key);
     }
   };
 

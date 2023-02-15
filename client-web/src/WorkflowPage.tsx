@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import User from "./User";
 import Menu from "./Component/Menu";
-import { Button, Cascader, Form, Input, Typography, Space } from "antd";
+import { Button, Cascader, Form, Input, Typography, Space, message } from "antd";
 import type { FormInstance } from "antd/es/form";
 import { useNavigate } from "react-router-dom";
 
@@ -49,7 +49,7 @@ const WorkflowPage = () => {
       );
       const data = await response.json();
       if (response.status !== 200) {
-        alert(data.message);
+        message.error(data.message);
       } else {
         setServices(data.services);
       }
@@ -82,7 +82,7 @@ const WorkflowPage = () => {
     });
     const data = await response.json();
     if (response.status !== 201) {
-      alert(data.message);
+      message.error(data.message);
     } else {
       navigate("/Home");
     }
