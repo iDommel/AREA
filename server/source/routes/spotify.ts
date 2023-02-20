@@ -3,6 +3,7 @@ import controller from '../controllers/spotify';
 import passport from 'passport';
 import passportSpotify from 'passport-spotify';
 import User from '../models/user';
+
 const router = express.Router();
 const SpotifyStrategy = passportSpotify.Strategy;
 
