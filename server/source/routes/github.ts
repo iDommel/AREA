@@ -14,24 +14,23 @@ passport.use(
             clientSecret: "3b87218c0a1797a5e59496bededf48d1b13f7656",
             callbackURL: "http://localhost:8080/github/callback"
         },
-        async (accessToken, refreshToken, profile, done) => {
-            User.findOrCreate({ githubId: profile.id }, function (err, user) {
-            return done(err, user);
+        async (accessToken: string, refreshToken: string, profile: passportGithub.Profile, done: (err: any, user?: any) => void) => {
+            const user = await User.findById(profile.id);
+
+            user.services = [{ name: 'github', accessToken, refreshToken }];
+            user.save();
+            return done(null, {
+                accessToken,
+                refreshToken,
+                profile
             });
         }
 ));
 
-app.get('/auth/github',
-  passport.authenticate('github', { scope: [ 'user:email' ] }));
-
-app.get('/auth/github/callback', 
-  passport.authenticate('github', { failureRedirect: '/login' }),
-  function(req, res) {
-    // Successful authentication, redirect home.
+router.get('/login', passport.authenticate('github', { scope: ['user:email'] }));
+router.get('/callback', passport.authenticate('github', { failureRedirect: '/login' }), async (req, res) => {
     res.redirect('/');
-  });
-
-
+});
 router.get('/issues', controller.get_issues);
 router.post('/issues', controller.create_issue);
 
