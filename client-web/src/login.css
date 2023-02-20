@@ -81,3 +81,27 @@
     margin-top: 15%;
     margin-left: 20%;
   }
+
+  @media only screen and (max-width: 750px) {
+    .text {
+      margin-left: 15%;
+      margin-top: 0;
+    }
+
+    .baseLogin {
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .login {
+      width: 80%;
+      height: 55%;
+      margin-top: 0;
+      margin-bottom: 20%;
+    }
+    
+    .oauth {
+      margin-top: 15%;
+    }
+  }

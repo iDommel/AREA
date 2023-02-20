@@ -17,7 +17,7 @@ const Workflow = ({ id, name, isActivated, preview, service1, service2 }: AppPro
     if (id === "1") {
       navigate("/Workflow");
     } else {
-      navigate("/WorkflowInfo/id=" + id);
+      navigate("/WorkflowInfo/" + id);
     }
   };
 
