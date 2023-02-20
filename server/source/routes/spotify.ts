@@ -7,11 +7,14 @@ import User from '../models/user';
 const router = express.Router();
 const SpotifyStrategy = passportSpotify.Strategy;
 
+const clientID = process.env.SPOTIFY_CLIENT_ID as string;
+const clientSecret = process.env.SPOTIFY_CLIENT_SECRET as string;
+
 passport.use(
     new SpotifyStrategy(
         {
-            clientID: 'd21affede3984ecea64c0ebaceff41e3',
-            clientSecret: '734ebfb934c84261963f5794e5783c9f',
+            clientID,
+            clientSecret,
             callbackURL: 'http://localhost:8080/spotify/callback'
         },
         async (accessToken, refreshToken, expires_in, profile, done) => {

@@ -7,11 +7,14 @@ import User from '../models/user';
 const router = express.Router();
 const GitHubStrategy = passportGithub.Strategy;
 
+const clientID = process.env.GITHUB_CLIENT_ID as string;
+const clientSecret = process.env.GITHUB_CLIENT_SECRET as string;
+
 passport.use(
     new GitHubStrategy(
         {
-            clientID: "5390c6fedef9c51b9845",
-            clientSecret: "3b87218c0a1797a5e59496bededf48d1b13f7656",
+            clientID,
+            clientSecret,
             callbackURL: "http://localhost:8080/github/callback"
         },
         async (accessToken: string, refreshToken: string, profile: passportGithub.Profile, done: (err: any, user?: any) => void) => {
