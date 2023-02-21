@@ -90,15 +90,11 @@ const tempLogin = async (req: Request, res: Response, next: NextFunction) => {
 const checkPassword = async (username: string, password: string, done: any) => {
     try {
         const user = await User.findOne({ username });
-        console.log('user', user);
         if (!user) {
             return done(null, false, { message: 'Could not find a user with that email.' });
         }
 
-        console.log('comparing passwords', password, user.password);
-
         const passwordMatch = await compare(password, user.password);
-        console.log('passwordMatch', passwordMatch);
         if (!passwordMatch) {
             return done(null, false, { message: 'Incorrect password.' });
         }
