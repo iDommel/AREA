@@ -56,7 +56,7 @@ const RegisterForm = () => {
       });
       console.log("response", response);
       const data = await response.json();
-      if (response.status / 100 !== 2) {
+      if (response.status > 299 && response.status < 200) {
         message.error(data.message);
       } else {
         message.success("Account created successfully");
