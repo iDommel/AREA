@@ -8,5 +8,6 @@ router.patch('/:id', controller.updateWorkflow);
 router.delete('/:id', controller.deleteWorkflow);
 router.post('/', controller.createWorkflow);
 router.get('/', controller.getAllWorkflow);
+router.get('/services/:id', controller.getRelatedServices);
 
 export = router;
