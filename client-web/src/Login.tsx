@@ -123,7 +123,7 @@ const LoginForm = ({ setIsLogin }: any) => {
         message.error(data.message);
       } else {
         message.success("Logged in successfully");
-        navigate("/Home");
+        window.location.href = response.url;
       }
     } catch (error: any) {
       message.error(error.message);

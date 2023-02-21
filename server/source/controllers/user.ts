@@ -100,7 +100,7 @@ const checkPassword = async (username: string, password: string, done: any) => {
         const passwordMatch = await compare(password, user.password);
         console.log('passwordMatch', passwordMatch);
         if (!passwordMatch) {
-            return done(null, false, { message: 'Incorrect email or password.' });
+            return done(null, false, { message: 'Incorrect password.' });
         }
 
         return done(null, user);
