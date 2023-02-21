@@ -136,7 +136,6 @@ const LoginForm = ({ setIsLogin }: any) => {
         wrapperCol={{ span: 20 }}
         layout="vertical"
         onFinish={handleLogin}
-        style={{ marginLeft: 20 }}
       >
         <Title level={3}>Login</Title>
         <Form.Item
