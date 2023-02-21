@@ -10,6 +10,8 @@ import cors from 'cors';
 import passport from 'passport';
 import session from 'express-session';
 import { initScheduledJobs } from './utils/cron';
+import { Strategy as LocalStrategy } from 'passport-local';
+import User from './models/user';
 
 import bookRoutes from './routes/book';
 import aboutRoutes from './routes/about';
@@ -21,6 +23,8 @@ import serviceRoutes from './routes/service';
 import serviceStatusRoutes from './routes/serviceStatus';
 import actionRoutes from './routes/action';
 import reactionRoutes from './routes/reaction';
+import authRoutes from './routes/auth';
+import userController from './controllers/user';
 
 const NAMESPACE = 'Server';
 const app = express();
@@ -58,19 +62,33 @@ app.use(bodyParser.json());
 app.use(cors());
 app.options('*', cors());
 
-app.use(session({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+app.use(session({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
 
 // Initialize Passport!  Also use passport.session() middleware, to support
 // persistent login sessions (recommended).
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.serializeUser(function (user, done) {
+passport.use(
+    new LocalStrategy(
+        {
+            usernameField: 'username'
+        },
+        userController.checkPassword
+    )
+);
+
+passport.serializeUser((user, done) => {
     done(null, user);
 });
 
-passport.deserializeUser(function (user: false | Express.User | null | undefined, done) {
-    done(null, user);
+passport.deserializeUser(async (user: any, done) => {
+    try {
+        const bob = await User.findById(user._id);
+        done(null, bob);
+    } catch (error) {
+        done(error);
+    }
 });
 
 /** cron */
@@ -87,6 +105,7 @@ app.use('/services', serviceRoutes);
 app.use('/service-statuses', serviceStatusRoutes);
 app.use('/actions', actionRoutes);
 app.use('/reactions', reactionRoutes);
+app.use('/auth', authRoutes);
 
 /** Error handling */
 app.use((req, res, next) => {
