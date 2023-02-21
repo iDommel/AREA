@@ -58,7 +58,7 @@ const Service = ({ id, name, route, isConnected, isActivated }: AppProps) => {
       <Link to={`${endpoint}${route}`}>
         <button
           className="buttonservice"
-          // onClick={() => HandleClick()}
+          onClick={() => HandleClick()}
           style={{ borderColor: borderColor }}
         >
           <img src={imgClass} alt={name} />
