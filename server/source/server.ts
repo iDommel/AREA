@@ -10,8 +10,8 @@ import cors from 'cors';
 import passport from 'passport';
 import session from 'express-session';
 import { initScheduledJobs } from './utils/cron';
-import { Strategy as LocalStrategy } from 'passport-local';
-import User from './models/user';
+import { initializePassport } from './passportconfig';
+import flash from 'express-flash';
 
 import bookRoutes from './routes/book';
 import aboutRoutes from './routes/about';
@@ -62,35 +62,13 @@ app.use(bodyParser.json());
 app.use(cors());
 app.options('*', cors());
 
-app.use(session({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
-
 // Initialize Passport!  Also use passport.session() middleware, to support
 // persistent login sessions (recommended).
+app.use(session({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
+app.use(flash());
+initializePassport(passport);
 app.use(passport.initialize());
 app.use(passport.session());
-
-passport.use(
-    new LocalStrategy(
-        {
-            usernameField: 'username'
-        },
-        userController.checkPassword
-    )
-);
-
-passport.serializeUser((user, done) => {
-    done(null, user);
-});
-
-passport.deserializeUser(async (user: any, done) => {
-    try {
-        const bob = await User.findById(user._id);
-        done(null, bob);
-    } catch (error) {
-        done(error);
-    }
-});
-
 /** cron */
 initScheduledJobs();
 
