@@ -18,21 +18,27 @@ passport.use(
             callbackURL: "http://localhost:8080/github/callback"
         },
         async (accessToken: string, refreshToken: string, profile: passportGithub.Profile, done: (err: any, user?: any) => void) => {
-            const user = await User.findById(profile.id);
-
-            user.services = [{ name: 'github', accessToken, refreshToken }];
-            user.save();
-            return done(null, {
-                accessToken,
-                refreshToken,
-                profile
-            });
+            console.log('profile.id', profile.id);
+            try {
+                const user = await User.findById(profile.id);
+                user.services = [{ name: 'github', accessToken, refreshToken }];
+                user.save();
+                return done(null, {
+                    accessToken,
+                    refreshToken,
+                    profile
+                });
+            } catch (error) {
+                console.log(error);
+                return done(null, error);
+            }
         }
-));
+    )
+);
 
 router.get('/login', passport.authenticate('github', { scope: ['user:email'] }));
 router.get('/callback', passport.authenticate('github', { failureRedirect: '/login' }), async (req, res) => {
-    res.redirect('/');
+    res.redirect('http://localhost:3000/Home');
 });
 router.get('/issues', controller.get_issues);
 router.post('/issues', controller.create_issue);
