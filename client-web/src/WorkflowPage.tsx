@@ -71,6 +71,7 @@ const WorkflowPage = () => {
       description,
       actions: [action[1]],
       reactions: [reaction[1]],
+      relativeUser: localStorage.getItem("token"),
     };
 
     const response = await fetch("http://localhost:8080/workflows", {
