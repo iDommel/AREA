@@ -12,7 +12,6 @@ import session from 'express-session';
 import { initScheduledJobs } from './utils/cron';
 import { initializePassport } from './passportconfig';
 import flash from 'express-flash';
-import JWT from 'jsonwebtoken';
 
 import bookRoutes from './routes/book';
 import aboutRoutes from './routes/about';
@@ -62,6 +61,10 @@ app.use(bodyParser.json());
 /** Rules of our API */
 app.use(cors());
 app.options('*', cors());
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Headers', 'X-My-Custom-Header');
+//     next();
+//   });
 
 // Initialize Passport!  Also use passport.session() middleware, to support
 // persistent login sessions (recommended).
@@ -70,19 +73,6 @@ app.use(flash());
 initializePassport(passport);
 app.use(passport.initialize());
 app.use(passport.session());
-
-// JWT
-const JSON = { secret : 'keyboard cat'};
-const secret = "SHHHHHEESSHHH";
-const id = JWT.sign(JSON, secret);
-console.log(id);
-try {
-    const decoded = JWT.verify(id, "test");
-    console.log(decoded);
-}
-catch (e) {
-    console.log("not valid");
-}
 
 /** cron */
 initScheduledJobs();

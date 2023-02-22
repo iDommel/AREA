@@ -1,8 +1,9 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, request, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Workflow from '../models/workflow';
 import Service from '../models/service';
 import aqp from 'api-query-params';
+import JWT from 'jsonwebtoken';
 
 const createWorkflow = async (req: Request, res: Response, next: NextFunction) => {
     let { name, description, actions, reactions } = req.body;
@@ -34,6 +35,15 @@ const getAllWorkflow = async (req: Request, res: Response, next: NextFunction) =
 
     try {
         const workflows = await Workflow.find(filter).skip(skip).limit(limit).sort(sort).select(projection).populate(population);
+
+        const token = req.headers.authorization?.split(' ')[1] as string;
+        console.log(token);
+        JWT.verify(token, 'secret', function(err : any, decoded : any) {
+            if (err) {
+                console.log(err);
+            }
+            console.log(decoded);
+        });
 
         return res.status(200).json({
             workflows,
