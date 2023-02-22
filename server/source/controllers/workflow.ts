@@ -3,18 +3,28 @@ import mongoose from 'mongoose';
 import Workflow from '../models/workflow';
 import Service from '../models/service';
 import aqp from 'api-query-params';
-import JWT from 'jsonwebtoken';
+import JWT, { decode } from 'jsonwebtoken';
 
 const createWorkflow = async (req: Request, res: Response, next: NextFunction) => {
-    let { name, description, actions, reactions } = req.body;
+    let { name, description, actions, reactions, relativeUser } = req.body;
 
     try {
+        const token = req.headers.authorization?.split(' ')[1] as string;
+        let decoded = "";
+        console.log(token);
+        JWT.verify(token, 'secret', function(err : any, decoded : any) {
+            if (err) {
+                console.log(err);
+            }
+            console.log(decoded);
+        });
         const workflow = new Workflow({
             _id: new mongoose.Types.ObjectId(),
             name,
             description,
             actions,
-            reactions
+            reactions,
+            relativeUser
         });
 
         const result = await workflow.save();
@@ -35,15 +45,6 @@ const getAllWorkflow = async (req: Request, res: Response, next: NextFunction) =
 
     try {
         const workflows = await Workflow.find(filter).skip(skip).limit(limit).sort(sort).select(projection).populate(population);
-
-        const token = req.headers.authorization?.split(' ')[1] as string;
-        console.log(token);
-        JWT.verify(token, 'secret', function(err : any, decoded : any) {
-            if (err) {
-                console.log(err);
-            }
-            console.log(decoded);
-        });
 
         return res.status(200).json({
             workflows,
@@ -115,11 +116,40 @@ const getRelatedServices = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
+const getWorkflowbyUser = async (req: Request, res: Response, next: NextFunction) => {
+    
+        const token = req.params.id;
+        let id = "";
+        console.log(token);
+        JWT.verify(token, 'secret', function(err : any, decoded : any) {
+            if (err) {
+                console.log(err);
+            }
+            id = decoded.sub;
+        });
+
+    try {
+        console.log("fond :" + id);
+        const workflows = await Workflow.where('relativeUser', id);
+
+        return res.status(200).json({
+            workflows,
+            count: workflows.length
+        });
+    } catch (error: any) {
+        return res.status(500).json({
+            message: error.message,
+            error
+        });
+    }
+};
+
 export default {
     createWorkflow,
     getAllWorkflow,
     getWorkflow,
     updateWorkflow,
     deleteWorkflow,
-    getRelatedServices
+    getRelatedServices,
+    getWorkflowbyUser
 };

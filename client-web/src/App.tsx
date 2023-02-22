@@ -62,11 +62,11 @@ const App = () => {
 
   const getWorkflows = async () => {
     try {
-      const response = await fetch("http://localhost:8080/workflows", {
+      const response = await fetch("http://localhost:8080/workflows/user/" + localStorage.getItem("token") + "?populate=relativeUser" , {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + localStorage.getItem("token"),
+          "Autorization": "Bearer " + localStorage.getItem("token")
         },
       });
       const data = await response.json();

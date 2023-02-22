@@ -21,7 +21,7 @@ router.post('/login', (req: Request, res: Response, next: NextFunction) => {
             }
             const id = JWT.sign({}, "secret", {
                 algorithm: 'HS256',
-                expiresIn: 120,
+                expiresIn: 1200,
                 subject: user._id.toString()
             });
             console.log("header", id);
