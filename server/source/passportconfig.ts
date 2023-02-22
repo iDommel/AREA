@@ -20,7 +20,6 @@ export const initializePassport = (passport: any) => {
             if (!passwordMatch) {
                 return done(null, false, { message: 'Incorrect password.' });
             }
-
             return done(null, user);
         } catch (error) {
             return done(error);

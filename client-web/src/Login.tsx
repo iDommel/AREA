@@ -117,13 +117,13 @@ const LoginForm = ({ setIsLogin }: any) => {
           password: values.password,
         }),
       });
-      console.log("response", response);
+      const data = await response.json();
       if (response.status / 100 !== 2) {
-        const data = await response.json();
         message.error(data.message);
       } else {
         message.success("Logged in successfully");
-        window.location.href = response.url;
+        localStorage.setItem("token", data.token);
+        window.location.href = data.redirect;
       }
     } catch (error: any) {
       message.error(error.message);

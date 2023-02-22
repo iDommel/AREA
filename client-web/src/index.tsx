@@ -21,7 +21,7 @@ root.render(
           <Route path="/" element={<Login />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/Register" element={<Login isLoginMode={false} />} />
-          <Route path="/Home" element={<Home />} />
+          <Route path="/Home/" element={<Home />} />
           <Route path="/Workflow" element={<WorkflowPage />} />
           <Route path="/WorkflowInfo/:id" element={<WorkflowInfo />} />
         </Routes>
