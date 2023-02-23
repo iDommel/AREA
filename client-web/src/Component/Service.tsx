@@ -1,17 +1,16 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
 
 type AppProps = {
   id: string;
   name: string;
   route: string;
   isConnected: string;
-  isActivated: boolean;
+  globallyEnabled: boolean;
 };
 
-const Service = ({ id, name, route, isConnected, isActivated }: AppProps) => {
+const Service = ({ id, name, route, isConnected, globallyEnabled }: AppProps) => {
   const [service, setService] = useState({
-    status: isActivated,
+    globallyEnabled: globallyEnabled,
     _id: id,
     name: name,
     isConnected: isConnected,
@@ -19,52 +18,53 @@ const Service = ({ id, name, route, isConnected, isActivated }: AppProps) => {
 
   let endpoint = "http://localhost:8080";
 
-  const [borderColor, setBorderColor] = useState("#DE1313");
+  const [borderColor, setBorderColor] = useState(
+    globallyEnabled ? "#3AB500" : "#DE1313"
+  );
   const imgClass =
     "https://img.icons8.com/color/112/000000/" + name.toLowerCase() + ".png";
 
-  const connectToService = async () => {
+  const updateService = async (status : boolean) => {
     try {
-      const response = await fetch(endpoint + route, {
-        method: "GET",
+      const response = await fetch("http://localhost:8080/services/63f49774c9221b400ba2c89f", {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+          globallyEnabled: status,
+        }),
       });
       const data = await response.json();
       if (response.status !== 200) {
-        alert(data.message);
-      } else {
-        console.log(data);
-        setBorderColor("#3AB500");
-        setService({ ...service, status: true });
-        window.location.href = data.url;
+        console.error(data);
       }
     } catch (error) {
       console.error(error);
     }
   };
 
-  const HandleClick = () => {
-    if (service.status) {
+  const HandleClick = async () => {
+    if (service.globallyEnabled) {
       setBorderColor("#DE1313");
-      setService({ ...service, status: false });
+      setService({ ...service, globallyEnabled: false });
     } else {
-      connectToService();
+      window.location.href = endpoint + route;
+      setBorderColor("#3AB500");
+      setService({ ...service, globallyEnabled: true });
     }
+    await updateService(!service.globallyEnabled);
   };
   return (
     <div className="service">
-      <Link to={`${endpoint}${route}`}>
-        <button
-          className="buttonservice"
-          onClick={() => HandleClick()}
-          style={{ borderColor: borderColor }}
-        >
-          <img src={imgClass} alt={name} />
-        </button>
-        <h3 className="status">{service.status ? "Activé" : "Désactivé"}</h3>
-      </Link>
+      <button
+        className="buttonservice"
+        onClick={() => HandleClick()}
+        style={{ borderColor: borderColor }}
+      >
+        <img src={imgClass} alt={name} />
+      </button>
+      <h3 className="status">{service.globallyEnabled ? "Activé" : "Désactivé"}</h3>
     </div>
   );
 };
