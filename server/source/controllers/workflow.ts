@@ -9,7 +9,7 @@ const createWorkflow = async (req: Request, res: Response, next: NextFunction) =
     let { name, description, actions, reactions } = req.body;
 
     try {
-        const token = req.headers.authorization?.split(' ')[1] as string;
+        const token = req.headers.authorization?.split(';')[0] as string;
         let id = "";
         JWT.verify(token, 'secret', function(err : any, decoded : any) {
             if (err) {
@@ -23,7 +23,7 @@ const createWorkflow = async (req: Request, res: Response, next: NextFunction) =
             description,
             actions,
             reactions,
-            relativeUser : id
+            relativeUser : "nothing"
         });
 
         const result = await workflow.save();
@@ -117,9 +117,8 @@ const getRelatedServices = async (req: Request, res: Response, next: NextFunctio
 
 const getWorkflowbyUser = async (req: Request, res: Response, next: NextFunction) => {
     
-        const token = req.params.id;
+        const token = req.params.id.split(";")[0];
         let id = "";
-        console.log(token);
         JWT.verify(token, 'secret', function(err : any, decoded : any) {
             if (err) {
                 console.log(err);
@@ -128,7 +127,6 @@ const getWorkflowbyUser = async (req: Request, res: Response, next: NextFunction
         });
 
     try {
-        console.log("fond :" + id);
         const workflows = await Workflow.where('relativeUser', id);
 
         return res.status(200).json({

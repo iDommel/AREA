@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import User from "./User";
 import Menu from "./Component/Menu";
-import { Button, Cascader, Form, Input, Typography, Space, message } from "antd";
+import { Button, Cascader, Form, Input, Typography, message } from "antd";
 import type { FormInstance } from "antd/es/form";
 import { useNavigate } from "react-router-dom";
 
@@ -70,14 +70,14 @@ const WorkflowPage = () => {
       description,
       actions: [action[1]],
       reactions: [reaction[1]],
-      relativeUser: localStorage.getItem("token"),
+      relativeUser: document.cookie,
     };
 
     const response = await fetch("http://localhost:8080/workflows", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Authorization": `Bearer ${document.cookie}`,
       },
       body: JSON.stringify(workflow),
     });
