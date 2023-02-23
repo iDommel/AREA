@@ -62,11 +62,11 @@ const App = () => {
 
   const getWorkflows = async () => {
     try {
-      const response = await fetch("http://localhost:8080/workflows/user/" + localStorage.getItem("token") , {
+      const response = await fetch("http://localhost:8080/workflows/user/" + document.cookie.split("=")[1] , {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Autorization": "Bearer " + localStorage.getItem("token")
+          "Autorization": "Bearer " + document.cookie.split("=")[1]
         },
       });
       const data = await response.json();
@@ -94,24 +94,24 @@ const App = () => {
     ));
   };
 
-  const getRelatedServices = async (workflowId: string) => {
-    try {
-      const response = await fetch("http://localhost:8080/workflows/services/" + workflowId, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      if (response.status !== 200 || !data.services) {
-        message.error(data.message);
-      } else {
-        console.log(data.services);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const getRelatedServices = async (workflowId: string) => {
+  //   try {
+  //     const response = await fetch("http://localhost:8080/workflows/services/" + workflowId, {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+  //     const data = await response.json();
+  //     if (response.status !== 200 || !data.services) {
+  //       message.error(data.message);
+  //     } else {
+  //       console.log(data.services);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   useEffect(() => {
     getServices();

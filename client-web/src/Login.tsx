@@ -122,7 +122,7 @@ const LoginForm = ({ setIsLogin }: any) => {
         message.error(data.message);
       } else {
         message.success("Logged in successfully");
-        localStorage.setItem("token", data.token);
+        document.cookie = `token=${data.token}`;
         window.location.href = data.redirect;
       }
     } catch (error: any) {
