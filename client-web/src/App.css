@@ -1,18 +1,9 @@
 body {
-  /* background-color: #3B2982; */
   width: 100vw;
   height: 100vh;
   margin: 0;
   padding: 0;
 }
-
-/* div comme heritage */
-
-/* div full -> div back(gris) -> Workflows -> div chaque workflow
-                              -> Services  -> div chaque service
-
-/* top = margin 
-left = padding */
 
 .background {
   background-color: #3b2982;
@@ -26,20 +17,20 @@ left = padding */
 
 .base {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
+  flex-direction: row;
+  /* align-items: flex-start; */
+  /* justify-content: space-between; */
   width: 100%;
   height: 90%;
   display: flex;
-  background-color: #656565;
+  background-color: rgba(217, 217, 217, 0.89);
 }
 
 .user {
   margin-left: 95%;
   width: 5%;
   height: 10%;
-  background-color: #3d3d3d;
+  background-color: #ffffff00;
   display: flex;
   align-items: center;
 }
@@ -54,35 +45,45 @@ left = padding */
 
 /* Home.jsx */
 
+.content {
+  width: 90%;
+  height: 95%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
 .squareWorkflow {
   margin-left: 5%;
   width: 90%;
   height: 30%;
-  background-color: #3d3d3d;
+  background-color: #D9D9D9;
   border-radius: 20px;
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
+  flex-wrap: wrap;
+  overflow: auto;
+  flex-shrink: 0;
 }
 
 .title {
   margin-left: 3%;
-  color: white;
+  color: black;
 }
 
 .workflow {
+  margin-top: 2%;
   margin-left: 5%;
-  width: 11%;
+  width: 12%;
   height: 70%;
 }
 
 .button {
   width: 100%;
   height: 100%;
-  background-color: #d9d9d9;
+  background-color: #D9D9D9;
+  border-color: black;
   border-radius: 5px;
-  font-size: 30px;
 }
 
 .squareService {
@@ -90,7 +91,7 @@ left = padding */
   margin-bottom: 5%;
   width: 90%;
   height: 30%;
-  background-color: #3d3d3d;
+  background-color: #D9D9D9;
   border-radius: 20px;
   display: flex;
   flex-direction: row;
@@ -99,7 +100,7 @@ left = padding */
 
 .service {
   margin-left: 5%;
-  width: 11%;
+  width: 12%;
   height: 70%;
 }
 
@@ -111,7 +112,7 @@ left = padding */
 }
 
 .status {
-  color: white;
+  color: black;
   margin-left: 25%;
   margin-top: 5%;
 }
@@ -187,4 +188,127 @@ left = padding */
   height: 50%;
   border-radius: 20px;
   background-color: #d9d9d9;
+}
+
+
+/* WorkflowInfo.jsx */
+
+.Info {
+  margin-left: 5%;
+  margin-top: 5%;
+  width: 50%;
+  height: 80%;
+  background-color: #d9d9d9;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.delete {
+  margin-left: 93%;
+}
+
+.WorkflowInfo {
+  margin-left: 5%;
+  width: 90%;
+  height: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.ActionInfo {
+  margin-left: 10%;
+  width: 90%;
+  height: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.ReactionInfo {
+  margin-left: 10%;
+  margin-bottom: 10%;
+  width: 90%;
+  height: 30%;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+/* Menu.jsx */
+
+.Menu {
+  width: 15%;
+  height: 100%;
+  background-color: #808080;
+  color: white;
+  font-size: 20px;
+}
+
+
+@media only screen and (max-width: 750px) {
+
+  .user {
+    width: 20%;
+    margin-left: 80%;
+  }
+
+  .Menu {
+    display: none;
+  }
+
+  .base {
+    flex-direction: column;
+  }
+  .content {
+    flex-direction: column;
+  }
+  .squareWorkflow {
+    width: 100%;
+    height: 30%;
+  }
+  .squareService {
+    width: 100%;
+    height: 30%;
+  }
+  .service {
+    margin-left: 3%;
+    width: 45%;
+  }
+  .workflow {
+    margin-left: 3%;
+    width: 45%;
+  }
+  .action {
+    width: 100%;
+  }
+  .Info {
+    width: 90%;
+  }
+
+  .delete {
+    margin-left: 83%;
+  }
+
+  .WorkflowInfo {
+    width: 100%;
+  }
+  .ActionInfo {
+    margin-left: 3%;
+    width: 100%;
+  }
+  .ReactionInfo {
+    margin-left: 3%;
+    width: 100%;
+  }
+  .Menu {
+    width: 100%;
+  }
 }

@@ -26,7 +26,7 @@ const Service = ({ id, name, route, isConnected, globallyEnabled }: AppProps) =>
 
   const updateService = async (status : boolean) => {
     try {
-      const response = await fetch("http://localhost:8080/services/63f49774c9221b400ba2c89f", {
+      const response = await fetch("http://localhost:8080/services/" + id, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
