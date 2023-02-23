@@ -63,7 +63,6 @@ const WorkflowPage = () => {
   }, []);
 
   const onSubmit = async (values: any) => {
-    console.log("values", values);
     const { name, description, action, reaction } = values;
 
     const workflow = {
@@ -78,6 +77,7 @@ const WorkflowPage = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify(workflow),
     });

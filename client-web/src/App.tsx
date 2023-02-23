@@ -62,7 +62,7 @@ const App = () => {
 
   const getWorkflows = async () => {
     try {
-      const response = await fetch("http://localhost:8080/workflows/user/" + localStorage.getItem("token") + "?populate=relativeUser" , {
+      const response = await fetch("http://localhost:8080/workflows/user/" + localStorage.getItem("token") , {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
