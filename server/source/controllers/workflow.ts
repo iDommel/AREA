@@ -6,17 +6,16 @@ import aqp from 'api-query-params';
 import JWT, { decode } from 'jsonwebtoken';
 
 const createWorkflow = async (req: Request, res: Response, next: NextFunction) => {
-    let { name, description, actions, reactions, relativeUser } = req.body;
+    let { name, description, actions, reactions } = req.body;
 
     try {
         const token = req.headers.authorization?.split(' ')[1] as string;
-        let decoded = "";
-        console.log(token);
+        let id = "";
         JWT.verify(token, 'secret', function(err : any, decoded : any) {
             if (err) {
                 console.log(err);
             }
-            console.log(decoded);
+            id = decoded.sub;
         });
         const workflow = new Workflow({
             _id: new mongoose.Types.ObjectId(),
@@ -24,7 +23,7 @@ const createWorkflow = async (req: Request, res: Response, next: NextFunction) =
             description,
             actions,
             reactions,
-            relativeUser
+            relativeUser : id
         });
 
         const result = await workflow.save();

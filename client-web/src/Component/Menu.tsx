@@ -40,10 +40,11 @@ const MenuPage: React.FC = () => {
 
   const getWorkflows = async () => {
     try {
-      const response = await fetch("http://localhost:8080/workflows", {
+      const response = await fetch("http://localhost:8080/workflows/user/" + localStorage.getItem("token") , {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "Autorization": "Bearer " + localStorage.getItem("token")
         },
       });
       const data = await response.json();
