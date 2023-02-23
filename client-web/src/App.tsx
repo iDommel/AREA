@@ -9,6 +9,7 @@ type ServiceType = {
   _id: string;
   name: string;
   route: string;
+  globallyEnabled: boolean;
   isConnected: string;
 };
 
@@ -46,7 +47,7 @@ const App = () => {
         name={service.name}
         route={service.route}
         isConnected="True"
-        isActivated={false}
+        globallyEnabled={service.globallyEnabled}
       />
     ));
   };
