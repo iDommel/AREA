@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CreateWorkflowView extends StatelessWidget {
-  const CreateWorkflowView({Key? key}) : super(key: key);
+class AddServiceView extends StatelessWidget {
+  const AddServiceView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +65,7 @@ class CreateWorkflowView extends StatelessWidget {
                       child: DropdownButton(
                         items: [],
                         onChanged: (value) {},
-                        hint: Text("L'Action"),
+                        hint: Text("L'action"),
                       ),
                     ),
                   ),
@@ -73,9 +73,9 @@ class CreateWorkflowView extends StatelessWidget {
                     height: 16,
                   ),
                   SizedBox(
-                    width: 305,
-                    height: 241,
-                    child: Card(
+                      width: 305,
+                      height: 241,
+                      child: Card(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
                         color: Color.fromARGB(255, 217, 217, 217),
@@ -85,8 +85,8 @@ class CreateWorkflowView extends StatelessWidget {
                             hintStyle: TextStyle(color: Colors.black),
                             hintText: 'Que fait le bail',
                           ),
-                        )),
-                  )
+                        ),
+                      ))
                 ]),
               ),
             ),
