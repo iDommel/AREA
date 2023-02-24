@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -7,6 +10,54 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  late TextEditingController _valuePasswordController, _valueEmailController;
+
+  late bool status_;
+  late String message;
+
+  String serverUrl = "https://localhost:8080/services";
+  @override
+  void initState() {
+    _valuePasswordController = TextEditingController();
+    _valueEmailController = TextEditingController();
+
+    status_ = false;
+    message = "";
+
+    super.initState();
+  }
+
+  Future<void> getService() async {
+    var response = await http.get(Uri.parse(serverUrl), headers: {
+      "Content-Type": "application/json",
+    });
+    print(response.body);
+
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      var responseMessage = data["message"];
+      var responseError = data["error"];
+      if (responseError) {
+        setState(() {
+          status_ = false;
+          message = responseMessage;
+        });
+      } else {
+        _valueEmailController.clear();
+        _valuePasswordController.clear();
+        setState(() {
+          status_ = true;
+          message = responseMessage;
+        });
+      }
+    } else {
+      setState(() {
+        message = "Error : Server error";
+        status_ = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,13 +107,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                   borderRadius: BorderRadius.circular(10)),
                               color: Color.fromARGB(255, 61, 61, 61),
                               child: TextField(
+                                controller: _valueEmailController,
+                                keyboardType: TextInputType.name,
                                 scribbleEnabled: false,
                                 style: TextStyle(
                                     color: Color.fromARGB(255, 255, 255, 255)),
                                 decoration: InputDecoration(
-                                  hintStyle: TextStyle(color: Colors.white54),
-                                  hintText: 'Username / Email',
-                                ),
+                                    hintStyle: TextStyle(color: Colors.white54),
+                                    labelText: 'Enter your Email'),
                               ),
                             )),
                         SizedBox(
@@ -79,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   obscureText: true,
                                   decoration: InputDecoration(
                                     hintStyle: TextStyle(color: Colors.white54),
-                                    hintText: 'Password',
+                                    labelText: 'Enter your Password',
                                   ),
                                 ))),
                         Text(
@@ -96,11 +148,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 48,
                           color: Color.fromARGB(255, 73, 71, 131),
                           child: TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              setState(() {});
+                              getService();
+                            },
                             child: Text('Connect',
                                 style: TextStyle(color: Colors.white)),
                           ),
                         ),
+                        Text(status_ ? message : message),
                         Text('Connect With :',
                             textScaleFactor: 1.5, textAlign: TextAlign.right),
                         SizedBox(
@@ -126,7 +182,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       if (states
                                           .contains(MaterialState.pressed)) {
                                         return Colors.white38;
-                                      } // <-- Splash color
+                                      }
+                                      return null; // <-- Splash color
                                     }),
                                   ),
                                   child: Image.asset('assets/google.png'),
@@ -171,7 +228,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       if (states
                                           .contains(MaterialState.pressed)) {
                                         return Colors.white38;
-                                      } // <-- Splash color
+                                      }
+                                      return null; // <-- Splash color
                                     }),
                                   ),
                                   child: Image.asset('assets/github.png'),

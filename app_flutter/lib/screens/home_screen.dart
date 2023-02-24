@@ -1,3 +1,5 @@
+import 'package:area_app/screens/views/add_reaction_view.dart';
+import 'package:area_app/screens/views/add_service_view.dart';
 import 'package:area_app/screens/views/create_workflow_view.dart';
 import 'package:area_app/screens/views/home_view.dart';
 import 'package:flutter/material.dart';
@@ -43,26 +45,28 @@ class _HomeScreenState extends State<HomeScreen> {
         children: const <Widget>[
           HomeView(),
           CreateWorkflowView(),
+          AddReactionView(),
+          AddServiceView(),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() => _currentIndex = index);
+      // bottomNavigationBar: BottomNavigationBar(
+      //   currentIndex: _currentIndex,
+      //   onTap: (index) {
+      //     setState(() => _currentIndex = index);
 
-          _pageController.jumpToPage(_currentIndex);
-        },
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_box),
-            label: 'Create Workflow',
-          ),
-        ],
-      ),
+      //     _pageController.jumpToPage(_currentIndex);
+      //   },
+      //   items: const <BottomNavigationBarItem>[
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.home),
+      //       label: 'Home',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.add_box),
+      //       label: 'Create Workflow',
+      //     ),
+      //   ],
+      // ),
     );
   }
 }
