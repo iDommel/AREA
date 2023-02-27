@@ -22,6 +22,7 @@ import serviceStatusRoutes from './routes/serviceStatus';
 import actionRoutes from './routes/action';
 import reactionRoutes from './routes/reaction';
 import githubRoutes from './routes/github';
+import gitlabRoutes from './routes/gitlab';
 
 const NAMESPACE = 'Server';
 const app = express();
@@ -89,6 +90,7 @@ app.use('/service-statuses', serviceStatusRoutes);
 app.use('/actions', actionRoutes);
 app.use('/reactions', reactionRoutes);
 app.use('/github', githubRoutes);
+app.use('/gitlab', gitlabRoutes);
 
 /** Error handling */
 app.use((req, res, next) => {
