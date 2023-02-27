@@ -2,6 +2,9 @@ import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import querystring from 'querystring';
 import axios from 'axios';
+import User from '../models/user';
+import { getUserIdFromCookie } from '../utils/utils';
+import SpotifyWebApi from 'spotify-web-api-node';
 
 let client_id = 'd21affede3984ecea64c0ebaceff41e3'; // Your client id
 let client_secret = '734ebfb934c84261963f5794e5783c9f'; // Your secret
@@ -139,4 +142,31 @@ const refreshToken = async (req: Request, res: Response, next: NextFunction) => 
     }
 };
 
-export default { loginFunction, callbackFunction, refreshToken };
+type ActionType = {
+    _id: string;
+    name: string;
+    description: string;
+};
+
+let spotifyApi = new SpotifyWebApi({
+    clientId: 'd21affede3984ecea64c0ebaceff41e3',
+    clientSecret: '734ebfb934c84261963f5794e5783c9f',
+    redirectUri: 'http://localhost:3000/Home'
+});
+
+const spotifyReaction = async (relativeUser: string, newName: string) => {
+    try {
+        const user = await User.findById(relativeUser);
+
+        spotifyApi.setAccessToken(user.services[0].accessToken);
+        const res = await spotifyApi.changePlaylistDetails('0y0zkkH8WQCCKSXbG39dOa', {
+            name: newName,
+            public: false
+        });
+        console.log('Playlist is now private!');
+    } catch (error: any) {
+        console.log('Something went wrong!', error);
+    }
+};
+
+export default { loginFunction, callbackFunction, refreshToken, spotifyReaction };
