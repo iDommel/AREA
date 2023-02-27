@@ -21,8 +21,11 @@ const Service = ({ id, name, route, isConnected, globallyEnabled }: AppProps) =>
   const [borderColor, setBorderColor] = useState(
     globallyEnabled ? "#3AB500" : "#DE1313"
   );
-  const imgClass =
+
+  let imgClass =
     "https://img.icons8.com/color/112/000000/" + name.toLowerCase() + ".png";
+  if (name === "Weather")
+    imgClass = "https://img.icons8.com/color/112/000000/partly-cloudy-day.png";
 
   const updateService = async (status : boolean) => {
     try {
@@ -49,7 +52,9 @@ const Service = ({ id, name, route, isConnected, globallyEnabled }: AppProps) =>
       setBorderColor("#DE1313");
       setService({ ...service, globallyEnabled: false });
     } else {
-      window.location.href = endpoint + route;
+      if (!route.includes("time") && !route.includes("weather")) {
+        window.location.href = endpoint + route;
+      }
       setBorderColor("#3AB500");
       setService({ ...service, globallyEnabled: true });
     }
