@@ -12,7 +12,6 @@ type AppProps = {
 
 const Workflow = ({ id, name, isActivated, preview, service1, service2 }: AppProps) => {
   const navigate = useNavigate();
-  console.log(name, service1, service2);
 
   const goToWorkflow = (id: string) => {
     if (id === "1") {
