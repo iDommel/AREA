@@ -1,14 +1,22 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, request, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Workflow from '../models/workflow';
 import Service from '../models/service';
 import aqp from 'api-query-params';
+import JWT, { decode } from 'jsonwebtoken';
 
 const createWorkflow = async (req: Request, res: Response, next: NextFunction) => {
     let { name, description, actions, reactions, serviceAction, serviceReaction } = req.body;
 
     try {
-        console.log(serviceAction, serviceReaction);
+        const token = req.headers.authorization?.split(';')[0] as string;
+        let id = "";
+        JWT.verify(token, 'secret', function(err : any, decoded : any) {
+            if (err) {
+                console.log(err);
+            }
+            id = decoded.sub;
+        });
         const workflow = new Workflow({
             _id: new mongoose.Types.ObjectId(),
             name,
@@ -16,7 +24,8 @@ const createWorkflow = async (req: Request, res: Response, next: NextFunction) =
             actions,
             reactions,
             serviceAction,
-            serviceReaction
+            serviceReaction,
+            relativeUser : "nothing"
         });
 
         const result = await workflow.save();
@@ -109,11 +118,38 @@ const getRelatedServices = async (req: Request, res: Response, next: NextFunctio
     }
 };
 
+const getWorkflowbyUser = async (req: Request, res: Response, next: NextFunction) => {
+    
+        const token = req.params.id.split(";")[0];
+        let id = "";
+        JWT.verify(token, 'secret', function(err : any, decoded : any) {
+            if (err) {
+                console.log(err);
+            }
+            id = decoded.sub;
+        });
+
+    try {
+        const workflows = await Workflow.where('relativeUser', id);
+
+        return res.status(200).json({
+            workflows,
+            count: workflows.length
+        });
+    } catch (error: any) {
+        return res.status(500).json({
+            message: error.message,
+            error
+        });
+    }
+};
+
 export default {
     createWorkflow,
     getAllWorkflow,
     getWorkflow,
     updateWorkflow,
     deleteWorkflow,
-    getRelatedServices
+    getRelatedServices,
+    getWorkflowbyUser
 };

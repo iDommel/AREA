@@ -68,7 +68,7 @@ const IsEvenReaction = async (workflow: any) => {
                 break;
             case 'github':
                 console.log('github bug 401 bad credentials');
-                // githubReaction(workflow.description);
+                githubReaction(workflow.description);
                 break;
             default:
                 break;

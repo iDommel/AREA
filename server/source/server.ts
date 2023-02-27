@@ -10,6 +10,8 @@ import cors from 'cors';
 import passport from 'passport';
 import session from 'express-session';
 import { initScheduledJobs } from './utils/cron';
+import { initializePassport } from './passportconfig';
+import flash from 'express-flash';
 
 import bookRoutes from './routes/book';
 import aboutRoutes from './routes/about';
@@ -22,6 +24,8 @@ import serviceStatusRoutes from './routes/serviceStatus';
 import actionRoutes from './routes/action';
 import reactionRoutes from './routes/reaction';
 import githubRoutes from './routes/github';
+import authRoutes from './routes/auth';
+import userController from './controllers/user';
 
 const NAMESPACE = 'Server';
 const app = express();
@@ -58,21 +62,18 @@ app.use(bodyParser.json());
 /** Rules of our API */
 app.use(cors());
 app.options('*', cors());
-
-app.use(session({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Headers', 'X-My-Custom-Header');
+//     next();
+//   });
 
 // Initialize Passport!  Also use passport.session() middleware, to support
 // persistent login sessions (recommended).
+app.use(session({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
+app.use(flash());
+initializePassport(passport);
 app.use(passport.initialize());
 app.use(passport.session());
-
-passport.serializeUser(function (user, done) {
-    done(null, user);
-});
-
-passport.deserializeUser(function (user: false | Express.User | null | undefined, done) {
-    done(null, user);
-});
 
 /** cron */
 initScheduledJobs();
@@ -89,6 +90,7 @@ app.use('/service-statuses', serviceStatusRoutes);
 app.use('/actions', actionRoutes);
 app.use('/reactions', reactionRoutes);
 app.use('/github', githubRoutes);
+app.use('/auth', authRoutes);
 
 /** Error handling */
 app.use((req, res, next) => {
