@@ -5,15 +5,18 @@ import Service from '../models/service';
 import aqp from 'api-query-params';
 
 const createWorkflow = async (req: Request, res: Response, next: NextFunction) => {
-    let { name, description, actions, reactions } = req.body;
+    let { name, description, actions, reactions, serviceAction, serviceReaction } = req.body;
 
     try {
+        console.log(serviceAction, serviceReaction);
         const workflow = new Workflow({
             _id: new mongoose.Types.ObjectId(),
             name,
             description,
             actions,
-            reactions
+            reactions,
+            serviceAction,
+            serviceReaction
         });
 
         const result = await workflow.save();
@@ -93,9 +96,10 @@ const deleteWorkflow = async (req: Request, res: Response, next: NextFunction) =
 const getRelatedServices = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const workflow = await Workflow.findById(req.params.id);
-        const services = await Service.find({ _id: { $in: workflow?.actions } })
+        const services = await Service.find({ actions: { $in: workflow?.actions } })
+        const reactions = await Service.find({ reactions: { $in: workflow?.reactions } })
         return res.status(200).json({
-            services: services
+            services: services, reactions: reactions
         });
     } catch (error: any) {
         return res.status(500).json({

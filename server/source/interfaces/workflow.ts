@@ -5,4 +5,6 @@ export default interface IWorkflow extends Document {
     description: { type: String; default: '' };
     actions: [{ type: Types.ObjectId; ref: 'Action' }];
     reactions: [{ type: Types.ObjectId; ref: 'Reaction' }];
+    serviceAction: { type: String; default: '' };
+    serviceReaction: { type: String; default: '' };
 }
