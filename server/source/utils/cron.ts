@@ -46,7 +46,7 @@ const checkActions = async () => {
                     }
                 }
                 if (action.name === 'isRaining') {
-                    const isRaining = await weatherController.isRaining('Racine');
+                    const isRaining = await weatherController.isRaining('Toulouse');
                     if (isRaining) {
                         console.log('Is it raining?', isRaining);
                     }

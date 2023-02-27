@@ -37,10 +37,8 @@ const isRaining = async (location: string) => {
     try {
         const response = await axios.get(`${apiEndpoint}${apiRoute}${apiKey}${apiParams}`);
         if (response.data.text === 'Light rain') {
-            console.log('It is raining');
             return true;
         } else {
-            console.log('It is not raining');
             return false;
         }
     } catch (error: any) {
