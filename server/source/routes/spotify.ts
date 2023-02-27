@@ -4,7 +4,7 @@ import passport from 'passport';
 import passportSpotify from 'passport-spotify';
 import User from '../models/user';
 import config from '../config/config';
-
+import { getUserIdFromCookie } from '../utils/utils';
 const router = express.Router();
 const SpotifyStrategy = passportSpotify.Strategy;
 
@@ -17,13 +17,9 @@ passport.use(
             passReqToCallback: true
         },
         async (req: any, accessToken: string, refreshToken: string, expires_in: number, profile: passportSpotify.Profile, done: passportSpotify.VerifyCallback) => {
-            console.log('accessToken', accessToken);
-            console.log('refreshToken', refreshToken);
-            console.log('expires_in', expires_in);
-            console.log('profile', profile);
-            console.log('cookies', req.cookies);
+            const id = getUserIdFromCookie(req);
 
-            const user = await User.findById(profile.id);
+            const user = await User.findById(id);
             if (!user) {
                 return done(Error('User not found'));
             }
