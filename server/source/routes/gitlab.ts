@@ -15,7 +15,7 @@ passport.use(
         {
             clientID,
             clientSecret,
-            callbackURL: "http://localhost:3000/gitlab/callback"
+            callbackURL: "http://localhost:8080/gitlab/callback"
         },
         async (accessToken: string, refreshToken: string, profile: any, done: (err: any, user?: any) => void) => {
             try {
@@ -35,7 +35,7 @@ passport.use(
     )
 );
 
-router.get('/login', passport.authenticate('gitlab', { scope: ['user:email'] }));
+router.get('/login', passport.authenticate('gitlab', { scope: ['email'] }));
 router.get('/callback', passport.authenticate('gitlab', { failureRedirect: '/login' }), async (req, res) => {
     res.redirect('http://localhost:3000/Home');
 });
