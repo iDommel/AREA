@@ -11,8 +11,8 @@ type ActionType = {
 };
 
 let spotifyApi = new SpotifyWebApi({
-    clientId: 'd21affede3984ecea64c0ebaceff41e3',
-    clientSecret: '734ebfb934c84261963f5794e5783c9f',
+    clientId: process.env.SPOTIFY_CLIENT_ID,
+    clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
     redirectUri: 'http://localhost:3000/Home'
 });
 
@@ -31,18 +31,59 @@ const spotifyReaction = async (newName: string) => {
     }
 };
 
+const githubReaction = async (newName: string) => {
+    try {
+        const res = await fetch("http://localhost:8080/github/issues", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "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"
+            },
+            body: JSON.stringify({
+                title: newName,
+                body: 'This is a test issue',
+                labels: ['bug']
+            }),
+          });
+          const data = await res.json();
+          if (res.status !== 200) {
+            console.log('Something went wrong with github reaction! ' + data.message);
+          } else {
+            console.log('Github issue created!');
+          }
+
+    } catch (error: any) {
+        console.log('Something went wrong with github reaction!', error);
+    }
+};
+
+const IsEvenReaction = async (workflow: any) => {
+    const isEven = await controller.isMinuteEven('Europe/Amsterdam');
+    if (isEven) {
+        console.log('Is minute even?', isEven);
+        switch (workflow.serviceReaction) {
+            case 'spotify':
+                console.log('spotify bug fetch user');
+                // spotifyReaction(workflow.description);
+                break;
+            case 'github':
+                console.log('github bug 401 bad credentials');
+                // githubReaction(workflow.description);
+                break;
+            default:
+                break;
+        }
+    }
+}
+
 const checkActions = async () => {
     try {
-        const workflows = await Workflow.find({}).sort({ createdAt: -1 }).limit(1).populate('actions');
+        const workflowsAction = await Workflow.find({}).sort({ createdAt: -1 }).populate('actions');
         //TODO: talk to Lucas about these any types
-        workflows.forEach((workflow: any) => {
+        workflowsAction.forEach((workflow: any) => {
             workflow.actions.forEach(async (action: any) => {
                 if (action.name === 'isMinuteEven') {
-                    const isEven = await controller.isMinuteEven('Europe/Amsterdam');
-                    if (isEven) {
-                        console.log('Is minute even?', isEven);
-                        spotifyReaction(workflow.description);
-                    }
+                    IsEvenReaction(workflow);
                 }
             });
         });
