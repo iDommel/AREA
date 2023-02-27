@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import User from "./User";
 import Menu from "./Component/Menu";
-import { Button, Cascader, Form, Input, Typography, Space, message } from "antd";
+import { Button, Cascader, Form, Input, Typography, message } from "antd";
 import type { FormInstance } from "antd/es/form";
 import { useNavigate } from "react-router-dom";
 
@@ -63,7 +63,6 @@ const WorkflowPage = () => {
   }, []);
 
   const onSubmit = async (values: any) => {
-    console.log("values", values);
     const { name, description, action, reaction } = values;
 
     const workflow = {
@@ -72,13 +71,15 @@ const WorkflowPage = () => {
       actions: [action[1]],
       reactions: [reaction[1]],
       serviceAction: services.find((service) => service._id === action[0])?.name.toLowerCase(),
-      serviceReaction: services.find((service) => service._id === reaction[0])?.name.toLowerCase()
+      serviceReaction: services.find((service) => service._id === reaction[0])?.name.toLowerCase(),
+      relativeUser: document.cookie,
     };
 
     const response = await fetch("http://localhost:8080/workflows", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${document.cookie}`,
       },
       body: JSON.stringify(workflow),
     });

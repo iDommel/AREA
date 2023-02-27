@@ -2,15 +2,15 @@ import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import User from '../models/user';
 import aqp from 'api-query-params';
+import { compare, hash } from 'bcrypt';
 
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
     let { username, password } = req.body;
 
     try {
         const user = new User({
-            _id: new mongoose.Types.ObjectId(),
             username,
-            password
+            password: await hash(password, 10)
         });
 
         const result = await user.save();
@@ -87,4 +87,22 @@ const tempLogin = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-export default { createUser, getAllUsers, getUser, updateUser, tempLogin };
+const checkPassword = async (username: string, password: string, done: any) => {
+    try {
+        const user = await User.findOne({ username });
+        if (!user) {
+            return done(null, false, { message: 'Could not find a user with that email.' });
+        }
+
+        const passwordMatch = await compare(password, user.password);
+        if (!passwordMatch) {
+            return done(null, false, { message: 'Incorrect password.' });
+        }
+
+        return done(null, user);
+    } catch (error) {
+        return done(error);
+    }
+};
+
+export default { createUser, getAllUsers, getUser, updateUser, tempLogin, checkPassword };

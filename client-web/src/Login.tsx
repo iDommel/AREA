@@ -1,8 +1,9 @@
 import React from "react";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./login.css";
-import { message } from "antd";
+import { message, Form, Typography, Input, Button } from "antd";
+
+const { Title } = Typography;
 
 const OAuth = () => {
   const navigate = useNavigate();
@@ -38,58 +39,143 @@ const OAuth = () => {
   );
 };
 
-const Form = () => {
-  const [user, setUser] = useState("");
-  const [password, setPassword] = useState("");
+const RegisterForm = () => {
   const navigate = useNavigate();
-
-  const handleSubmit = (event: any) => {
-    if (user === "" || password === "") {
-      message.error("Please fill all the fields");
-      event.preventDefault();
-      return;
+  const handleRegister = async (values: any) => {
+    console.log("values", values);
+    try {
+      const response = await fetch("http://localhost:8080/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: values.username,
+          password: values.password,
+        }),
+      });
+      console.log("response", response);
+      const data = await response.json();
+      if (response.status > 299 && response.status < 200) {
+        message.error(data.message);
+      } else {
+        message.success("Account created successfully");
+        navigate("/Login");
+      }
+    } catch (error: any) {
+      message.error(error.message);
     }
-    message.success("Logged in successfully");
-    event.preventDefault();
-    navigate("/Home");
   };
 
   return (
     <div className="login">
-      <form onSubmit={(e) => handleSubmit(e)}>
-        <h3>Username</h3>
-        <input
-          className="input"
-          value={user}
-          type="text"
-          onChange={(e) => setUser(e.target.value)}
-        />
-        <h3>Password</h3>
-        <input
-          className="input"
-          value={password}
-          type="password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <input className="sendLogin" type="submit" value="Log in" />
-        <p onClick={() => message.error("Not implemented yet!")}> Forgot password?</p>
-        <p onClick={() => message.error("Not implemented yet!")}> Don't have an account? Sign up</p>
-      </form>
+      <Form
+        wrapperCol={{ span: 20 }}
+        layout="vertical"
+        onFinish={handleRegister}
+        style={{ marginLeft: 20 }}
+      >
+        <Title level={3}>Register</Title>
+        <Form.Item
+          label="Username"
+          name="username"
+          rules={[{ required: true, message: "Please input your username!" }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Password"
+          name="password"
+          rules={[{ required: true, message: "Please input your password!" }]}
+        >
+          <Input.Password />
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Register
+          </Button>
+        </Form.Item>
+        Or <a href="/Login">login now!</a>
+      </Form>
       <OAuth />
     </div>
   );
 };
 
-const Login = () => (
-  <div className="background">
-    <div className="baseLogin">
-      <div className="text">
-        <h1>Welcome the AREA Web APP</h1>
-        <h2>Please log in to continue</h2>
-      </div>
-      <Form />
+const LoginForm = ({ setIsLogin }: any) => {
+  const navigate = useNavigate();
+  const handleLogin = async (values: any) => {
+    console.log("values", values);
+    try {
+      const response = await fetch("http://localhost:8080/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: values.username,
+          password: values.password,
+        }),
+      });
+      const data = await response.json();
+      if (response.status / 100 !== 2) {
+        message.error(data.message);
+      } else {
+        message.success("Logged in successfully");
+        document.cookie = `token=${data.token}`;
+        window.location.href = data.redirect;
+      }
+    } catch (error: any) {
+      message.error(error.message);
+    }
+  };
+
+  return (
+    <div className="login">
+      <Form
+        wrapperCol={{ span: 20 }}
+        layout="vertical"
+        onFinish={handleLogin}
+      >
+        <Title level={3}>Login</Title>
+        <Form.Item
+          label="Username"
+          name="username"
+          rules={[{ required: true, message: "Please input your username!" }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Password"
+          name="password"
+          rules={[{ required: true, message: "Please input your password!" }]}
+        >
+          <Input.Password />
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            Log In
+          </Button>
+        </Form.Item>
+        Or <a href="/Register">register now!</a>
+      </Form>
+      <OAuth />
     </div>
-  </div>
-);
+  );
+};
+
+const Login = ({ isLoginMode = true }: any) => {
+  return (
+    <div className="background">
+      <div className="baseLogin">
+        <div className="text">
+          <h1>Welcome the AREA Web APP</h1>
+          <h2>Please log in to continue</h2>
+        </div>
+        {isLoginMode ? <LoginForm /> : <RegisterForm />}
+      </div>
+    </div>
+  );
+};
 
 export default Login;

@@ -63,10 +63,11 @@ const App = () => {
 
   const getWorkflows = async () => {
     try {
-      const response = await fetch("http://localhost:8080/workflows", {
+      const response = await fetch("http://localhost:8080/workflows/user/" + document.cookie.split("=")[1] , {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "Autorization": "Bearer " + document.cookie.split("=")[1]
         },
       });
       const data = await response.json();

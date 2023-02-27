@@ -28,9 +28,7 @@ passport.use(
             user.services = [{ name: 'spotify', accessToken, refreshToken }];
             user.save();
             return done(null, {
-                accessToken,
-                refreshToken,
-                profile
+                id: user._id
             });
         }
     )
