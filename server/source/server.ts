@@ -48,7 +48,7 @@ app.use((req, res, next) => {
 
     res.on('finish', () => {
         /** Log the res */
-        logging.info(NAMESPACE, `METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`);
+        logging.info(NAMESPACE, `--> METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`);
     });
 
     next();
@@ -61,10 +61,6 @@ app.use(bodyParser.json());
 /** Rules of our API */
 app.use(cors());
 app.options('*', cors());
-// app.use((req, res, next) => {
-//     res.setHeader('Access-Control-Allow-Headers', 'X-My-Custom-Header');
-//     next();
-//   });
 
 // Initialize Passport!  Also use passport.session() middleware, to support
 // persistent login sessions (recommended).
