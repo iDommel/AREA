@@ -3,24 +3,30 @@ import controller from '../controllers/spotify';
 import passport from 'passport';
 import passportSpotify from 'passport-spotify';
 import User from '../models/user';
+import config from '../config/config';
+
 const router = express.Router();
 const SpotifyStrategy = passportSpotify.Strategy;
 
 passport.use(
     new SpotifyStrategy(
         {
-            clientID: 'd21affede3984ecea64c0ebaceff41e3',
-            clientSecret: '734ebfb934c84261963f5794e5783c9f',
-            callbackURL: 'http://localhost:8080/spotify/callback'
+            clientID: config.spotify.client_id,
+            clientSecret: config.spotify.client_secret,
+            callbackURL: 'http://localhost:8080/spotify/callback',
+            passReqToCallback: true
         },
-        async (accessToken, refreshToken, expires_in, profile, done) => {
+        async (req: any, accessToken: string, refreshToken: string, expires_in: number, profile: passportSpotify.Profile, done: passportSpotify.VerifyCallback) => {
             console.log('accessToken', accessToken);
             console.log('refreshToken', refreshToken);
             console.log('expires_in', expires_in);
             console.log('profile', profile);
+            console.log('cookies', req.cookies);
 
-            const user = await User.findById('63e1714e0670f95f5af133f7');
-
+            const user = await User.findById(profile.id);
+            if (!user) {
+                return done(Error('User not found'));
+            }
             user.services = [{ name: 'spotify', accessToken, refreshToken }];
             user.save();
             return done(null, {

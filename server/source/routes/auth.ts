@@ -11,28 +11,28 @@ router.post('/login', (req: Request, res: Response, next: NextFunction) => {
             failureFlash: false
         },
         function (err: any, user: any, info: any, status: any) {
+            console.log('err', err);
+            console.log('user', user);
+            console.log('info', info);
+            console.log('status', status);
             if (err) {
                 return next(err);
             }
             if (!user) {
                 return res.status(400).json({
-                    message: 'Could not log in user'
+                    message: info.message || 'Login failed'
                 });
             }
-            const id = JWT.sign({}, "secret", {
+            const id = JWT.sign({}, 'secret', {
                 algorithm: 'HS256',
                 expiresIn: 1200,
                 subject: user._id.toString()
             });
-            console.log("header", id);
-            // res.setHeader('Authorization', "Bearer " + id);
+            console.log('header', id);
             res.status(200).json({
                 token: id,
                 redirect: 'http://localhost:3000/Home/'
-            })
-            // res.set('X-My-Custom-Header', "Bearer " + id).status(200).send();
-            // res.set({"Authorization": "Bearer " + id});
-            // res.send("marche");
+            });
         }
     )(req, res, next);
 });
