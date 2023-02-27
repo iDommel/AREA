@@ -71,6 +71,8 @@ const WorkflowPage = () => {
       description,
       actions: [action[1]],
       reactions: [reaction[1]],
+      serviceAction: services.find((service) => service._id === action[0])?.name.toLowerCase(),
+      serviceReaction: services.find((service) => service._id === reaction[0])?.name.toLowerCase()
     };
 
     const response = await fetch("http://localhost:8080/workflows", {

@@ -20,9 +20,9 @@ type WorkflowType = {
   _id: string;
   name: string;
   isActivated: string;
-  service1: string;
-  service2: string;
   preview: string;
+  serviceAction: string;
+  serviceReaction: string;
 };
 
 const App = () => {
@@ -74,6 +74,8 @@ const App = () => {
         message.error(data.message);
       } else {
         setWorkflows(data.workflows);
+        console.log(data.workflows);
+        // workflows.map((workflow) => getRelatedServices(workflow._id));
       }
     } catch (error) {
       console.error(error);
@@ -81,6 +83,7 @@ const App = () => {
   };
   
   const renderWorkflows = (toRender: WorkflowType[] | never[]) => {
+    console.log(toRender);
     return toRender.map((workflow) => (
       <Workflow
         id={workflow._id}
@@ -88,35 +91,39 @@ const App = () => {
         name={workflow.name}
         isActivated={workflow.isActivated}
         preview={workflow.preview}
-        service1="time"
-        service2="spotify"
+        service1={workflow.serviceAction}
+        service2={workflow.serviceReaction}
       />
     ));
   };
 
-  const getRelatedServices = async (workflowId: string) => {
-    try {
-      const response = await fetch("http://localhost:8080/workflows/services/" + workflowId, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      if (response.status !== 200 || !data.services) {
-        message.error(data.message);
-      } else {
-        console.log(data.services);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const getRelatedServices = async (workflowId: string) => {
+  //   try {
+  //     const response = await fetch("http://localhost:8080/workflows/services/" + workflowId, {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+  //     const data = await response.json();
+  //     if (response.status !== 200 || !data.services) {
+  //       message.error(data.message);
+  //     } else {
+  //       workflows.map((workflow) => {
+  //         if (workflow._id === workflowId) {
+  //           workflow.workflowServices.serviceAction = data.services[0];
+  //           workflow.workflowServices.serviceReaction = data.reaction[0];
+  //         }
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   useEffect(() => {
     getServices();
     getWorkflows();
-    // workflows.map((workflow) => getRelatedServices(workflow._id));
   }, []);
 
   return (

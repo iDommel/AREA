@@ -53,7 +53,6 @@ const MenuPage: React.FC = () => {
         const workflows = data.workflows;
         const workflowItems: MenuItem[] = [];
         workflows.map((workflow: any) => {
-          console.log(workflow._id, workflow.name);
           workflowItems.push(getItem(workflow.name, workflow._id));
         });
         items[1] = getItem(
@@ -83,7 +82,6 @@ const MenuPage: React.FC = () => {
         const services = data.services;
         const serviceItems: MenuItem[] = [];
         services.map((service: any) => {
-          console.log(service._id, service.name);
           serviceItems.push(getItem(service.name, service._id));
         });
         setItems([
