@@ -6,14 +6,15 @@ import spotifyController from '../controllers/spotify';
 
 const checkActions = async () => {
     try {
-        const workflows = await Workflow.find({}).sort({ createdAt: -1 }).limit(1).populate('actions');
+        const workflows = await Workflow.find({}).sort({ createdAt: -1 }).limit(10).populate('actions');
         //TODO: talk to Lucas about these any types
         workflows.forEach((workflow: any) => {
             workflow.actions.forEach(async (action: any) => {
                 if (action.name === 'isMinuteEven') {
                     const isEven = await timerController.isMinuteEven('Europe/Amsterdam');
-                    if (isEven) {
+                    if (isEven && workflow.relativeUser && workflow.relativeUser !== '') {
                         console.log('Is minute even?', isEven);
+                        console.log('workflow?', workflow);
                         await spotifyController.spotifyReaction(workflow.relativeUser, workflow.description);
                     }
                 }
