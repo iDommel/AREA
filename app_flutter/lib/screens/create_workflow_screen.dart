@@ -94,7 +94,7 @@ class CreateWorkflowScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(10)),
                             color: Color.fromARGB(255, 217, 217, 217),
                             child: TextField(
-                              obscureText: true,
+                              obscureText: false,
                               decoration: InputDecoration(
                                 hintStyle: TextStyle(color: Colors.black),
                                 hintText: 'Que fait le bail',
