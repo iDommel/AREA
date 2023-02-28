@@ -91,7 +91,7 @@ const checkReactionServiceEnabled = async (reaction: any) => {
 
 const IsEvenReaction = async (workflow: any) => {
     const isEven = await controller.isMinuteEven('Europe/Amsterdam');
-    // if (isEven) {
+    if (isEven) {
         console.log('Is minute even?', isEven);
         const serviceEnabled = await checkReactionServiceEnabled(workflow.reactions[0]);
         if (serviceEnabled === false) {
@@ -109,7 +109,7 @@ const IsEvenReaction = async (workflow: any) => {
             default:
                 break;
         }
-    // }
+    }
 }
 
 const checkActions = async () => {
@@ -119,7 +119,6 @@ const checkActions = async () => {
         workflowsAction.forEach((workflow: any) => {
             workflow.actions.forEach(async (action: any) => {
                 const serviceEnabled = await checkActionServiceEnabled(action);
-                console.log('service enabled', serviceEnabled);
                 if (serviceEnabled === false) {
                     return;
                 }
@@ -134,10 +133,9 @@ const checkActions = async () => {
 };
 
 const initScheduledJobs = () => {
-    // const scheduledJobFunction = CronJob.schedule('* * * * *', checkActions);
+    const scheduledJobFunction = CronJob.schedule('* * * * *', checkActions);
 
-    // scheduledJobFunction.start();
-    checkActions();
+    scheduledJobFunction.start();
 };
 
 export { initScheduledJobs };
