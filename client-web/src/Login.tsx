@@ -123,6 +123,7 @@ const LoginForm = ({ setIsLogin }: any) => {
       } else {
         message.success("Logged in successfully");
         document.cookie = `token=${data.token}`;
+        console.log(document.cookie)
         window.location.href = data.redirect;
       }
     } catch (error: any) {

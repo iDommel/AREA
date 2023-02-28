@@ -3,6 +3,7 @@ import controller from '../controllers/time';
 import Workflow from '../models/workflow';
 import User from '../models/user';
 import SpotifyWebApi from 'spotify-web-api-node';
+import Service from '../models/service';
 
 type ActionType = {
     _id: string;
@@ -57,10 +58,45 @@ const githubReaction = async (newName: string) => {
     }
 };
 
+const checkActionServiceEnabled = async (action: any) => {
+    try {
+        const services = await Service.findOne({ actions: action._id });
+        // console.log(services)
+        if (services.globallyEnabled) {
+            console.log('Service ' +  services.name + ' is globally enabled');
+            return true;
+        } else {
+            console.log('Service ' +  services.name + ' is not globally enabled');
+            return false;
+        }
+    } catch (error: any) {
+        console.log(error);
+    }
+};
+
+const checkReactionServiceEnabled = async (reaction: any) => {
+    try {
+        const services = await Service.findOne({ reactions: reaction._id });
+        if (services.globallyEnabled) {
+            console.log('Service ' +  services.name + ' is globally enabled');
+            return true;
+        } else {
+            console.log('Service ' +  services.name + ' is not globally enabled');
+            return false;
+        }
+    } catch (error: any) {
+        console.log(error);
+    }
+};
+
 const IsEvenReaction = async (workflow: any) => {
     const isEven = await controller.isMinuteEven('Europe/Amsterdam');
-    if (isEven) {
+    // if (isEven) {
         console.log('Is minute even?', isEven);
+        const serviceEnabled = await checkReactionServiceEnabled(workflow.reactions[0]);
+        if (serviceEnabled === false) {
+            return;
+        }
         switch (workflow.serviceReaction) {
             case 'spotify':
                 console.log('spotify bug fetch user');
@@ -68,12 +104,12 @@ const IsEvenReaction = async (workflow: any) => {
                 break;
             case 'github':
                 console.log('github bug 401 bad credentials');
-                githubReaction(workflow.description);
+                // githubReaction(workflow.description);
                 break;
             default:
                 break;
         }
-    }
+    // }
 }
 
 const checkActions = async () => {
@@ -82,6 +118,11 @@ const checkActions = async () => {
         //TODO: talk to Lucas about these any types
         workflowsAction.forEach((workflow: any) => {
             workflow.actions.forEach(async (action: any) => {
+                const serviceEnabled = await checkActionServiceEnabled(action);
+                console.log('service enabled', serviceEnabled);
+                if (serviceEnabled === false) {
+                    return;
+                }
                 if (action.name === 'isMinuteEven') {
                     IsEvenReaction(workflow);
                 }
@@ -93,9 +134,10 @@ const checkActions = async () => {
 };
 
 const initScheduledJobs = () => {
-    const scheduledJobFunction = CronJob.schedule('* * * * *', checkActions);
+    // const scheduledJobFunction = CronJob.schedule('* * * * *', checkActions);
 
-    scheduledJobFunction.start();
+    // scheduledJobFunction.start();
+    checkActions();
 };
 
 export { initScheduledJobs };
