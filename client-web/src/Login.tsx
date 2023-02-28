@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./login.css";
+import { message } from "antd";
 
 const OAuth = () => {
   const navigate = useNavigate();
@@ -44,38 +45,35 @@ const Form = () => {
 
   const handleSubmit = (event: any) => {
     if (user === "" || password === "") {
-      alert("Please fill all the fields");
+      message.error("Please fill all the fields");
       event.preventDefault();
       return;
     }
-    alert("User loged in: " + user + " with password: " + password);
+    message.success("Logged in successfully");
     event.preventDefault();
     navigate("/Home");
   };
 
   return (
     <div className="login">
-      <h1>Login</h1>
       <form onSubmit={(e) => handleSubmit(e)}>
-        <div className="login-form">
-          <label>
-            <input
-              className="input"
-              value={user}
-              type="text"
-              placeholder="Identifiant"
-              onChange={(e) => setUser(e.target.value)}
-            />
-            <input
-              className="input"
-              value={password}
-              type="password"
-              placeholder="Password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <input className="sendLogin" type="submit" value="Log in" />
-          </label>
-        </div>
+        <h3>Username</h3>
+        <input
+          className="input"
+          value={user}
+          type="text"
+          onChange={(e) => setUser(e.target.value)}
+        />
+        <h3>Password</h3>
+        <input
+          className="input"
+          value={password}
+          type="password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <input className="sendLogin" type="submit" value="Log in" />
+        <p onClick={() => message.error("Not implemented yet!")}> Forgot password?</p>
+        <p onClick={() => message.error("Not implemented yet!")}> Don't have an account? Sign up</p>
       </form>
       <OAuth />
     </div>
@@ -85,6 +83,10 @@ const Form = () => {
 const Login = () => (
   <div className="background">
     <div className="baseLogin">
+      <div className="text">
+        <h1>Welcome the AREA Web APP</h1>
+        <h2>Please log in to continue</h2>
+      </div>
       <Form />
     </div>
   </div>

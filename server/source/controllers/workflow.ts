@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Workflow from '../models/workflow';
+import Service from '../models/service';
 import aqp from 'api-query-params';
 
 const createWorkflow = async (req: Request, res: Response, next: NextFunction) => {
@@ -89,10 +90,26 @@ const deleteWorkflow = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
+const getRelatedServices = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const workflow = await Workflow.findById(req.params.id);
+        const services = await Service.find({ _id: { $in: workflow?.actions } })
+        return res.status(200).json({
+            services: services
+        });
+    } catch (error: any) {
+        return res.status(500).json({
+            message: error.message,
+            error
+        });
+    }
+};
+
 export default {
     createWorkflow,
     getAllWorkflow,
     getWorkflow,
     updateWorkflow,
-    deleteWorkflow
+    deleteWorkflow,
+    getRelatedServices
 };
