@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import 'dart:developer' as dev;
+import 'package:area_app/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -15,7 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
   late bool status_;
   late String message;
 
-  String serverUrl = "https://localhost:8080/services";
+  String serverUrl = "http://localhost:8080/services";
   @override
   void initState() {
     _valuePasswordController = TextEditingController();
@@ -28,32 +29,15 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> getService() async {
-    var response = await http.get(Uri.parse(serverUrl), headers: {
-      "Content-Type": "application/json",
-    });
-    print(response.body);
+    final response = await http.get(Uri.parse(serverUrl),
+        headers: {"Content-Type": "application/json"});
 
     if (response.statusCode == 200) {
       var data = json.decode(response.body);
-      var responseMessage = data["message"];
-      var responseError = data["error"];
-      if (responseError) {
-        setState(() {
-          status_ = false;
-          message = responseMessage;
-        });
-      } else {
-        _valueEmailController.clear();
-        _valuePasswordController.clear();
-        setState(() {
-          status_ = true;
-          message = responseMessage;
-        });
-      }
-    } else {
       setState(() {
-        message = "Error : Server error";
         status_ = false;
+        message = "good";
+        dev.log(data.toString());
       });
     }
   }
@@ -62,6 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+            automaticallyImplyLeading: false,
             centerTitle: true,
             backgroundColor: Color.fromARGB(255, 73, 71, 131),
             toolbarHeight: 88,
@@ -150,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: TextButton(
                             onPressed: () {
                               setState(() {});
-                              getService();
+                              Navigator.pushNamed(context, '/homePage');
                             },
                             child: Text('Connect',
                                 style: TextStyle(color: Colors.white)),
