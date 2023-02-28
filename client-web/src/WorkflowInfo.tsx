@@ -4,12 +4,13 @@ import Menu from "./Component/Menu";
 import "./App.css";
 import { useState, useEffect } from "react";
 import { Typography, message } from "antd";
-import { useNavigate, useParams } from "react-router-dom";
-
+import { useParams } from "react-router-dom";
+import { useAuthContext } from "./Context/AuthContext";
 const { Title } = Typography;
 
 const WorkflowInfo = () => {
   const { id } = useParams();
+  const { user, fetchAPI } = useAuthContext();
 
   const [workflow, setWorkflow] = useState({
     _id: "",
@@ -34,13 +35,8 @@ const WorkflowInfo = () => {
 
   const getReaction = async (id: string) => {
     try {
-      const response = await fetch("http://localhost:8080/reactions/" + id, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
+      const response = await fetchAPI(`/reaction/${id}`, "GET");
+      const data = response.data;
       if (response.status !== 200) {
         message.error(data.message);
       } else {
@@ -54,13 +50,8 @@ const WorkflowInfo = () => {
   const getAction = async (id: string) => {
     try {
       console.log(id);
-      const response = await fetch("http://localhost:8080/actions/" + id, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
+      const response = await fetchAPI(`/action/${id}`, "GET");
+      const data = response.data;
       if (response.status !== 200) {
         message.error(data.message);
       } else {
@@ -73,13 +64,8 @@ const WorkflowInfo = () => {
 
   const getWorkflow = async (id: string | undefined) => {
     try {
-      const response = await fetch("http://localhost:8080/workflows/" + id, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
+      const response = await fetchAPI(`/workflows/${id}`, "GET");
+      const data = response.data;
       if (response.status !== 200) {
         message.error(data.message);
       } else {
@@ -94,13 +80,8 @@ const WorkflowInfo = () => {
 
   const deleteWorkflow = async (id: string) => {
     try {
-      const response = await fetch("http://localhost:8080/workflows/" + id, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
+      const response = await fetchAPI(`/workflows/${id}`, "DELETE");
+      const data = response.data;
       if (response.status !== 200) {
         message.error(data.message);
       } else {
@@ -112,7 +93,6 @@ const WorkflowInfo = () => {
   };
 
   useEffect(() => {
-    console.log("reloaded");
     getWorkflow(id);
   }, [id]);
 
@@ -124,6 +104,7 @@ const WorkflowInfo = () => {
         <div className="Info">
           <img
             className="delete"
+            alt="delete"
             src="https://img.icons8.com/windows/64/delete-trash.png"
             onClick={() => deleteWorkflow(workflow._id)}
           />

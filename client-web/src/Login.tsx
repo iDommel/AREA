@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./login.css";
 import { message, Form, Typography, Input, Button } from "antd";
+import { useAuthContext } from "./Context/AuthContext";
 
 const { Title } = Typography;
 
@@ -103,40 +104,40 @@ const RegisterForm = () => {
 };
 
 const LoginForm = ({ setIsLogin }: any) => {
-  const navigate = useNavigate();
-  const handleLogin = async (values: any) => {
-    console.log("values", values);
-    try {
-      const response = await fetch("http://localhost:8080/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: values.username,
-          password: values.password,
-        }),
-      });
-      const data = await response.json();
-      if (response.status / 100 !== 2) {
-        message.error(data.message);
-      } else {
-        message.success("Logged in successfully");
-        document.cookie = `token=${data.token}`;
-        window.location.href = data.redirect;
-      }
-    } catch (error: any) {
-      message.error(error.message);
-    }
+  const { login } = useAuthContext();
+  // const handleLogin = async (values: any) => {
+  //   console.log("values", values);
+  //   try {
+  //     const response = await fetch("http://localhost:8080/auth/login", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         username: values.username,
+  //         password: values.password,
+  //       }),
+  //     });
+  //     const data = await response.json();
+  //     if (response.status / 100 !== 2) {
+  //       message.error(data.message);
+  //     } else {
+  //       message.success("Logged in successfully");
+  //       document.cookie = `token=${data.token}`;
+  //       window.location.href = data.redirect;
+  //     }
+  //   } catch (error: any) {
+  //     message.error(error.message);
+  //   }
+  // };
+
+  const handleLogin = (values: any) => {
+    login(values.username, values.password);
   };
 
   return (
     <div className="login">
-      <Form
-        wrapperCol={{ span: 20 }}
-        layout="vertical"
-        onFinish={handleLogin}
-      >
+      <Form wrapperCol={{ span: 20 }} layout="vertical" onFinish={handleLogin}>
         <Title level={3}>Login</Title>
         <Form.Item
           label="Username"

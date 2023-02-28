@@ -6,6 +6,8 @@ import { Button, Cascader, Form, Input, Typography, message } from "antd";
 import type { FormInstance } from "antd/es/form";
 import { useNavigate } from "react-router-dom";
 
+import { useAuthContext } from "./Context/AuthContext";
+
 type SizeType = Parameters<typeof Form>[0]["size"];
 const { TextArea } = Input;
 const { Title } = Typography;
@@ -33,21 +35,16 @@ type ServiceType = {
 
 const WorkflowPage = () => {
   const [services, setServices] = useState<ServiceType[] | never[]>([]);
-
+  const { user, fetchAPI } = useAuthContext();
   const formRef = useRef<FormInstance>(null);
   const navigate = useNavigate();
   const getServices = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:8080/services?populate=actions,reactions",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+      const response = await fetchAPI(
+        "/services?populate=actions,reactions",
+        "GET"
       );
-      const data = await response.json();
+      const data = response.data;
       if (response.status !== 200) {
         message.error(data.message);
       } else {
@@ -70,18 +67,15 @@ const WorkflowPage = () => {
       description,
       actions: [action[1]],
       reactions: [reaction[1]],
-      relativeUser: document.cookie,
+      relativeUser: user,
     };
 
-    const response = await fetch("http://localhost:8080/workflows", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${document.cookie}`,
-      },
-      body: JSON.stringify(workflow),
-    });
-    const data = await response.json();
+    const response = await fetchAPI(
+      "http://localhost:8080/workflows",
+      "POST",
+      workflow
+    );
+    const data = response.data;
     if (response.status !== 201) {
       message.error(data.message);
     } else {

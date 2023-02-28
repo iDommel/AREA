@@ -2,8 +2,8 @@ import "./App.css";
 import React from "react";
 import { LogoutOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { Button, Dropdown, Space, message } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Button, Dropdown, Space } from "antd";
+import { useAuthContext } from "./Context/AuthContext";
 
 const items: MenuProps["items"] = [
   {
@@ -14,24 +14,9 @@ const items: MenuProps["items"] = [
 ];
 
 const User: React.FC = () => {
-  const navigate = useNavigate();
-
+  const { logout } = useAuthContext();
   const handleLogout = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/auth/logout", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.status / 100 !== 2) {
-        message.error("Error while logging out");
-      } else {
-        navigate("/Login");
-      }
-    } catch (error) {
-      console.error(error);
-    }
+    logout();
   };
 
   const handleMenuClick: MenuProps["onClick"] = (e) => {
