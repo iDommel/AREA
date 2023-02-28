@@ -6,6 +6,7 @@ import Workflow from "./Component/Workflow";
 import User from "./User";
 import Menu from "./Component/Menu";
 
+import { useAuthContext } from "./Context/AuthContext";
 import { message } from "antd";
 
 type ServiceType = {
@@ -34,24 +35,22 @@ type WorkflowType = {
 };
 
 const Home = () => {
+  const { user } = useAuthContext();
   const [services, setServices] = useState<ServiceType[] | never[]>([]);
   const [workflows, setWorkflows] = useState<WorkflowType[] | never[]>([]);
   const [serviceStatuses, setServiceStatuses] = useState<
     ServiceStatusType[] | never[]
   >([]);
+
+  const { fetchAPI } = useAuthContext();
   const getServices = async () => {
     try {
-      const response = await fetch("http://localhost:8080/services", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
+      const response = await fetchAPI(`/services`, "GET");
+      const data = response.data;
       if (response.status !== 200 || !data.services) {
         message.error(data.message);
       } else {
-        setServiceStatuses(data.serviceStatuses);
+        setServices(data.services);
       }
     } catch (error) {
       console.error(error);
@@ -60,18 +59,12 @@ const Home = () => {
 
   const getServiceStatuses = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:8080/service-statuses?user=${
-          document.cookie.split("=")[1]
-        }`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+      const response = await fetchAPI(
+        `/service-statuses?user=${user}&populate=service`,
+        "GET"
       );
-      const data = await response.json();
+      console.log("response", response);
+      const data = response.data;
       if (response.status !== 200 || !data.services) {
         message.error(data.message);
       } else {
@@ -98,7 +91,7 @@ const Home = () => {
   const getWorkflows = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8080/workflows/user/" + document.cookie.split("=")[1],
+        `http://localhost:8080/workflows?relativeUser=${user}`,
         {
           method: "GET",
           headers: {
@@ -133,7 +126,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    // getServices();
+    getServices();
     // getWorkflows();
     getServiceStatuses();
   }, []);
