@@ -1,0 +1,314 @@
+body {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.background {
+  background-color: #3b2982;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.base {
+  display: flex;
+  flex-direction: row;
+  /* align-items: flex-start; */
+  /* justify-content: space-between; */
+  width: 100%;
+  height: 90%;
+  display: flex;
+  background-color: rgba(217, 217, 217, 0.89);
+}
+
+.user {
+  margin-left: 95%;
+  width: 5%;
+  height: 10%;
+  background-color: #ffffff00;
+  display: flex;
+  align-items: center;
+}
+
+.buttonUser {
+  margin-left: 15%;
+  width: 80%;
+  height: 70%;
+  background-color: #d9d9d9;
+  border-radius: 50%;
+}
+
+/* Home.jsx */
+
+.content {
+  width: 90%;
+  height: 95%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.squareWorkflow {
+  margin-left: 5%;
+  width: 90%;
+  height: 30%;
+  background-color: #D9D9D9;
+  border-radius: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  overflow: auto;
+  flex-shrink: 0;
+}
+
+.title {
+  margin-left: 3%;
+  color: black;
+}
+
+.workflow {
+  margin-top: 2%;
+  margin-left: 5%;
+  width: 12%;
+  height: 70%;
+}
+
+.button {
+  width: 100%;
+  height: 100%;
+  background-color: #D9D9D9;
+  border-color: black;
+  border-radius: 5px;
+}
+
+.squareService {
+  margin-left: 5%;
+  margin-bottom: 5%;
+  width: 90%;
+  height: 30%;
+  background-color: #D9D9D9;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.service {
+  margin-left: 5%;
+  width: 12%;
+  height: 70%;
+}
+
+.buttonservice {
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  border-width: 10px;
+}
+
+.status {
+  color: black;
+  margin-left: 25%;
+  margin-top: 5%;
+}
+
+.SubmitButton {
+  margin-left: 55%;
+  width: 10%;
+  background-color: #ffffff;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+/* workflow.jsx */
+
+.subTitle {
+  margin-left: 5%;
+  color: white;
+}
+
+.action {
+  margin-left: 5%;
+  margin-bottom: 5%;
+  width: 60%;
+  height: 30%;
+  background-color: #3d3d3d;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.select {
+  margin-left: 10%;
+  margin-top: 8%;
+  width: 100%;
+  height: 100%;
+}
+
+.ActionSelect {
+  margin-left: 15%;
+  width: 1000%;
+  height: 100%;
+  border-radius: 20px;
+  font-size: 15px;
+  background-color: #d9d9d9;
+}
+
+.select {
+  margin-left: 10%;
+  width: 10%;
+  height: 60%;
+}
+
+.SelectOption {
+  margin-left: 5%;
+  margin-bottom: 1%;
+  margin-top: 1%;
+  width: 20%;
+  height: 20%;
+  border-radius: 20px;
+  font-size: 15px;
+  background-color: #d9d9d9;
+}
+
+.ActionInput {
+  margin-left: 10%;
+  margin-bottom: 1%;
+  width: 80%;
+  height: 50%;
+  border-radius: 20px;
+  background-color: #d9d9d9;
+}
+
+
+/* WorkflowInfo.jsx */
+
+.Info {
+  margin-left: 5%;
+  margin-top: 5%;
+  width: 50%;
+  height: 80%;
+  background-color: #d9d9d9;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.delete {
+  margin-left: 93%;
+}
+
+.WorkflowInfo {
+  margin-left: 5%;
+  width: 90%;
+  height: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.ActionInfo {
+  margin-left: 10%;
+  width: 90%;
+  height: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.ReactionInfo {
+  margin-left: 10%;
+  margin-bottom: 10%;
+  width: 90%;
+  height: 30%;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+/* Menu.jsx */
+
+.Menu {
+  width: 15%;
+  height: 100%;
+  background-color: #808080;
+  color: white;
+  font-size: 20px;
+}
+
+
+@media only screen and (max-width: 750px) {
+
+  .user {
+    width: 20%;
+    margin-left: 80%;
+  }
+
+  .Menu {
+    display: none;
+  }
+
+  .base {
+    flex-direction: column;
+  }
+  .content {
+    flex-direction: column;
+  }
+  .squareWorkflow {
+    width: 100%;
+    height: 30%;
+  }
+  .squareService {
+    width: 100%;
+    height: 30%;
+  }
+  .service {
+    margin-left: 3%;
+    width: 45%;
+  }
+  .workflow {
+    margin-left: 3%;
+    width: 45%;
+  }
+  .action {
+    width: 100%;
+  }
+  .Info {
+    width: 90%;
+  }
+
+  .delete {
+    margin-left: 83%;
+  }
+
+  .WorkflowInfo {
+    width: 100%;
+  }
+  .ActionInfo {
+    margin-left: 3%;
+    width: 100%;
+  }
+  .ReactionInfo {
+    margin-left: 3%;
+    width: 100%;
+  }
+  .Menu {
+    width: 100%;
+  }
+}

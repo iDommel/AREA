@@ -1,19 +1,49 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, request, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Workflow from '../models/workflow';
 import Service from '../models/service';
 import aqp from 'api-query-params';
+import JWT, { decode } from 'jsonwebtoken';
 
 const createWorkflow = async (req: Request, res: Response, next: NextFunction) => {
-    let { name, description, actions, reactions } = req.body;
+    let { name, description, actions, reactions, serviceAction, serviceReaction } = req.body;
 
     try {
+        // retrieve the token that matcher the "Bearer token" regex
+        const authHeader = req.headers.authorization;
+
+        if (!authHeader) {
+            return res.status(401).send('Authorization header missing');
+        }
+
+        const tokenRegex = /^Bearer\s+([^\s]+)$/;
+
+        const match = authHeader.match(tokenRegex);
+
+        if (!match) {
+            return res.status(401).send('Invalid Authorization header format');
+        }
+
+        const token = match[1];
+
+        console.log('token', token);
+        const decoded = JWT.decode(token);
+        console.log('decoded', decoded);
+        if (!decoded || !decoded.sub || typeof decoded.sub !== 'string') {
+            return res.status(401).json({
+                message: 'Invalid token'
+            });
+        }
+        const relativeUser = decoded.sub;
         const workflow = new Workflow({
             _id: new mongoose.Types.ObjectId(),
             name,
             description,
             actions,
-            reactions
+            reactions,
+            relativeUser,
+            serviceAction,
+            serviceReaction
         });
 
         const result = await workflow.save();
@@ -93,9 +123,49 @@ const deleteWorkflow = async (req: Request, res: Response, next: NextFunction) =
 const getRelatedServices = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const workflow = await Workflow.findById(req.params.id);
-        const services = await Service.find({ _id: { $in: workflow?.actions } })
+        const services = await Service.find({ actions: { $in: workflow?.actions } });
+        const reactions = await Service.find({ reactions: { $in: workflow?.reactions } });
         return res.status(200).json({
-            services: services
+            services: services,
+            reactions: reactions
+        });
+    } catch (error: any) {
+        return res.status(500).json({
+            message: error.message,
+            error
+        });
+    }
+};
+
+const getWorkflowbyUser = async (req: Request, res: Response, next: NextFunction) => {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+        return res.status(401).send('Authorization header missing');
+    }
+
+    const tokenRegex = /^Bearer\s+([^\s]+)$/;
+
+    const match = authHeader.match(tokenRegex);
+
+    if (!match) {
+        return res.status(401).send('Invalid Authorization header format');
+    }
+
+    const token = match[1];
+    const decodedToken = JWT.decode(token);
+    const id = decodedToken?.sub;
+    if (!id || typeof id !== 'string')
+        return res.status(500).json({
+            message: 'Invalid token',
+            error: 'Invalid token'
+        });
+    try {
+        const workflows = await Workflow.find({ relativeUser: id });
+
+        return res.status(200).json({
+            workflows,
+            count: workflows.length
         });
     } catch (error: any) {
         return res.status(500).json({
@@ -111,5 +181,6 @@ export default {
     getWorkflow,
     updateWorkflow,
     deleteWorkflow,
-    getRelatedServices
+    getRelatedServices,
+    getWorkflowbyUser
 };
