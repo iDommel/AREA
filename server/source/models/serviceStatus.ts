@@ -6,7 +6,9 @@ const ServiceStatusSchema: Schema = new Schema(
         service: { type: Schema.Types.ObjectId, ref: 'Service', required: true },
         user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
         isConnected: { type: Boolean, default: false },
-        token: { type: String, default: '' },
+        auth: {
+            type: Object
+        },
         isEnabled: { type: Boolean, default: false }
     },
     {
