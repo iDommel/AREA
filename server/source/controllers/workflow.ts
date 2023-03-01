@@ -9,20 +9,39 @@ const createWorkflow = async (req: Request, res: Response, next: NextFunction) =
     let { name, description, actions, reactions } = req.body;
 
     try {
-        const token = req.headers.authorization?.split(';')[0] as string;
-        let id = '';
-        JWT.verify(token, 'secret', function (err: any, decoded: any) {
-            if (err) {
-                console.log(err);
-            }
-            id = decoded.sub;
-        });
+        // retrieve the token that matcher the "Bearer token" regex
+        const authHeader = req.headers.authorization;
+
+        if (!authHeader) {
+            return res.status(401).send('Authorization header missing');
+        }
+
+        const tokenRegex = /^Bearer\s+([^\s]+)$/;
+
+        const match = authHeader.match(tokenRegex);
+
+        if (!match) {
+            return res.status(401).send('Invalid Authorization header format');
+        }
+
+        const token = match[1];
+
+        console.log('token', token);
+        const decoded = JWT.decode(token);
+        console.log('decoded', decoded);
+        if (!decoded || !decoded.sub || typeof decoded.sub !== 'string') {
+            return res.status(401).json({
+                message: 'Invalid token'
+            });
+        }
+        const relativeUser = decoded.sub;
         const workflow = new Workflow({
             _id: new mongoose.Types.ObjectId(),
             name,
             description,
             actions,
-            reactions
+            reactions,
+            relativeUser
         });
 
         const result = await workflow.save();
@@ -115,17 +134,30 @@ const getRelatedServices = async (req: Request, res: Response, next: NextFunctio
 };
 
 const getWorkflowbyUser = async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.params.id.split(';')[0];
-    let id = '';
-    JWT.verify(token, 'secret', function (err: any, decoded: any) {
-        if (err) {
-            console.log(err);
-        }
-        id = decoded.sub;
-    });
+    const authHeader = req.headers.authorization;
 
+    if (!authHeader) {
+        return res.status(401).send('Authorization header missing');
+    }
+
+    const tokenRegex = /^Bearer\s+([^\s]+)$/;
+
+    const match = authHeader.match(tokenRegex);
+
+    if (!match) {
+        return res.status(401).send('Invalid Authorization header format');
+    }
+
+    const token = match[1];
+    const decodedToken = JWT.decode(token);
+    const id = decodedToken?.sub;
+    if (!id || typeof id !== 'string')
+        return res.status(500).json({
+            message: 'Invalid token',
+            error: 'Invalid token'
+        });
     try {
-        const workflows = await Workflow.where('relativeUser', id);
+        const workflows = await Workflow.find({ relativeUser: id });
 
         return res.status(200).json({
             workflows,
