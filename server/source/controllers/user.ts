@@ -38,6 +38,7 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
         services.forEach(async (service: Service) => {
             const serviceStatus = new ServiceStatus({
                 service: service._id,
+                serviceName: service.name,
                 user: result._id,
                 isConnected: false,
                 token: {},
