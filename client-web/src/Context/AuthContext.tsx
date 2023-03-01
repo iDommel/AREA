@@ -3,6 +3,7 @@ import axios, { ResponseType, CancelToken } from "axios";
 import { message } from "antd";
 import { useNavigate, useLocation } from "react-router-dom";
 import jwt_decode, { JwtPayload } from "jwt-decode";
+import { useCookies } from "react-cookie";
 
 type InvalidAuthContextType = {
   isAuthenticated: boolean;
@@ -55,6 +56,7 @@ const reducer = (state: any, action: any) => {
         ...state,
         isAuthenticated: false,
         user: null,
+        token: null,
       };
     default:
       return state;
@@ -67,20 +69,25 @@ export const AuthContextProvider = ({ children }: any) => {
     user: null,
     token: null,
   });
+  const [cookies, setCookie, removeCookie] = useCookies(["token"]);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    console.log("user", localStorage.getItem("user"));
-    console.log("token", localStorage.getItem("token"));
     const localUser = localStorage.getItem("user");
     const localToken = localStorage.getItem("token");
     const user = JSON.parse((localUser !== "undefined" && localUser) || "{}");
-    const token = JSON.parse(
-      (localToken !== "undefined" && localToken) || "{}"
-    );
+    const token =
+      localToken !== "undefined" &&
+      localToken &&
+      JSON.parse(localToken || "{}" || (cookies && cookies.token));
 
-    if (user && token) {
+    if (
+      user &&
+      JSON.stringify(user) !== "{}" &&
+      token &&
+      JSON.stringify(token) !== "{}"
+    ) {
       dispatch({
         type: "LOGIN",
         payload: {
@@ -98,6 +105,7 @@ export const AuthContextProvider = ({ children }: any) => {
         password,
       });
       const { user, token } = response.data;
+      setCookie("token", token);
       dispatch({
         type: "LOGIN",
         payload: {
@@ -113,6 +121,7 @@ export const AuthContextProvider = ({ children }: any) => {
   };
 
   const logout = () => {
+    removeCookie("token");
     dispatch({
       type: "LOGOUT",
     });
