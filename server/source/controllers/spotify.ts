@@ -154,11 +154,18 @@ let spotifyApi = new SpotifyWebApi({
     redirectUri: 'http://localhost:3000/Home'
 });
 
+type ServiceType = {
+    name: string;
+    accessToken: string;
+    refreshToken: string;
+};
+
 const spotifyReaction = async (relativeUser: string, newName: string) => {
     try {
         const user = await User.findById(relativeUser);
 
-        spotifyApi.setAccessToken(user.services[0].accessToken);
+        const spotifyService = user.services.find((service: ServiceType) => service.name === 'spotify');
+        spotifyApi.setAccessToken(user.spotifyService.accessToken);
         const res = await spotifyApi.changePlaylistDetails('0y0zkkH8WQCCKSXbG39dOa', {
             name: newName,
             public: false

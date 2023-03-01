@@ -1,34 +1,39 @@
-import { Strategy as LocalStrategy } from 'passport-local';
+import { Strategy as LocalStrategy, IVerifyOptions } from 'passport-local';
 import userController from './controllers/user';
 import User from './models/user';
 import { compare } from 'bcrypt';
+import JWT from 'jsonwebtoken';
 
+type doneFunctionType = (error: any, user?: Express.User | false, options?: IVerifyOptions) => void;
 export const initializePassport = (passport: any) => {
-    const authenticateUser = async (username: string, password: string, done: any) => {
-        console.log('username', username);
+    const authenticateUser = async (username: string, password: string, done: doneFunctionType) => {
         try {
             const user = await User.findOne({ username: username });
-            console.log('user', user);
             if (!user) {
                 return done(null, false, { message: 'Could not find a user with that email.' });
             }
 
-            console.log('comparing passwords', password, user.password);
-
             const passwordMatch = await compare(password, user.password);
-            console.log('passwordMatch', passwordMatch);
             if (!passwordMatch) {
                 return done(null, false, { message: 'Incorrect password.' });
             }
-            return done(null, user);
+            const id = JWT.sign({}, 'secret', {
+                algorithm: 'HS256',
+                expiresIn: '2 days',
+                subject: user._id.toString()
+            });
+            const finalUser = {
+                user: user._id.toString(),
+                token: id
+            };
+            return done(null, finalUser, { message: 'Logged in successfully.' });
         } catch (error) {
-            return done(error);
+            return done(error, false, { message: 'Could not log in.' });
         }
     };
 
     passport.use(new LocalStrategy({ usernameField: 'username', passwordField: 'password' }, authenticateUser));
     passport.serializeUser((user: any, done: any) => {
-        console.log('serializeUser', user);
         return done(null, user);
     });
 
