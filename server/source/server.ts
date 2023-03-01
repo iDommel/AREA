@@ -22,6 +22,10 @@ import serviceStatusRoutes from './routes/serviceStatus';
 import actionRoutes from './routes/action';
 import reactionRoutes from './routes/reaction';
 import githubRoutes from './routes/github';
+import gitlabRoutes from './routes/gitlab';
+import weatherRoutes from './routes/weather';
+import timeRoutes from './routes/time';
+import microsoftRoutes from './routes/microsoft';
 
 const NAMESPACE = 'Server';
 const app = express();
@@ -89,6 +93,10 @@ app.use('/service-statuses', serviceStatusRoutes);
 app.use('/actions', actionRoutes);
 app.use('/reactions', reactionRoutes);
 app.use('/github', githubRoutes);
+app.use('/gitlab', gitlabRoutes);
+app.use('/weather', weatherRoutes);
+app.use('/time', timeRoutes);
+app.use('/microsoft', microsoftRoutes);
 
 /** Error handling */
 app.use((req, res, next) => {
