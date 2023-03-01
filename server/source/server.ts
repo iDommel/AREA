@@ -26,6 +26,10 @@ import reactionRoutes from './routes/reaction';
 import githubRoutes from './routes/github';
 import authRoutes from './routes/auth';
 import userController from './controllers/user';
+import gitlabRoutes from './routes/gitlab';
+import weatherRoutes from './routes/weather';
+import timeRoutes from './routes/time';
+import microsoftRoutes from './routes/microsoft';
 
 const NAMESPACE = 'Server';
 const app = express();
@@ -91,6 +95,10 @@ app.use('/actions', actionRoutes);
 app.use('/reactions', reactionRoutes);
 app.use('/github', githubRoutes);
 app.use('/auth', authRoutes);
+app.use('/gitlab', gitlabRoutes);
+app.use('/weather', weatherRoutes);
+app.use('/time', timeRoutes);
+app.use('/microsoft', microsoftRoutes);
 
 /** Error handling */
 app.use((req, res, next) => {
