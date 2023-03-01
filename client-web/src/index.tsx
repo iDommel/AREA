@@ -8,7 +8,7 @@ import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Login from "./Login";
 import Home from "./App";
 import WorkflowPage from "./WorkflowPage";
-
+import WorkflowInfo from './WorkflowInfo';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -21,6 +21,7 @@ root.render(
           <Route path="/" element={<Login />} />
           <Route path="/Home" element={<Home />} />
           <Route path="/Workflow" element={<WorkflowPage />} />
+          <Route path="/WorkflowInfo/:id" element={<WorkflowInfo />} />
         </Routes>
       </BrowserRouter>
     </React.StrictMode>
