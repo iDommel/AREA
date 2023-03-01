@@ -19,7 +19,7 @@ type ValidAuthContextType = {
   logout: () => void;
   fetchAPI: (
     url: string,
-    method: "GET" | "POST" | "PUT" | "DELETE",
+    method: "GET" | "POST" | "PATCH" | "DELETE",
     body?: object | undefined,
     responseType?: ResponseType | undefined,
     cancelToken?: CancelToken | undefined
