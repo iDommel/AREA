@@ -69,17 +69,18 @@ const WorkflowPage = () => {
       reactions: [reaction[1]],
       relativeUser: user,
     };
-
-    const response = await fetchAPI(
-      "http://localhost:8080/workflows",
-      "POST",
-      workflow
-    );
-    const data = response.data;
-    if (response.status !== 201) {
-      message.error(data.message);
-    } else {
+    try {
+      const response = await fetchAPI(
+        "http://localhost:8080/workflows",
+        "POST",
+        workflow
+      );
+      message.success("Workflow créé:" + response.data);
       navigate("/Home");
+    } catch (error: any) {
+      if (error.response) {
+        message.error(error.response.data.message);
+      }
     }
   };
 
