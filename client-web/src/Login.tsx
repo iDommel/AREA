@@ -105,31 +105,6 @@ const RegisterForm = () => {
 
 const LoginForm = ({ setIsLogin }: any) => {
   const { login } = useAuthContext();
-  // const handleLogin = async (values: any) => {
-  //   console.log("values", values);
-  //   try {
-  //     const response = await fetch("http://localhost:8080/auth/login", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         username: values.username,
-  //         password: values.password,
-  //       }),
-  //     });
-  //     const data = await response.json();
-  //     if (response.status / 100 !== 2) {
-  //       message.error(data.message);
-  //     } else {
-  //       message.success("Logged in successfully");
-  //       document.cookie = `token=${data.token}`;
-  //       window.location.href = data.redirect;
-  //     }
-  //   } catch (error: any) {
-  //     message.error(error.message);
-  //   }
-  // };
 
   const handleLogin = (values: any) => {
     login(values.username, values.password);
