@@ -10,8 +10,8 @@ const createWorkflow = async (req: Request, res: Response, next: NextFunction) =
 
     try {
         const token = req.headers.authorization?.split(';')[0] as string;
-        let id = "";
-        JWT.verify(token, 'secret', function(err : any, decoded : any) {
+        let id = '';
+        JWT.verify(token, 'secret', function (err: any, decoded: any) {
             if (err) {
                 console.log(err);
             }
@@ -22,8 +22,7 @@ const createWorkflow = async (req: Request, res: Response, next: NextFunction) =
             name,
             description,
             actions,
-            reactions,
-            relativeUser : "nothing"
+            reactions
         });
 
         const result = await workflow.save();
@@ -103,7 +102,7 @@ const deleteWorkflow = async (req: Request, res: Response, next: NextFunction) =
 const getRelatedServices = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const workflow = await Workflow.findById(req.params.id);
-        const services = await Service.find({ _id: { $in: workflow?.actions } })
+        const services = await Service.find({ _id: { $in: workflow?.actions } });
         return res.status(200).json({
             services: services
         });
@@ -116,15 +115,14 @@ const getRelatedServices = async (req: Request, res: Response, next: NextFunctio
 };
 
 const getWorkflowbyUser = async (req: Request, res: Response, next: NextFunction) => {
-    
-        const token = req.params.id.split(";")[0];
-        let id = "";
-        JWT.verify(token, 'secret', function(err : any, decoded : any) {
-            if (err) {
-                console.log(err);
-            }
-            id = decoded.sub;
-        });
+    const token = req.params.id.split(';')[0];
+    let id = '';
+    JWT.verify(token, 'secret', function (err: any, decoded: any) {
+        if (err) {
+            console.log(err);
+        }
+        id = decoded.sub;
+    });
 
     try {
         const workflows = await Workflow.where('relativeUser', id);
