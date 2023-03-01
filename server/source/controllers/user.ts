@@ -3,6 +3,25 @@ import mongoose from 'mongoose';
 import User from '../models/user';
 import aqp from 'api-query-params';
 import { compare, hash } from 'bcrypt';
+import ServiceStatus from '../models/serviceStatus';
+import Service from '../models/service';
+
+type ServiceStatus = mongoose.Document & {
+    service: string;
+    user: string;
+    isConnected: boolean;
+    token: string;
+    isEnabled: boolean;
+};
+
+type Service = mongoose.Document & {
+    name: string;
+    route: string;
+    description: string;
+    actions: string[];
+    reactions: string[];
+    globallyEnabled: boolean;
+};
 
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
     let { username, password } = req.body;
@@ -15,6 +34,17 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 
         const result = await user.save();
 
+        const services = await Service.find();
+        services.forEach(async (service: Service) => {
+            const serviceStatus = new ServiceStatus({
+                service: service._id,
+                user: result._id,
+                isConnected: false,
+                token: {},
+                isEnabled: service.globallyEnabled
+            });
+            await serviceStatus.save();
+        });
         return res.status(201).json({
             user: result
         });
@@ -72,21 +102,6 @@ const updateUser = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-const tempLogin = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        console.log(req.query.username, req.query.password);
-        const user = await User.findOne({ username: req.query.username, password: req.query.password });
-        return res.status(200).json({
-            user: user
-        });
-    } catch (error: any) {
-        return res.status(500).json({
-            message: error.message,
-            error
-        });
-    }
-};
-
 const checkPassword = async (username: string, password: string, done: any) => {
     try {
         const user = await User.findOne({ username });
@@ -105,4 +120,4 @@ const checkPassword = async (username: string, password: string, done: any) => {
     }
 };
 
-export default { createUser, getAllUsers, getUser, updateUser, tempLogin, checkPassword };
+export default { createUser, getAllUsers, getUser, updateUser, checkPassword };
