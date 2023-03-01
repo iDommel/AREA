@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:developer' as dev;
-import 'package:area_app/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -33,11 +31,12 @@ class _LoginScreenState extends State<LoginScreen> {
         headers: {"Content-Type": "application/json"});
 
     if (response.statusCode == 200) {
-      var data = json.decode(response.body);
+      Map<String, dynamic> data = json.decode(response.body);
       setState(() {
         status_ = false;
         message = "good";
-        dev.log(data.toString());
+        //dev.log(data.toString());
+        //print('id, ${response.body}');
       });
     }
   }
@@ -136,6 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: () {
                               setState(() {});
                               Navigator.pushNamed(context, '/homePage');
+                              getService();
                             },
                             child: Text('Connect',
                                 style: TextStyle(color: Colors.white)),

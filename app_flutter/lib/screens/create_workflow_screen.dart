@@ -1,9 +1,21 @@
-import 'package:area_app/screens/add_reaction_screen.dart';
 import 'package:area_app/screens/add_service_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:area_app/screens/service.dart';
 
-class CreateWorkflowScreen extends StatelessWidget {
+class CreateWorkflowScreen extends StatefulWidget {
   const CreateWorkflowScreen({Key? key}) : super(key: key);
+
+  @override
+  State<CreateWorkflowScreen> createState() => _CreateWorkflowScreenState();
+}
+
+class _CreateWorkflowScreenState extends State<CreateWorkflowScreen> {
+  String serverUrl = "http://localhost:8080/services";
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,15 +68,10 @@ class CreateWorkflowScreen extends StatelessWidget {
                         width: 305,
                         height: 42,
                         child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          color: Color.fromARGB(255, 217, 217, 217),
-                          child: DropdownButton(
-                            items: [],
-                            onChanged: (value) {},
-                            hint: Text("Service de l'Action"),
-                          ),
-                        ),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            color: Color.fromARGB(255, 217, 217, 217),
+                            child: ServiceWidget()),
                       ),
                       SizedBox(
                         height: 26,
@@ -194,4 +201,12 @@ class CreateWorkflowScreen extends StatelessWidget {
           ),
         ));
   }
+
+  DropdownMenuItem<String> buildMenuItem(String item) => DropdownMenuItem(
+        value: item,
+        child: Text(
+          item,
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+      );
 }
