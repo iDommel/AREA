@@ -21,6 +21,7 @@ import serviceRoutes from './routes/service';
 import serviceStatusRoutes from './routes/serviceStatus';
 import actionRoutes from './routes/action';
 import reactionRoutes from './routes/reaction';
+import githubRoutes from './routes/github';
 
 const NAMESPACE = 'Server';
 const app = express();
@@ -87,6 +88,7 @@ app.use('/services', serviceRoutes);
 app.use('/service-statuses', serviceStatusRoutes);
 app.use('/actions', actionRoutes);
 app.use('/reactions', reactionRoutes);
+app.use('/github', githubRoutes);
 
 /** Error handling */
 app.use((req, res, next) => {
