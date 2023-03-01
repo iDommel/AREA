@@ -4,10 +4,13 @@ import logging from '../config/logging';
 const ServiceStatusSchema: Schema = new Schema(
     {
         service: { type: Schema.Types.ObjectId, ref: 'Service', required: true },
+        serviceName: { type: String, required: true },
         user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
         isConnected: { type: Boolean, default: false },
         auth: {
-            type: Object
+            accessToken: { type: String, default: '' },
+            refreshToken: { type: String, default: '' },
+            expires_in: { type: Number, default: 0 }
         },
         isEnabled: { type: Boolean, default: false }
     },
