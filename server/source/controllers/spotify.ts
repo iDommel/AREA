@@ -166,7 +166,7 @@ const spotifyReaction = async (relativeUser: string, newName: string) => {
 
         const spotifyService = user.services.find((service: ServiceType) => service.name === 'spotify');
         if (!spotifyService) return;
-        spotifyApi.setAccessToken(user.spotifyService.accessToken);
+        spotifyApi.setAccessToken(spotifyService.accessToken);
         const res = await spotifyApi.changePlaylistDetails('0y0zkkH8WQCCKSXbG39dOa', {
             name: newName,
             public: false
