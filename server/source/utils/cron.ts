@@ -4,6 +4,7 @@ import Workflow from '../models/workflow';
 import User from '../models/user';
 import spotifyController from '../controllers/spotify';
 import weatherController from '../controllers/weather';
+import Service from '../models/service';
 
 const githubReaction = async (newName: string) => {
     try {
@@ -62,7 +63,7 @@ const checkReactionServiceEnabled = async (reaction: any) => {
 };
 
 const IsEvenReaction = async (workflow: any) => {
-    const isEven = await controller.isMinuteEven('Europe/Amsterdam');
+    const isEven = await timerController.isMinuteEven('Europe/Amsterdam');
     if (isEven) {
         console.log('Is minute even?', isEven);
         const serviceEnabled = await checkReactionServiceEnabled(workflow.reactions[0]);
@@ -72,7 +73,7 @@ const IsEvenReaction = async (workflow: any) => {
         switch (workflow.serviceReaction) {
             case 'spotify':
                 console.log('spotify bug fetch user');
-                // spotifyReaction(workflow.description);
+                spotifyController.spotifyReaction(workflow.relativeUser, workflow.description);
                 break;
             case 'github':
                 console.log('github bug 401 bad credentials');
