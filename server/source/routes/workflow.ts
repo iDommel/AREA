@@ -9,5 +9,6 @@ router.delete('/:id', controller.deleteWorkflow);
 router.post('/', controller.createWorkflow);
 router.get('/', controller.getAllWorkflow);
 router.get('/services/:id', controller.getRelatedServices);
+router.get('/user/:id', controller.getWorkflowbyUser);
 
 export = router;

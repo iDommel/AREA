@@ -3,8 +3,7 @@ import logging from '../config/logging';
 
 const UserSchema: Schema = new Schema(
     {
-        services: [],
-        username: { type: String, required: true },
+        username: { type: String, required: true, unique: true },
         password: { type: String, required: true },
         workflows: []
     },
