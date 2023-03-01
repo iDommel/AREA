@@ -90,17 +90,11 @@ const Home = () => {
 
   const getWorkflows = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:8080/workflows?relativeUser=${user}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Autorization: "Bearer " + document.cookie.split("=")[1],
-          },
-        }
+      const response = await fetchAPI(
+        `/workflows?relativeUser=${user}`,
+        "GET"
       );
-      const data = await response.json();
+      const data = response.data;
       if (response.status !== 200 || !data.workflows) {
         message.error(data.message);
       } else {
