@@ -77,11 +77,7 @@ export const AuthContextProvider = ({ children }: any) => {
     const localUser = localStorage.getItem("user");
     const localToken = localStorage.getItem("token");
     const user = JSON.parse((localUser !== "undefined" && localUser) || "{}");
-    const token =
-      localToken !== "undefined" &&
-      localToken &&
-      JSON.parse(localToken || "{}" || (cookies && cookies.token));
-
+    const token = cookies.token;
     if (
       user &&
       JSON.stringify(user) !== "{}" &&
