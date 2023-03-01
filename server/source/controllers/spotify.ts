@@ -163,10 +163,7 @@ type ServiceType = {
 
 const spotifyReaction = async (relativeUser: string, newName: string) => {
     try {
-        const user = await User.findById(relativeUser);
-
-        const serviceStatus = await ServiceStatus.findOne({ user: user._id, name: 'Spotify' });
-        console.log('serviceStatus', serviceStatus);
+        const serviceStatus = await ServiceStatus.findOne({ user: relativeUser, serviceName: 'Spotify' });
         if (!serviceStatus) return;
         spotifyApi.setAccessToken(serviceStatus.auth.accessToken);
         const res = await spotifyApi.changePlaylistDetails('0y0zkkH8WQCCKSXbG39dOa', {
