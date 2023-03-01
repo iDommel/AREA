@@ -5,7 +5,7 @@ import IWorkflow from '../interfaces/workflow';
 const WorkflowSchema: Schema = new Schema(
     {
         name: { type: String, required: true },
-        relativeUser: { type: String, default: ''},
+        relativeUser: { type: String, default: '' },
         description: { type: String, default: '' },
         actions: [{ type: mongoose.Types.ObjectId, ref: 'Action' }],
         reactions: [{ type: mongoose.Types.ObjectId, ref: 'Reaction' }]

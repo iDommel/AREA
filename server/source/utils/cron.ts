@@ -14,7 +14,6 @@ const checkActions = async () => {
                     const isEven = await timerController.isMinuteEven('Europe/Amsterdam');
                     if (isEven && workflow.relativeUser && workflow.relativeUser !== '') {
                         console.log('Is minute even?', isEven);
-                        console.log('workflow?', workflow);
                         await spotifyController.spotifyReaction(workflow.relativeUser, workflow.description);
                     }
                 }
