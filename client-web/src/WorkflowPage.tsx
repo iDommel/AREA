@@ -68,6 +68,12 @@ const WorkflowPage = () => {
       actions: [action[1]],
       reactions: [reaction[1]],
       relativeUser: user,
+      serviceAction: services
+        .find((service) => service._id === action[0])
+        ?.name.toLowerCase(),
+      serviceReaction: services
+        .find((service) => service._id === reaction[0])
+        ?.name.toLowerCase(),
     };
     try {
       const response = await fetchAPI(

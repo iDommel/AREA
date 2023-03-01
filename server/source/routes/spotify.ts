@@ -10,6 +10,9 @@ import Service from '../models/service';
 const router = express.Router();
 const SpotifyStrategy = passportSpotify.Strategy;
 
+const clientID = process.env.SPOTIFY_CLIENT_ID as string;
+const clientSecret = process.env.SPOTIFY_CLIENT_SECRET as string;
+
 passport.use(
     new SpotifyStrategy(
         {

@@ -6,7 +6,7 @@ import aqp from 'api-query-params';
 import JWT, { decode } from 'jsonwebtoken';
 
 const createWorkflow = async (req: Request, res: Response, next: NextFunction) => {
-    let { name, description, actions, reactions } = req.body;
+    let { name, description, actions, reactions, serviceAction, serviceReaction } = req.body;
 
     try {
         // retrieve the token that matcher the "Bearer token" regex
@@ -41,7 +41,9 @@ const createWorkflow = async (req: Request, res: Response, next: NextFunction) =
             description,
             actions,
             reactions,
-            relativeUser
+            relativeUser,
+            serviceAction,
+            serviceReaction
         });
 
         const result = await workflow.save();
@@ -121,9 +123,11 @@ const deleteWorkflow = async (req: Request, res: Response, next: NextFunction) =
 const getRelatedServices = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const workflow = await Workflow.findById(req.params.id);
-        const services = await Service.find({ _id: { $in: workflow?.actions } });
+        const services = await Service.find({ actions: { $in: workflow?.actions } });
+        const reactions = await Service.find({ reactions: { $in: workflow?.reactions } });
         return res.status(200).json({
-            services: services
+            services: services,
+            reactions: reactions
         });
     } catch (error: any) {
         return res.status(500).json({

@@ -27,7 +27,14 @@ function getItem(
   } as MenuItem;
 }
 
-const serviceList = ["63e1a99689b9860fb46d3698", "63e1ab6fe3a0d2130314394b"];
+const serviceList = [
+  "63e1a99689b9860fb46d3698",
+  "63e1ab6fe3a0d2130314394b",
+  "63f49774c9221b400ba2c89f",
+  "63fcb14a7a72bcff0db98339",
+  "63fcdbae7a72bcff0db9834e",
+  "63fcec4c7a72bcff0db98355",
+];
 
 const rootSubmenuKeys = ["/Workflow", "/Service"];
 
@@ -80,6 +87,42 @@ const MenuPage: React.FC = () => {
     }
   };
 
+  const getServiceById = async (id: string) => {
+    try {
+      const response = await fetchAPI(
+        `http://localhost:8080/services/${id}`,
+        "GET"
+      );
+      const data = response.data;
+      if (response.status !== 200 || !data.service) {
+        message.error(data.message);
+      } else {
+        const service = data.service;
+        return service;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const updateService = async (status: boolean, id: string) => {
+    try {
+      const response = await fetchAPI(
+        `http://localhost:8080/services/${id}`,
+        "PATCH",
+        {
+          globallyEnabled: status,
+        }
+      );
+      const data = response.data;
+      if (response.status !== 200) {
+        console.error(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     getWorkflows();
     getServices();
@@ -102,10 +145,19 @@ const MenuPage: React.FC = () => {
     }
   };
 
-  const handleSelect = (e: any) => {
+  const handleSelect = async (e: any) => {
     console.log(e);
     if (serviceList.includes(e.key)) {
-      message.info("Service n°" + e.key + " is not implemented yet");
+      let service = await getServiceById(e.key);
+      if (
+        !service.route.includes("time") &&
+        !service.route.includes("weather") &&
+        !service.globallyEnabled
+      ) {
+        window.location.href = "http://localhost:8080" + service.route;
+        await updateService(true, e.key);
+      } else await updateService(!service.globallyEnabled, e.key);
+      window.location.reload();
     } else if (e.keyPath && e.keyPath.length > 1) {
       navigate(e.keyPath[1] + "/" + e.key);
     } else {

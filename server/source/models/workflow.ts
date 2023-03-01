@@ -7,7 +7,9 @@ const WorkflowSchema: Schema = new Schema(
         relativeUser: { type: String, required: true },
         description: { type: String, default: '' },
         actions: [{ type: mongoose.Types.ObjectId, ref: 'Action' }],
-        reactions: [{ type: mongoose.Types.ObjectId, ref: 'Reaction' }]
+        reactions: [{ type: mongoose.Types.ObjectId, ref: 'Reaction' }],
+        serviceAction: { type: String, default: '' },
+        serviceReaction: { type: String, default: '' }
     },
     {
         timestamps: true
