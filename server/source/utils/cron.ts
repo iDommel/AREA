@@ -1,5 +1,6 @@
 import CronJob from 'node-cron';
-import controller from '../controllers/time';
+import timeController from '../controllers/time';
+import weatherController from '../controllers/weather';
 import Workflow from '../models/workflow';
 import User from '../models/user';
 import SpotifyWebApi from 'spotify-web-api-node';
@@ -38,10 +39,16 @@ const checkActions = async () => {
         workflows.forEach((workflow: any) => {
             workflow.actions.forEach(async (action: any) => {
                 if (action.name === 'isMinuteEven') {
-                    const isEven = await controller.isMinuteEven('Europe/Amsterdam');
+                    const isEven = await timeController.isMinuteEven('Europe/Amsterdam');
                     if (isEven) {
                         console.log('Is minute even?', isEven);
                         spotifyReaction(workflow.description);
+                    }
+                }
+                if (action.name === 'isRaining') {
+                    const isRaining = await weatherController.isRaining('Toulouse');
+                    if (isRaining) {
+                        console.log('Is it raining?', isRaining);
                     }
                 }
             });

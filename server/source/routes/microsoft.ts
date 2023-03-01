@@ -1,26 +1,26 @@
 import express from 'express';
-// import controller from '../controllers/github';
+// import controller from '../controllers/microsoft';
 import passport from 'passport';
 import User from '../models/user';
 
 const router = express.Router();
-const passportGitLab = require('passport-gitlab2');
-const GitLabStrategy = passportGitLab.Strategy;
+const passportMicrosoft = require('passport-microsoft');
+const MicrosoftStrategy = passportMicrosoft.Strategy;
 
-const clientID = process.env.GITLAB_APP_ID as string;
-const clientSecret = process.env.GITLAB_APP_SECRET as string;
+const clientID = process.env.MICROSOFT_CLIENT_ID as string;
+const clientSecret = process.env.MICROSOFT_CLIENT_SECRET as string;
 
 passport.use(
-    new GitLabStrategy (
+    new MicrosoftStrategy (
         {
             clientID,
             clientSecret,
-            callbackURL: "http://localhost:8080/gitlab/callback"
+            callbackURL: "http://localhost:8080/microsoft/callback"
         },
         async (accessToken: string, refreshToken: string, profile: any, done: (err: any, user?: any) => void) => {
             try {
                 const user = await User.findById(profile.id);
-                user.services = [{ name: 'gitlab', accessToken, refreshToken }];
+                user.services = [{ name: 'microsoft', accessToken, refreshToken }];
                 user.save();
                 return done(null, {
                     accessToken,
@@ -35,8 +35,8 @@ passport.use(
     )
 );
 
-router.get('/login', passport.authenticate('gitlab', { scope: ['email'] }));
-router.get('/callback', passport.authenticate('gitlab', { failureRedirect: '/login' }), async (req, res) => {
+router.get('/login', passport.authenticate('microsoft', { scope: ['openid'] }));
+router.get('/callback', passport.authenticate('microsoft', { failureRedirect: '/login' }), async (req, res) => {
     res.redirect('http://localhost:3000/Home');
 });
 
