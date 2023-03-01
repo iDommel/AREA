@@ -13,7 +13,6 @@ import { initScheduledJobs } from './utils/cron';
 import { initializePassport } from './passportconfig';
 import flash from 'express-flash';
 
-import bookRoutes from './routes/book';
 import aboutRoutes from './routes/about';
 import spotifyRoutes from './routes/spotify';
 import workflowRoutes from './routes/workflow';
@@ -74,7 +73,6 @@ app.use(passport.session());
 initScheduledJobs();
 
 /** Routes go here */
-app.use('/books', bookRoutes);
 app.use('/about.json', aboutRoutes);
 app.use('/client.apk', apkRoutes);
 app.use('/spotify', spotifyRoutes);
