@@ -1,70 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { message } from "antd";
-
+import { useAuthContext } from "../Context/AuthContext";
 type AppProps = {
   id: string;
   name: string;
   route: string;
-  isConnected: string;
+  isConnected: boolean;
   isActivated: boolean;
 };
 
 const Service = ({ id, name, route, isConnected, isActivated }: AppProps) => {
-  const [service, setService] = useState({
-    status: isActivated,
-    _id: id,
-    name: name,
-    isConnected: isConnected,
-  });
+  const endpoint = "http://localhost:8080";
 
-  let endpoint = "http://localhost:8080";
+  const [borderColor, setBorderColor] = useState(
+    isConnected ? "#3AB500" : "#DE1313"
+  );
 
-  const [borderColor, setBorderColor] = useState("#DE1313");
+  useEffect(() => {
+    if (isConnected) {
+      setBorderColor("#3AB500");
+    } else {
+      setBorderColor("#DE1313");
+    }
+  }, [isConnected]);
+
   const imgClass =
     "https://img.icons8.com/color/112/000000/" + name.toLowerCase() + ".png";
 
-  const connectToService = async () => {
-    try {
-      const response = await fetch(endpoint + route, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      if (response.status !== 200) {
-        message.error(data.message);
-      } else {
-        console.log(data);
-        setBorderColor("#3AB500");
-        setService({ ...service, status: true });
-        window.location.href = data.url;
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const HandleClick = () => {
-    if (service.status) {
-      setBorderColor("#DE1313");
-      setService({ ...service, status: false });
-    } else {
-      connectToService();
-    }
-  };
   return (
     <div className="service">
       <Link to={`${endpoint}${route}`}>
-        <button
-          className="buttonservice"
-          // onClick={() => HandleClick()}
-          style={{ borderColor: borderColor }}
-        >
+        <button className="buttonservice" style={{ borderColor: borderColor }}>
           <img src={imgClass} alt={name} />
         </button>
-        <h3 className="status">{service.status ? "Activé" : "Désactivé"}</h3>
+        <h3 className="status">{isConnected ? "Activé" : "Désactivé"}</h3>
       </Link>
     </div>
   );

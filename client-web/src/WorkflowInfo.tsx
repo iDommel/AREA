@@ -35,7 +35,7 @@ const WorkflowInfo = () => {
 
   const getReaction = async (id: string) => {
     try {
-      const response = await fetchAPI(`/reaction/${id}`, "GET");
+      const response = await fetchAPI(`/reactions/${id}`, "GET");
       const data = response.data;
       if (response.status !== 200) {
         message.error(data.message);
@@ -50,7 +50,7 @@ const WorkflowInfo = () => {
   const getAction = async (id: string) => {
     try {
       console.log(id);
-      const response = await fetchAPI(`/action/${id}`, "GET");
+      const response = await fetchAPI(`/actions/${id}`, "GET");
       const data = response.data;
       if (response.status !== 200) {
         message.error(data.message);

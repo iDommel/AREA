@@ -58,9 +58,6 @@ const callbackFunction = async (req: Request, res: Response, next: NextFunction)
     let state = req.query.state || null;
     let storedState = req.cookies ? req.cookies[stateKey] : null;
 
-    console.log('code', code);
-    console.log('state', state);
-    console.log('stateKey', stateKey);
     if (state === null || state !== storedState) {
         res.redirect(
             '/#' +
