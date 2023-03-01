@@ -5,6 +5,7 @@ import axios from 'axios';
 import User from '../models/user';
 import { getUserIdFromCookie } from '../utils/utils';
 import SpotifyWebApi from 'spotify-web-api-node';
+import ServiceStatus from '../models/serviceStatus';
 
 let client_id = 'd21affede3984ecea64c0ebaceff41e3'; // Your client id
 let client_secret = '734ebfb934c84261963f5794e5783c9f'; // Your secret
@@ -164,9 +165,10 @@ const spotifyReaction = async (relativeUser: string, newName: string) => {
     try {
         const user = await User.findById(relativeUser);
 
-        const spotifyService = user.services.find((service: ServiceType) => service.name === 'spotify');
-        if (!spotifyService) return;
-        spotifyApi.setAccessToken(spotifyService.accessToken);
+        const serviceStatus = await ServiceStatus.findOne({ user: user._id, name: 'Spotify' });
+        console.log('serviceStatus', serviceStatus);
+        if (!serviceStatus) return;
+        spotifyApi.setAccessToken(serviceStatus.auth.accessToken);
         const res = await spotifyApi.changePlaylistDetails('0y0zkkH8WQCCKSXbG39dOa', {
             name: newName,
             public: false
