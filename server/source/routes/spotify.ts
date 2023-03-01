@@ -31,6 +31,7 @@ passport.use(
                 refreshToken,
                 expires_in
             };
+            serviceStatus.isConnected = true;
             serviceStatus.save();
             return done(null, {
                 id

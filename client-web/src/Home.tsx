@@ -18,7 +18,8 @@ type ServiceType = {
 
 type ServiceStatusType = {
   _id: string;
-  service: string;
+  service: ServiceType;
+  serviceName: string;
   user: string;
   isConnected: boolean;
   token: string;
@@ -63,26 +64,25 @@ const Home = () => {
         `/service-statuses?user=${user}&populate=service`,
         "GET"
       );
-      console.log("response", response);
       const data = response.data;
-      if (response.status !== 200 || !data.services) {
+      if (!data.serviceStatuses) {
         message.error(data.message);
       } else {
-        setServices(data.services);
+        setServiceStatuses(data.serviceStatuses);
       }
     } catch (error) {
       console.error(error);
     }
   };
 
-  const renderServices = (toRender: ServiceType[] | never[]) => {
-    return toRender.map((service) => (
+  const renderServices = (serviceStatuses: ServiceStatusType[] | never[]) => {
+    return serviceStatuses.map((serviceStatus) => (
       <Service
-        id={service._id}
-        key={service._id}
-        name={service.name}
-        route={service.route}
-        isConnected="True"
+        id={serviceStatus.service._id}
+        key={serviceStatus._id}
+        name={serviceStatus.serviceName}
+        route={serviceStatus.service.route}
+        isConnected={serviceStatus.isConnected}
         isActivated={false}
       />
     ));
@@ -151,7 +151,7 @@ const Home = () => {
           </div>
 
           <h1 className="title">Services</h1>
-          <div className="squareService">{renderServices(services)}</div>
+          <div className="squareService">{renderServices(serviceStatuses)}</div>
         </div>
       </div>
     </div>

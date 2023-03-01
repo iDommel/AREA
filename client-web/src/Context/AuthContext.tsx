@@ -135,7 +135,6 @@ export const AuthContextProvider = ({ children }: any) => {
     cancelToken?: CancelToken | undefined
   ) => {
     if (!isTokenExpired(state.token)) {
-      console.log("token expired");
       // await refreshToken();
     }
 
@@ -190,7 +189,6 @@ export const AuthContextProvider = ({ children }: any) => {
       navigate("/Home");
     }
   }, [state, location.pathname, navigate]);
-  console.log("state", state);
   return (
     <AuthContext.Provider
       value={{
