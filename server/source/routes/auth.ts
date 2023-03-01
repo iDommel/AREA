@@ -23,15 +23,10 @@ router.post('/login', (req: Request, res: Response, next: NextFunction) => {
                     message: info.message || 'Login failed'
                 });
             }
-            const id = JWT.sign({}, 'secret', {
-                algorithm: 'HS256',
-                expiresIn: 1200,
-                subject: user._id.toString()
-            });
-            console.log('header', id);
+
             res.status(200).json({
-                token: id,
-                redirect: 'http://localhost:3000/Home/'
+                ...user,
+                redirect: '/Home'
             });
         }
     )(req, res, next);
@@ -46,6 +41,33 @@ router.get('/logout', (req: Request, res: Response, next: NextFunction) => {
         }
     });
     res.redirect('http://localhost:3000/Login');
+});
+
+router.get('/refresh', (req: Request, res: Response, next: NextFunction) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({
+            message: 'No token provided'
+        });
+    }
+    const decoded = JWT.verify(token, 'secret');
+    if (!decoded || !decoded.sub || typeof decoded.sub !== 'string') {
+        return res.status(401).json({
+            message: 'Invalid token'
+        });
+    }
+
+    const id = JWT.sign({}, 'secret', {
+        algorithm: 'HS256',
+        expiresIn: '2 days',
+        subject: decoded.sub
+    });
+
+    res.status(200).json({
+        token: id,
+        user: decoded.sub,
+        redirect: '/Home'
+    });
 });
 
 export = router;
