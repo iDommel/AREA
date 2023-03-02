@@ -5,11 +5,11 @@ import Service from '../models/service';
 
 const logout = async (req: Request, res: Response) => {
     try {
-        const logout = await ServiceStatus.findOne({ serviceName: 'GitHub', user: getUserIdFromCookie(req)});
+        const logout = await ServiceStatus.findOne({ serviceName: 'Microsoft', user: getUserIdFromCookie(req)});
         logout.isConnected = false;
         logout.auth = null;
         const service = await Service.findOne({ _id: logout.service });
-        service.route = "/github/login"
+        service.route = "/microsoft/login"
         logout.save();
         service.save();
         res.redirect('http://localhost:3000/Home');

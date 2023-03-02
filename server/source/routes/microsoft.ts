@@ -18,7 +18,8 @@ passport.use(
         {
             clientID,
             clientSecret,
-            callbackURL: "http://localhost:8080/microsoft/callback"
+            callbackURL: "http://localhost:8080/microsoft/callback",
+            passReqToCallback: true
         },
         async (req: any, accessToken: string, refreshToken: string, profile: any, done: (err: any, user?: any) => void) => {
             try {
@@ -46,7 +47,7 @@ passport.use(
     )
 );
 
-router.get('/login', passport.authenticate('microsoft', { scope: ['openid'] }));
+router.get('/login', passport.authenticate('microsoft', { scope: ['User.Read'] }));
 router.get('/callback', passport.authenticate('microsoft', { failureRedirect: '/login' }), async (req, res) => {
     res.redirect('http://localhost:3000/Home');
 });

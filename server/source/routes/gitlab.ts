@@ -18,10 +18,12 @@ passport.use(
         {
             clientID,
             clientSecret,
-            callbackURL: "http://localhost:8080/gitlab/callback"
+            callbackURL: "http://localhost:8080/gitlab/callback",
+            passReqToCallback: true
         },
         async (req: any, accessToken: string, refreshToken: string, profile: any, done: (err: any, user?: any) => void) => {
             try {
+                console.log(req);
                 const id = getUserIdFromCookie(req);
                 const serviceStatus = await ServiceStatus.findOne({ user: id, serviceName: 'GitLab' });
                 serviceStatus.auth = {
@@ -46,7 +48,7 @@ passport.use(
     )
 );
 
-router.get('/login', passport.authenticate('gitlab', { scope: ['api read_api read_user read_repository write_repository read_registry write_registry sudo admin_mode openid profile email'] }));
+router.get('/login', passport.authenticate('gitlab', { scope: ['read_user'] }));
 router.get('/callback', passport.authenticate('gitlab', { failureRedirect: '/login' }), async (req, res) => {
     res.redirect('http://localhost:3000/Home');
 });
