@@ -46,7 +46,7 @@ passport.use(
     )
 );
 
-router.get('/login', passport.authenticate('gitlab', { scope: ['email'] }));
+router.get('/login', passport.authenticate('gitlab', { scope: ['api read_api read_user read_repository write_repository read_registry write_registry sudo admin_mode openid profile email'] }));
 router.get('/callback', passport.authenticate('gitlab', { failureRedirect: '/login' }), async (req, res) => {
     res.redirect('http://localhost:3000/Home');
 });
