@@ -41,20 +41,18 @@ const OAuth = () => {
 };
 
 const RegisterForm = () => {
+  const { fetchAPI } = useAuthContext();
   const navigate = useNavigate();
   const handleRegister = async (values: any) => {
     console.log("values", values);
     try {
-      const response = await fetch("http://localhost:8080/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      const response = await fetchAPI("/auth/register", 
+         "POST",
+        {
           username: values.username,
           password: values.password,
-        }),
-      });
+        },
+      );
       console.log("response", response);
       const data = await response.json();
       if (response.status > 299 && response.status < 200) {
