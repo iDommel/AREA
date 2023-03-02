@@ -5,6 +5,9 @@ import User from '../models/user';
 import spotifyController from '../controllers/spotify';
 import weatherController from '../controllers/weather';
 import Service from '../models/service';
+import serviceStatus from '../models/serviceStatus';
+import { getUserIdFromCookie } from './utils';
+import Action from '../models/action';
 
 const githubReaction = async (newName: string) => {
     try {
@@ -31,30 +34,14 @@ const githubReaction = async (newName: string) => {
     }
 };
 
-const checkActionServiceEnabled = async (action: any) => {
+const checkServiceEnabled = async (serviceName: string, userID: string) => {
     try {
-        const services = await Service.findOne({ actions: action._id });
-        // console.log(services)
-        if (services.globallyEnabled) {
-            console.log('Service ' + services.name + ' is globally enabled');
+        const services = await serviceStatus.findOne({ user: userID, serviceName: serviceName });
+        if (services.isConnected) {
+            console.log('Service ' + services.serviceName + ' is connected');
             return true;
         } else {
-            console.log('Service ' + services.name + ' is not globally enabled');
-            return false;
-        }
-    } catch (error: any) {
-        console.log(error);
-    }
-};
-
-const checkReactionServiceEnabled = async (reaction: any) => {
-    try {
-        const services = await Service.findOne({ reactions: reaction._id });
-        if (services.globallyEnabled) {
-            console.log('Service ' + services.name + ' is globally enabled');
-            return true;
-        } else {
-            console.log('Service ' + services.name + ' is not globally enabled');
+            console.log('Service ' + services.serviceName + ' is not connected');
             return false;
         }
     } catch (error: any) {
@@ -63,25 +50,23 @@ const checkReactionServiceEnabled = async (reaction: any) => {
 };
 
 const IsEvenReaction = async (workflow: any) => {
-    const isEven = await timerController.isMinuteEven('Europe/Amsterdam');
-    if (isEven) {
-        console.log('Is minute even?', isEven);
-        const serviceEnabled = await checkReactionServiceEnabled(workflow.reactions[0]);
-        if (serviceEnabled === false) {
-            return;
-        }
-        switch (workflow.serviceReaction) {
-            case 'spotify':
-                console.log('spotify bug fetch user');
-                spotifyController.spotifyReaction(workflow.relativeUser, workflow.description);
-                break;
-            case 'github':
-                console.log('github bug 401 bad credentials');
-                // githubReaction(workflow.description);
-                break;
-            default:
-                break;
-        }
+    switch (workflow.serviceReaction) {
+        case 'spotify':
+            const serviceEnabled = await checkServiceEnabled("Spotify", workflow.relativeUser);
+            if (serviceEnabled === false)
+                return;
+            console.log('spotify bug fetch user');
+            spotifyController.spotifyReaction(workflow.relativeUser, workflow.description);
+            break;
+        case 'github':
+            const serviceEnabled2 = await checkServiceEnabled("GitHub", workflow.relativeUser);
+            if (serviceEnabled2 === false)
+                return;
+            console.log('github bug 401 bad credentials');
+            // githubReaction(workflow.description);
+            break;
+        default:
+            break;
     }
 };
 
@@ -91,23 +76,21 @@ const checkActions = async () => {
         //TODO: talk to Lucas about these any types
         workflowsAction.forEach((workflow: any) => {
             workflow.actions.forEach(async (action: any) => {
-                const serviceEnabled = await checkActionServiceEnabled(action);
-                if (serviceEnabled === false) {
-                    return;
-                }
-                if (action.name === 'isMinuteEven') {
-                    const isEven = await timerController.isMinuteEven('Europe/Amsterdam');
-                    if (isEven && workflow.relativeUser && workflow.relativeUser !== '') {
-                        console.log('Is minute even?', isEven);
-                        // await spotifyController.spotifyReaction(workflow.relativeUser, workflow.description);
-                        IsEvenReaction(workflow);
-                    }
-                }
-                if (action.name === 'isRaining') {
-                    const isRaining = await weatherController.isRaining('Toulouse');
-                    if (isRaining) {
-                        console.log('Is it raining?', isRaining);
-                    }
+                switch (action.name) {
+                    case 'isMinuteEven':
+                        const isEven = await timerController.isMinuteEven('Europe/Amsterdam');
+                        const serviceEnabled = await checkServiceEnabled("Time", workflow.relativeUser);
+                        if (isEven && workflow.relativeUser && workflow.relativeUser !== '' && serviceEnabled) {
+                            console.log('Is minute even?', isEven);
+                            IsEvenReaction(workflow);
+                        }
+                        break;
+                    case 'isRaining':
+                        const isRaining = await weatherController.isRaining('Toulouse');
+                        const serviceEnabled2 = await checkServiceEnabled("Weather", workflow.relativeUser);
+                        if (isRaining && workflow.relativeUser && workflow.relativeUser !== '' && serviceEnabled2) {
+                            console.log('Is it raining?', isRaining);
+                        }
                 }
             });
         });
@@ -118,8 +101,9 @@ const checkActions = async () => {
 
 const initScheduledJobs = () => {
     const scheduledJobFunction = CronJob.schedule('* * * * *', checkActions);
-
+// 
     scheduledJobFunction.start();
+    // checkActions();
 };
 
 export { initScheduledJobs };
