@@ -69,6 +69,7 @@ const Home = () => {
         message.error(data.message);
       } else {
         setServiceStatuses(data.serviceStatuses);
+        console.log(data.serviceStatuses);
       }
     } catch (error) {
       console.error(error);
