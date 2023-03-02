@@ -3,6 +3,10 @@ import controller from '../controllers/github';
 import passport from 'passport';
 import passportGithub from 'passport-github2';
 import User from '../models/user';
+import ServiceStatus from '../models/serviceStatus';
+import Service from '../models/service';
+
+import { getUserIdFromCookie } from '../utils/utils';
 
 const router = express.Router();
 const GitHubStrategy = passportGithub.Strategy;
@@ -15,18 +19,27 @@ passport.use(
         {
             clientID,
             clientSecret,
-            callbackURL: "http://localhost:8080/github/callback"
+            callbackURL: "http://localhost:8080/github/callback",
+            passReqToCallback: true
         },
-        async (accessToken: string, refreshToken: string, profile: passportGithub.Profile, done: (err: any, user?: any) => void) => {
-            console.log('profile.id', profile.id);
+        async (req: any, accessToken: string, refreshToken: string, profile: passportGithub.Profile, done: (err: any, user?: any) => void) => {
             try {
-                const user = await User.findById(profile.id);
-                user.services = [{ name: 'github', accessToken, refreshToken }];
-                user.save();
-                return done(null, {
+                const id = getUserIdFromCookie(req);
+                const serviceStatus = await ServiceStatus.findOne({ user: id, serviceName: 'GitHub' });
+                console.log('serviceStatus', serviceStatus)
+                serviceStatus.auth = {
                     accessToken,
-                    refreshToken,
-                    profile
+                    refreshToken
+                };
+                serviceStatus.isConnected = true;
+                const service = await Service.findOne({ _id: serviceStatus.service });
+                service.route = "/github/logout"
+                service.save();
+                serviceStatus.save();
+                return done(null, {
+                    id,
+                    accessToken,
+                    refreshToken
                 });
             } catch (error) {
                 console.log(error);
@@ -42,5 +55,6 @@ router.get('/callback', passport.authenticate('github', { failureRedirect: '/log
 });
 router.get('/issues', controller.get_issues);
 router.post('/issues', controller.create_issue);
+router.get('/logout', controller.logout);
 
 export = router;
