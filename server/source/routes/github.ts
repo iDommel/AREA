@@ -26,7 +26,6 @@ passport.use(
             try {
                 const id = getUserIdFromCookie(req);
                 const serviceStatus = await ServiceStatus.findOne({ user: id, serviceName: 'GitHub' });
-                console.log('serviceStatus', serviceStatus)
                 serviceStatus.auth = {
                     accessToken,
                     refreshToken
