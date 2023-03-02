@@ -1,33 +1,29 @@
 # pull base image
-FROM reactnativecommunity/react-native-android:6.1
+FROM ubuntu:18.04
 
-ARG EXPO_TOKEN
+RUN apt update && apt install -y curl git unzip xz-utils zip libglu1-mesa openjdk-8-jdk wget
 
-ENV EXPO_TOKEN=$EXPO_TOKEN
+# Set up new user
+RUN useradd -ms /bin/bash developer
+USER developer
+WORKDIR /home/developer
 
-WORKDIR /usr/src/app
+# Prepare Android directories and system variables
+RUN mkdir -p Android/sdk
+ENV ANDROID_SDK_ROOT /home/developer/Android/sdk
+RUN mkdir -p .android && touch .android/repositories.cfg
 
-RUN env
+# Set up Android SDK
+RUN wget -O sdk-tools.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
+RUN unzip sdk-tools.zip && rm sdk-tools.zip
+RUN mv tools Android/sdk/tools
+RUN cd Android/sdk/tools/bin && yes | ./sdkmanager --licenses
+RUN cd Android/sdk/tools/bin && ./sdkmanager "build-tools;29.0.2" "patcher;v4" "platform-tools" "platforms;android-29" "sources;android-29"
+ENV PATH "$PATH:/home/developer/Android/sdk/platform-tools"
 
-RUN apt-get update
+# Download Flutter SDK
+RUN git clone https://github.com/flutter/flutter.git
+ENV PATH "$PATH:/home/developer/flutter/bin"
 
-RUN apt-get install -y jq wget
-
-COPY package*.json eas.json ./
-
-RUN npm install
-
-RUN npm install -g eas-cli@latest expo-cli@latest
-
-COPY . ./
-
-# RUN npx expo login
-
-# TODO re add the build
-# RUN eas build --platform=android --non-interactive
-# 0JS30nmD8-Vfy9cLFcIcZ6nFW3iXTmyoTLIBZc_7
-RUN eas build:list --json --non-interactive --limit=1 --platform=android | jq  '.[0].artifacts.buildUrl'
-
-RUN wget -P ./apk $(eas build:list --json --non-interactive --limit=1 --platform=android | jq -r '.[0].artifacts.buildUrl')
-
-CMD ["ls", "-la", "./apk"]
+# Run basic check to download Dark SDK
+RUN flutter doctor
