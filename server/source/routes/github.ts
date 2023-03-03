@@ -48,7 +48,7 @@ passport.use(
     )
 );
 
-router.get('/login', passport.authenticate('github', { scope: ['user:email'] }));
+router.get('/login', passport.authenticate('github', { scope: ['user:email repo'] }));
 router.get('/callback', passport.authenticate('github', { failureRedirect: '/login' }), async (req, res) => {
     res.redirect('http://localhost:3000/Home');
 });
