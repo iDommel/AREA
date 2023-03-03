@@ -30,8 +30,8 @@ const create_issue = async (req: Request, res: Response) => {
             auth: token
         });
         const new_issue = await octokit.request("POST /repos/{owner}/{repo}/issues", {
-            owner: "Mfolio2004",
-            repo: "RoG",
+            owner: req.body.repoOwner,
+            repo: req.body.repoName,
             title: req.body.title,
             body: req.body.body,
             labels: req.body.labels
@@ -78,9 +78,10 @@ const logout = async (req: Request, res: Response) => {
     }
 }
 
-const githubReaction = async (relativeUser: string, newName: string) => {
+const githubReaction = async (workflow: any) => {
     try {
-        const Github = await ServiceStatus.findOne({ serviceName: 'GitHub', user: relativeUser});
+        const info = workflow.additionalData[0];
+        const Github = await ServiceStatus.findOne({ serviceName: 'GitHub', user: workflow.relativeUser});
 
         const res = await fetch('http://localhost:8080/github/issues', {
             method: 'POST',
@@ -89,9 +90,11 @@ const githubReaction = async (relativeUser: string, newName: string) => {
                 Authorization: 'token ' + Github.auth.accessToken
             },
             body: JSON.stringify({
-                title: newName,
-                body: 'This is a test issue',
-                labels: ['bug']
+                title: info.titleIssue,
+                body: info.bodyIssue,
+                labels: ['bug'],
+                repoOwner: info.repoOwner2,
+                repoName: info.repoName2
             })
         });
         const data = await res.json();
