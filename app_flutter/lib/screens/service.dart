@@ -3,57 +3,226 @@ import 'package:http/http.dart' as http;
 import 'package:area_app/parser.dart';
 import 'dart:developer' as dev;
 
-class ServiceWidget extends StatefulWidget {
-  const ServiceWidget({super.key});
-
-  @override
-  State<ServiceWidget> createState() => _ServiceWidgetState();
-}
-
-class _ServiceWidgetState extends State<ServiceWidget> {
-  String serverUrl = "http://localhost:8080/services";
-  late Service? service;
-
-  Future<Service?> getService() async {
-    final response = await http.get(Uri.parse(serverUrl), headers: {
-      "Content-Type": "application/json;charset=UTF-8",
-      "Charset": 'utf-8'
-    });
-    final Service service;
-    if (response.statusCode == 200) {
-      service = serviceFromJson(response.body);
-      return service;
-    } else if (response.statusCode != 200) {
-      return null;
-    }
+Future<Service?> getServiceHttp() async {
+  final response = await http.get(Uri.parse("http://localhost:8080/services"),
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Charset": 'utf-8'
+      });
+  final Service service;
+  if (response.statusCode == 200) {
+    service = serviceFromJson(response.body);
+    return service;
+  } else if (response.statusCode != 200) {
     return null;
   }
+  return null;
+}
 
-  List<DropdownMenuItem<Object>>? getActions(Service? service) {
-    List<DropdownMenuItem<Object>>? actions = [];
-    for (var i = 0; i < service!.services[0].reactions.length; i++) {
-      actions.add(DropdownMenuItem(child: Text(service.services[5].name)));
-    }
+Future<ActionsArea?> getActionsHttp() async {
+  final response = await http.get(Uri.parse("http://localhost:8080/actions"),
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Charset": 'utf-8'
+      });
+  final ActionsArea actions;
+  if (response.statusCode == 200) {
+    actions = actionsFromJson(response.body);
     return actions;
+  } else if (response.statusCode != 200) {
+    return null;
   }
+  return null;
+}
+
+Future<Reactions?> getReactionsHttp() async {
+  final response = await http.get(Uri.parse("http://localhost:8080/reactions"),
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Charset": 'utf-8'
+      });
+  final Reactions reaction;
+  if (response.statusCode == 200) {
+    reaction = reactionsFromJson(response.body);
+    return reaction;
+  } else if (response.statusCode != 200) {
+    return null;
+  }
+  return null;
+}
+
+List<DropdownMenuItem<Object>>? getActions(
+    ActionsArea? actions, String serviceName, Service? service) {
+  List<DropdownMenuItem<Object>>? action = [];
+  print(serviceName);
+  var newItem = DropdownMenuItem(
+    value: ' ',
+    child: Text(' '),
+  );
+  action.add(newItem);
+  for (var i = 0; i < actions!.actions.length - 1; i++) {
+    if (service!.services
+        .singleWhere((element) => element.name == serviceName)
+        .actions
+        .contains(actions.actions[i].id)) {
+      var newItem = DropdownMenuItem(
+        value: actions.actions[i].name,
+        child: Text(actions.actions[i].name),
+      );
+      action.add(newItem);
+    }
+  }
+  return action;
+}
+
+List<DropdownMenuItem<Object>>? getReactions(
+    Reactions? reaction, String serviceName, Service? service) {
+  List<DropdownMenuItem<Object>>? reactions = [];
+  var newItem = DropdownMenuItem(
+    value: ' ',
+    child: Text(' '),
+  );
+  reactions.add(newItem);
+  for (var i = 0; i < reaction!.reactions.length - 1; i++) {
+    if (service!.services
+        .singleWhere((element) => element.name == serviceName)
+        .reactions
+        .contains(reaction.reactions[i].id)) {
+      var newItem = DropdownMenuItem(
+        value: reaction.reactions[i].name,
+        child: Text(reaction.reactions[i].name),
+      );
+      reactions.add(newItem);
+    }
+  }
+  return reactions;
+}
+
+List<DropdownMenuItem<Object>>? getServices(Service? service) {
+  List<DropdownMenuItem<Object>>? services = [];
+  for (var i = 0; i < service!.count - 1; i++) {
+    var newItem = DropdownMenuItem(
+      value: service.services[i].name,
+      child: Text(service.services[i].name),
+    );
+    services.add(newItem);
+  }
+  return services;
+}
+
+class CreateActions extends StatefulWidget {
+  const CreateActions({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<CreateActions> createState() => _CreateActionsState();
+}
+
+class _CreateActionsState extends State<CreateActions> {
+  String? selectedService = 'Spotify';
+  String? selectedAction;
+  late Service? service;
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: getService(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done &&
-            snapshot.data != null) {
-          return DropdownButton(
-            items: getActions(snapshot.data),
-            onChanged: (value) {
-              print("$value");
-            },
-          );
-        } else {
-          return CircularProgressIndicator();
-        }
-      },
-    );
+    return Stack(alignment: Alignment.bottomCenter, children: <Widget>[
+      SizedBox(
+        width: 336,
+        height: 420,
+        child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          color: Color.fromARGB(255, 61, 61, 61),
+          child: Column(children: [
+            SizedBox(
+              height: 27,
+            ),
+            SizedBox(
+              width: 305,
+              height: 42,
+              child: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  color: Color.fromARGB(255, 217, 217, 217),
+                  child: FutureBuilder(
+                    future: getServiceHttp(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done &&
+                          snapshot.data != null) {
+                        service = snapshot.data;
+                        List<DropdownMenuItem<Object>>? services =
+                            getServices(snapshot.data);
+                        return DropdownButton(
+                          items: services,
+                          value: selectedService,
+                          onChanged: ((value) {
+                            setState(() {
+                              selectedService = value as String;
+                            });
+                          }),
+                          autofocus: true,
+                        );
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    },
+                  )),
+            ),
+            SizedBox(
+              height: 26,
+            ),
+            SizedBox(
+              width: 305,
+              height: 42,
+              child: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  color: Color.fromARGB(255, 217, 217, 217),
+                  child: FutureBuilder(
+                    future: getActionsHttp(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done &&
+                          snapshot.data != null) {
+                        List<DropdownMenuItem<Object>>? actions = getActions(
+                            snapshot.data, selectedService!, service);
+                        return DropdownButton(
+                          items: actions,
+                          value: selectedAction,
+                          onChanged: ((value) {
+                            setState(() {
+                              selectedAction = value as String;
+                            });
+                          }),
+                          autofocus: true,
+                        );
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    },
+                  )),
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            SizedBox(
+              width: 305,
+              height: 241,
+              child: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  color: Color.fromARGB(255, 217, 217, 217),
+                  child: TextField(
+                    obscureText: false,
+                    decoration: InputDecoration(
+                      hintStyle: TextStyle(color: Colors.black),
+                      hintText: 'Que fait le bail',
+                    ),
+                  )),
+            )
+          ]),
+        ),
+      ),
+    ]);
   }
 }
