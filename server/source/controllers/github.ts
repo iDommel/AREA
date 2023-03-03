@@ -36,23 +36,24 @@ const create_issue = async (req: Request, res: Response) => {
             body: req.body.body,
             labels: req.body.labels
         });
-        console.log('new_issue', new_issue);
+        // console.log('new_issue', new_issue);
         res.status(200).json(new_issue);
     } catch (error) {
         console.log(error);
     }
 }
 
-const checkPullRequestMerged = async (user : string) => {
+const checkPullRequestMerged = async (workflow : any) => {
     try {
-        const Github = await ServiceStatus.findOne({ serviceName: 'GitHub', user: user});
+        const info = workflow.additionalData[0];
+        const Github = await ServiceStatus.findOne({ serviceName: 'GitHub', user: workflow.relativeUser});
         const octokit = new Octokit({
             auth: Github.auth.accessToken
         });
         const result = await octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/merge', {
-            owner: 'IDommel',
-            repo: 'AREA',
-            pull_number: 12,
+            owner: info.repoOwner,
+            repo: info.repoName,
+            pull_number: info.prNumber
             });
         if (result.status === 204)
             return (true);
