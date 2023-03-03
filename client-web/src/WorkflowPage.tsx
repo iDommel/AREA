@@ -118,14 +118,14 @@ const WorkflowPage = () => {
     } else if (service?.name === "Weather") {
       github.style.display = "none";
       weather.style.display = "flex";
-    } else {
+    } else if (isAction === true) {
       github.style.display = "none";
       weather.style.display = "none";
     }
 
     if (service?.name === "GitHub" && isAction === false) {
       github2.style.display = "flex";
-    } else {
+    } else if (isAction === false) {
       github2.style.display = "none";
     }
   };
