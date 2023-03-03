@@ -39,7 +39,7 @@ const isRaining = async (location: string) => {
 
     try {
         const response = await axios.get(`${apiEndpoint}${apiRoute}${apiKey}${apiParams}`);
-        if (response.data.text === 'Light rain') {
+        if (response.data.current.condition.text === 'Light rain') {
             return true;
         } else {
             return false;
@@ -56,7 +56,7 @@ const isDay = async (location: string) => {
 
     try {
         const response = await axios.get(`${apiEndpoint}${apiRoute}${apiKey}${apiParams}`);
-        if (response.data.is_day === 1) {
+        if (response.data.current.is_day === 1) {
             return true;
         } else {
             return false;
@@ -73,7 +73,7 @@ const isCold = async (location: string) => {
 
     try {
         const response = await axios.get(`${apiEndpoint}${apiRoute}${apiKey}${apiParams}`);
-        if (response.data.temp_c <= 10) {
+        if (response.data.current.temp_c <= 10) {
             return true;
         } else {
             return false;
