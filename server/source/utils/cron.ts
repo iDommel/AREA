@@ -46,10 +46,16 @@ const checkActions = async () => {
                     }
                 }
                 if (action.name === 'isRaining') {
-                    const isRaining = await weatherController.isRaining('Toulouse');
-                    if (isRaining) {
-                        console.log('Is it raining?', isRaining);
-                    }
+                    const isRaining = await weatherController.isRaining('');
+                    console.log('Is it raining?', isRaining);
+                }
+                if (action.name === 'isDay') {
+                    const isDay = await weatherController.isDay('');
+                    console.log('Is it raining?', isDay);
+                }
+                if (action.name === 'isCold') {
+                    const isCold = await weatherController.isCold('');
+                    console.log('Is it raining?', isCold);
                 }
             });
         });

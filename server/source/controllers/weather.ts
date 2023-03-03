@@ -32,7 +32,7 @@ const getWeather = async (req: Request, res: Response, next: NextFunction) => {
 const isRaining = async (location: string) => {
     const apiEndpoint = 'http://api.weatherapi.com/v1/';
     const apiRoute = 'current.json?key=';
-    const apiParams = `&q=${location || 'Toulouse'}`;
+    const apiParams = `&q=${location || 'London'}`;
 
     try {
         const response = await axios.get(`${apiEndpoint}${apiRoute}${apiKey}${apiParams}`);
@@ -46,5 +46,38 @@ const isRaining = async (location: string) => {
     }
 };
 
+const isDay = async (location: string) => {
+    const apiEndpoint = 'http://api.weatherapi.com/v1/';
+    const apiRoute = 'current.json?key=';
+    const apiParams = `&q=${location || 'Tokyo'}`;
 
-export default { getWeather, isRaining };
+    try {
+        const response = await axios.get(`${apiEndpoint}${apiRoute}${apiKey}${apiParams}`);
+        if (response.data.is_day === 1) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error: any) {
+        return error;
+    }
+};
+
+const isCold = async (location: string) => {
+    const apiEndpoint = 'http://api.weatherapi.com/v1/';
+    const apiRoute = 'current.json?key=';
+    const apiParams = `&q=${location || 'Toulouse'}`;
+
+    try {
+        const response = await axios.get(`${apiEndpoint}${apiRoute}${apiKey}${apiParams}`);
+        if (response.data.temp_c <= 10) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error: any) {
+        return error;
+    }
+};
+
+export default { getWeather, isRaining, isDay, isCold };
