@@ -9,6 +9,7 @@ import Service from '../models/service';
 import serviceStatus from '../models/serviceStatus';
 import { getUserIdFromCookie } from './utils';
 import Action from '../models/action';
+import Reaction from '../models/reaction';
 
 const checkServiceEnabled = async (serviceName: string, userID: string) => {
     try {
@@ -26,6 +27,7 @@ const checkServiceEnabled = async (serviceName: string, userID: string) => {
 };
 
 const IsEvenReaction = async (workflow: any) => {
+    const reaction = await Reaction.findOne({ _id: workflow.reactions[0] });
     switch (workflow.serviceReaction) {
         case 'spotify':
             const serviceEnabled = await checkServiceEnabled("Spotify", workflow.relativeUser);
@@ -39,7 +41,8 @@ const IsEvenReaction = async (workflow: any) => {
             if (serviceEnabled2 === false)
                 return;
             console.log('github bug 401 bad credentials');
-            githubController.githubReaction(workflow.relativeUser, workflow.description);
+            if (reaction.name === 'Create issue')
+                githubController.githubReaction(workflow.relativeUser, workflow.description);
             break;
         default:
             break;
@@ -67,6 +70,16 @@ const checkActions = async () => {
                         const serviceEnabled2 = await checkServiceEnabled("Weather", workflow.relativeUser);
                         if (isRaining && workflow.relativeUser && workflow.relativeUser !== '' && serviceEnabled2) {
                             console.log('Is it raining?', isRaining);
+                        }
+                        break;
+                    case 'IsPullRequestMerged':
+                        const serviceEnabled3 = await checkServiceEnabled("GitHub", workflow.relativeUser);
+                        if (serviceEnabled3 === false)
+                            return;
+                        const isPullRequestMerged = await githubController.checkPullRequestMerged(workflow.relativeUser);
+                        if (isPullRequestMerged && workflow.relativeUser && workflow.relativeUser !== '' && serviceEnabled3) {
+                            console.log('Is pull request merged?', isPullRequestMerged);
+                            IsEvenReaction(workflow);
                         }
                 }
             });

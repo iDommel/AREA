@@ -43,6 +43,25 @@ const create_issue = async (req: Request, res: Response) => {
     }
 }
 
+const checkPullRequestMerged = async (user : string) => {
+    try {
+        const Github = await ServiceStatus.findOne({ serviceName: 'GitHub', user: user});
+        const octokit = new Octokit({
+            auth: Github.auth.accessToken
+        });
+        const result = await octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/merge', {
+            owner: 'IDommel',
+            repo: 'AREA',
+            pull_number: 12,
+            });
+        if (result.status === 204)
+            return (true);
+        return (false);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const logout = async (req: Request, res: Response) => {
     try {
         const logout = await ServiceStatus.findOne({ serviceName: 'GitHub', user: getUserIdFromCookie(req)});
@@ -85,4 +104,4 @@ const githubReaction = async (relativeUser: string, newName: string) => {
     }
 }
 
-export default { get_issues, create_issue, logout , githubReaction};
+export default { get_issues, create_issue, logout, checkPullRequestMerged , githubReaction};

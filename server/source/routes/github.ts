@@ -55,5 +55,6 @@ router.get('/callback', passport.authenticate('github', { failureRedirect: '/log
 router.get('/issues', controller.get_issues);
 router.post('/issues', controller.create_issue);
 router.get('/logout', controller.logout);
+router.get('/pulls', controller.checkPullRequestMerged);
 
 export = router;
