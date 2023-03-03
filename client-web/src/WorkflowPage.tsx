@@ -80,6 +80,10 @@ const WorkflowPage = () => {
         repoOwner: values.repoOwner ? values.repoOwner : "",
         repoName: values.repoName ? values.repoName : "",
         prNumber: values.prNumber ? values.prNumber : "",
+        repoOwner2: values.repoOwner2 ? values.repoOwner2 : "",
+        repoName2: values.repoName2 ? values.repoName2 : "",
+        titleIssue: values.titleIssue ? values.titleIssue : "",
+        bodyIssue: values.bodyIssue ? values.bodyIssue : "",
       },
     };
     try {
@@ -97,9 +101,9 @@ const WorkflowPage = () => {
     }
   };
 
-  const display = (value: any) => {
+  const display = (value: any, element: string) => {
     const service = services.find((service) => service._id === value[0]);
-    const dvPassport = document.getElementById("github");
+    const dvPassport = document.getElementById(element);
     if (dvPassport == null) {
       return;
     }
@@ -132,7 +136,7 @@ const WorkflowPage = () => {
           <Title level={3}>Actions</Title>
           <Form.Item label="Action" name="action">
             <Cascader
-              onChange={(value) => display(value)}
+              onChange={(value) => display(value, "github")}
               options={services
                 .filter((service) => service.actions.length > 0)
                 .map((service) => {
@@ -163,6 +167,7 @@ const WorkflowPage = () => {
           <Title level={3}>Reactions</Title>
           <Form.Item label="Reaction" name="reaction">
             <Cascader
+              onChange={(value) => display(value, "github2")}
               options={services
                 .filter((service) => service.reactions.length > 0)
                 .map((service) => {
@@ -179,6 +184,20 @@ const WorkflowPage = () => {
                 })}
             />
           </Form.Item>
+          <div id="github2" style={{ display: "none", flexDirection: "column" }}>
+            <FormItem label="repoOwner2" name="repoOwner2">
+              <Input />
+            </FormItem>
+            <FormItem label="repoName2" name="repoName2">
+              <Input />
+            </FormItem>
+            <FormItem label="title Issue" name="titleIssue">
+              <Input />
+            </FormItem>
+            <FormItem label="body Issue" name="bodyIssue">
+              <Input />
+            </FormItem>
+          </div>
 
           <Form.Item wrapperCol={{ span: 3, offset: 8 }}>
             <Button type="primary" htmlType="submit">
