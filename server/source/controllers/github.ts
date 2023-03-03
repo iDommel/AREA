@@ -4,19 +4,19 @@ import ServiceStatus from '../models/serviceStatus';
 import {getUserIdFromCookie} from '../utils/utils';
 import Service from '../models/service';
 
-const octokit = new Octokit({
-    auth: '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'
-});
+// const octokit = new Octokit({
+//     auth: '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'
+// });
 
 const get_issues = async (req: Request, res: Response) => {
     try {
         console.log('octokit')
-        const issues = await octokit.request("GET /repos/{owner}/{repo}/issues", {
-            owner: "iDommel",
-            repo: "AREA",
-        });
-        console.log('issues', issues);
-        res.status(200).json(issues);
+        // const issues = await octokit.request("GET /repos/{owner}/{repo}/issues", {
+        //     owner: "iDommel",
+        //     repo: "AREA",
+        // });
+        // console.log('issues', issues);
+        // res.status(200).json(issues);
     } catch (error) {
         console.log(error);
     }
@@ -24,11 +24,17 @@ const get_issues = async (req: Request, res: Response) => {
 
 const create_issue = async (req: Request, res: Response) => {
     try {
+        const token = req.headers.authorization?.split(' ')[1];
+        console.log(req.body)
+        const octokit = new Octokit({
+            auth: token
+        });
         const new_issue = await octokit.request("POST /repos/{owner}/{repo}/issues", {
-            owner: "iDommel",
-            repo: "AREA",
-            title: "Created with the REST API",
-            body: "This is a test issue created by the REST API",
+            owner: "Mfolio2004",
+            repo: "RoG",
+            title: req.body.title,
+            body: req.body.body,
+            labels: req.body.labels
         });
         console.log('new_issue', new_issue);
         res.status(200).json(new_issue);
@@ -52,4 +58,31 @@ const logout = async (req: Request, res: Response) => {
     }
 }
 
-export default { get_issues, create_issue, logout };
+const githubReaction = async (relativeUser: string, newName: string) => {
+    try {
+        const Github = await ServiceStatus.findOne({ serviceName: 'GitHub', user: relativeUser});
+
+        const res = await fetch('http://localhost:8080/github/issues', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'token ' + Github.auth.accessToken
+            },
+            body: JSON.stringify({
+                title: newName,
+                body: 'This is a test issue',
+                labels: ['bug']
+            })
+        });
+        const data = await res.json();
+        if (res.status !== 200) {
+            console.log('Something went wrong with github reaction! ' + data.message);
+        } else {
+            console.log('Github issue created!');
+        }
+    } catch (error: any) {
+        console.log('Something went wrong with github reaction!', error);
+    }
+}
+
+export default { get_issues, create_issue, logout , githubReaction};

@@ -4,35 +4,11 @@ import Workflow from '../models/workflow';
 import User from '../models/user';
 import spotifyController from '../controllers/spotify';
 import weatherController from '../controllers/weather';
+import githubController from '../controllers/github';
 import Service from '../models/service';
 import serviceStatus from '../models/serviceStatus';
 import { getUserIdFromCookie } from './utils';
 import Action from '../models/action';
-
-const githubReaction = async (newName: string) => {
-    try {
-        const res = await fetch('http://localhost:8080/github/issues', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: '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'
-            },
-            body: JSON.stringify({
-                title: newName,
-                body: 'This is a test issue',
-                labels: ['bug']
-            })
-        });
-        const data = await res.json();
-        if (res.status !== 200) {
-            console.log('Something went wrong with github reaction! ' + data.message);
-        } else {
-            console.log('Github issue created!');
-        }
-    } catch (error: any) {
-        console.log('Something went wrong with github reaction!', error);
-    }
-};
 
 const checkServiceEnabled = async (serviceName: string, userID: string) => {
     try {
@@ -63,7 +39,7 @@ const IsEvenReaction = async (workflow: any) => {
             if (serviceEnabled2 === false)
                 return;
             console.log('github bug 401 bad credentials');
-            // githubReaction(workflow.description);
+            githubController.githubReaction(workflow.relativeUser, workflow.description);
             break;
         default:
             break;
@@ -78,7 +54,8 @@ const checkActions = async () => {
             workflow.actions.forEach(async (action: any) => {
                 switch (action.name) {
                     case 'isMinuteEven':
-                        const isEven = await timerController.isMinuteEven('Europe/Amsterdam');
+                        // const isEven = await timerController.isMinuteEven('Europe/Amsterdam');
+                        const isEven = true;
                         const serviceEnabled = await checkServiceEnabled("Time", workflow.relativeUser);
                         if (isEven && workflow.relativeUser && workflow.relativeUser !== '' && serviceEnabled) {
                             console.log('Is minute even?', isEven);
@@ -100,10 +77,10 @@ const checkActions = async () => {
 };
 
 const initScheduledJobs = () => {
-    const scheduledJobFunction = CronJob.schedule('* * * * *', checkActions);
-// 
-    scheduledJobFunction.start();
-    // checkActions();
+//     const scheduledJobFunction = CronJob.schedule('* * * * *', checkActions);
+// // 
+//     scheduledJobFunction.start();
+    checkActions();
 };
 
 export { initScheduledJobs };
