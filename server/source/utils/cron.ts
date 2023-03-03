@@ -26,7 +26,7 @@ const checkServiceEnabled = async (serviceName: string, userID: string) => {
     }
 };
 
-const IsEvenReaction = async (workflow: any) => {
+const checkReaction = async (workflow: any) => {
     const reaction = await Reaction.findOne({ _id: workflow.reactions[0] });
     switch (workflow.serviceReaction) {
         case 'spotify':
@@ -55,6 +55,7 @@ const checkActions = async () => {
         //TODO: talk to Lucas about these any types
         workflowsAction.forEach((workflow: any) => {
             workflow.actions.forEach(async (action: any) => {
+                console.log(action.name)
                 switch (action.name) {
                     case 'isMinuteEven':
                         // const isEven = await timerController.isMinuteEven('Europe/Amsterdam');
@@ -62,24 +63,25 @@ const checkActions = async () => {
                         const serviceEnabled = await checkServiceEnabled("Time", workflow.relativeUser);
                         if (isEven && workflow.relativeUser && workflow.relativeUser !== '' && serviceEnabled) {
                             console.log('Is minute even?', isEven);
-                            IsEvenReaction(workflow);
+                            checkReaction(workflow);
                         }
                         break;
-                    case 'isRaining':
+                    case 'IsRaining':
                         const isRaining = await weatherController.isRaining('Toulouse');
                         const serviceEnabled2 = await checkServiceEnabled("Weather", workflow.relativeUser);
                         if (isRaining && workflow.relativeUser && workflow.relativeUser !== '' && serviceEnabled2) {
                             console.log('Is it raining?', isRaining);
+                            checkReaction(workflow);
                         }
                         break;
                     case 'IsPullRequestMerged':
                         const serviceEnabled3 = await checkServiceEnabled("GitHub", workflow.relativeUser);
                         if (serviceEnabled3 === false)
                             return;
-                        const isPullRequestMerged = await githubController.checkPullRequestMerged(workflow.relativeUser);
+                        const isPullRequestMerged = await githubController.checkPullRequestMerged(workflow);
                         if (isPullRequestMerged && workflow.relativeUser && workflow.relativeUser !== '' && serviceEnabled3) {
                             console.log('Is pull request merged?', isPullRequestMerged);
-                            IsEvenReaction(workflow);
+                            checkReaction(workflow);
                         }
                 }
             });
