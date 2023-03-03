@@ -78,19 +78,31 @@ const checkActions = async () => {
             workflow.actions.forEach(async (action: any) => {
                 switch (action.name) {
                     case 'isMinuteEven':
-                        const isEven = await timerController.isMinuteEven('Europe/Amsterdam');
-                        const serviceEnabled = await checkServiceEnabled("Time", workflow.relativeUser);
-                        if (isEven && workflow.relativeUser && workflow.relativeUser !== '' && serviceEnabled) {
-                            console.log('Is minute even?', isEven);
+                        const isEven = await timerController.isMinuteEven();
+                        const timeEnabled = await checkServiceEnabled("Time", workflow.relativeUser);
+                        console.log('Is minute even?', isEven);
+                        if (isEven && workflow.relativeUser && workflow.relativeUser !== '' && timeEnabled)
                             IsEvenReaction(workflow);
-                        }
+                        break;
+                    case 'isTuesday':
+                        const isTuesday = await timerController.isTuesday('Europe/Amsterdam');
+                        const timeEnabled2 = await checkServiceEnabled("Time", workflow.relativeUser);
+                        console.log('Is today Tuesday?', isTuesday);
+                        if (isTuesday && workflow.relativeUser && workflow.relativeUser !== '' && timeEnabled2)
+                            IsEvenReaction(workflow);
+                        break;
+                    case 'isNoon':
+                        const isNoon = await timerController.isNoon('Europe/Amsterdam');
+                        const timeEnabled3 = await checkServiceEnabled("Time", workflow.relativeUser);
+                        console.log('Is it noon?', isNoon);
+                        if (isNoon && workflow.relativeUser && workflow.relativeUser !== '' && timeEnabled3)
+                            IsEvenReaction(workflow);
                         break;
                     case 'isRaining':
                         const isRaining = await weatherController.isRaining('Toulouse');
-                        const serviceEnabled2 = await checkServiceEnabled("Weather", workflow.relativeUser);
-                        if (isRaining && workflow.relativeUser && workflow.relativeUser !== '' && serviceEnabled2) {
-                            console.log('Is it raining?', isRaining);
-                        }
+                        const weatherEnabled = await checkServiceEnabled("Weather", workflow.relativeUser);
+                        console.log('Is it raining?', isRaining);
+                        if (isRaining && workflow.relativeUser && workflow.relativeUser !== '' && weatherEnabled) {}
                 }
             });
         });
