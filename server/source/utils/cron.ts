@@ -79,28 +79,28 @@ const checkActions = async () => {
                 switch (action.name) {
                     case 'isMinuteEven':
                         const isEven = await timerController.isMinuteEven('Europe/Amsterdam');
-                        const serviceEnabled = await checkServiceEnabled("Time", workflow.relativeUser);
+                        const timeEnabled = await checkServiceEnabled("Time", workflow.relativeUser);
                         console.log('Is minute even?', isEven);
-                        if (isEven && workflow.relativeUser && workflow.relativeUser !== '' && serviceEnabled)
+                        if (isEven && workflow.relativeUser && workflow.relativeUser !== '' && timeEnabled)
                             IsEvenReaction(workflow);
                         break;
                     case 'IsRaining':
                         const isRaining = await weatherController.isRaining('');
-                        const serviceEnabled2 = await checkServiceEnabled("Weather", workflow.relativeUser);
+                        const weatherEnabled = await checkServiceEnabled("Weather", workflow.relativeUser);
                         console.log('Is it raining?', isRaining);
-                        if (isRaining && workflow.relativeUser && workflow.relativeUser !== '' && serviceEnabled2)
+                        if (isRaining && workflow.relativeUser && workflow.relativeUser !== '' && weatherEnabled)
                             IsEvenReaction(workflow);
                     case 'IsDay':
                         const isDay = await weatherController.isDay('');
-                        const serviceEnabled3 = await checkServiceEnabled("Weather", workflow.relativeUser);
+                        const weatherEnabled2 = await checkServiceEnabled("Weather", workflow.relativeUser);
                         console.log('Is it day?', isDay);
-                        if (isDay && workflow.relativeUser && workflow.relativeUser !== '' && serviceEnabled3)
+                        if (isDay && workflow.relativeUser && workflow.relativeUser !== '' && weatherEnabled2)
                             IsEvenReaction(workflow);
                     case 'IsCold':
                         const isCold = await weatherController.isCold('');
-                        const serviceEnabled4 = await checkServiceEnabled("Weather", workflow.relativeUser);
+                        const weatherEnabled3 = await checkServiceEnabled("Weather", workflow.relativeUser);
                         console.log('Is it cold?', isCold);
-                        if (isCold && workflow.relativeUser && workflow.relativeUser !== '' && serviceEnabled4)
+                        if (isCold && workflow.relativeUser && workflow.relativeUser !== '' && weatherEnabled3)
                             IsEvenReaction(workflow);
                 }
             });
