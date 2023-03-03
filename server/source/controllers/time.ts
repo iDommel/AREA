@@ -2,6 +2,9 @@ import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import querystring from 'querystring';
 import axios from 'axios';
+import ServiceStatus from '../models/serviceStatus';
+import { getUserIdFromCookie } from '../utils/utils';
+import Service from '../models/service';
 
 let endpoint = 'http://localhost:8080';
 
@@ -44,4 +47,34 @@ const isMinuteEven = async (timeZone: String) => {
     }
 };
 
-export default { getTime, isMinuteEven };
+const login = async (req: Request, res: Response) => {
+    try {
+        const logout = await ServiceStatus.findOne({ serviceName: 'Time', user: getUserIdFromCookie(req)});
+        logout.isConnected = true;
+        const service = await Service.findOne({ _id: logout.service });
+        service.route = "/time/logout"
+        logout.save();
+        service.save();
+        res.redirect('http://localhost:3000/Home');
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const logout = async (req: Request, res: Response) => {
+    try {
+        const logout = await ServiceStatus.findOne({ serviceName: 'Time', user: getUserIdFromCookie(req)});
+        logout.isConnected = false;
+        logout.auth = null;
+        const service = await Service.findOne({ _id: logout.service });
+        service.route = "/Time/login"
+        logout.save();
+        service.save();
+        res.redirect('http://localhost:3000/Home');
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+export default { getTime, isMinuteEven, login, logout };

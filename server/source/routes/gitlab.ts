@@ -1,7 +1,10 @@
 import express from 'express';
-// import controller from '../controllers/github';
+import controller from '../controllers/gitlab';
 import passport from 'passport';
 import User from '../models/user';
+import ServiceStatus from '../models/serviceStatus';
+import Service from '../models/service';
+import { getUserIdFromCookie } from '../utils/utils';
 
 const router = express.Router();
 const passportGitLab = require('passport-gitlab2');
@@ -15,17 +18,27 @@ passport.use(
         {
             clientID,
             clientSecret,
-            callbackURL: "http://localhost:8080/gitlab/callback"
+            callbackURL: "http://localhost:8080/gitlab/callback",
+            passReqToCallback: true
         },
-        async (accessToken: string, refreshToken: string, profile: any, done: (err: any, user?: any) => void) => {
+        async (req: any, accessToken: string, refreshToken: string, profile: any, done: (err: any, user?: any) => void) => {
             try {
-                const user = await User.findById(profile.id);
-                user.services = [{ name: 'gitlab', accessToken, refreshToken }];
-                user.save();
-                return done(null, {
+                console.log(req);
+                const id = getUserIdFromCookie(req);
+                const serviceStatus = await ServiceStatus.findOne({ user: id, serviceName: 'GitLab' });
+                serviceStatus.auth = {
                     accessToken,
-                    refreshToken,
-                    profile
+                    refreshToken
+                };
+                serviceStatus.isConnected = true;
+                const service = await Service.findOne({ _id: serviceStatus.service });
+                service.route = "/gitlab/logout"
+                service.save();
+                serviceStatus.save();
+                return done(null, {
+                    id,
+                    accessToken,
+                    refreshToken
                 });
             } catch (error) {
                 console.log(error);
@@ -35,9 +48,11 @@ passport.use(
     )
 );
 
-router.get('/login', passport.authenticate('gitlab', { scope: ['email'] }));
+router.get('/login', passport.authenticate('gitlab', { scope: ['read_user'] }));
 router.get('/callback', passport.authenticate('gitlab', { failureRedirect: '/login' }), async (req, res) => {
     res.redirect('http://localhost:3000/Home');
 });
+
+router.get('/logout', controller.logout);
 
 export = router;

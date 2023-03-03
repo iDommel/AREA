@@ -3,7 +3,10 @@ import controller from '../controllers/spotify';
 import passport from 'passport';
 import passportSpotify from 'passport-spotify';
 import User from '../models/user';
-
+import config from '../config/config';
+import { getUserIdFromCookie } from '../utils/utils';
+import ServiceStatus from '../models/serviceStatus';
+import Service from '../models/service';
 const router = express.Router();
 const SpotifyStrategy = passportSpotify.Strategy;
 
@@ -13,24 +16,33 @@ const clientSecret = process.env.SPOTIFY_CLIENT_SECRET as string;
 passport.use(
     new SpotifyStrategy(
         {
-            clientID,
-            clientSecret,
-            callbackURL: 'http://localhost:8080/spotify/callback'
+            clientID: config.spotify.client_id,
+            clientSecret: config.spotify.client_secret,
+            callbackURL: 'http://localhost:8080/spotify/callback',
+            passReqToCallback: true
         },
-        async (accessToken, refreshToken, expires_in, profile, done) => {
-            console.log('accessToken', accessToken);
-            console.log('refreshToken', refreshToken);
-            console.log('expires_in', expires_in);
-            console.log('profile', profile);
+        async (req: any, accessToken: string, refreshToken: string, expires_in: number, profile: passportSpotify.Profile, done: passportSpotify.VerifyCallback) => {
+            const id = getUserIdFromCookie(req);
 
-            const user = await User.findById('63e1714e0670f95f5af133f7');
+            const serviceStatus = await ServiceStatus.findOne({ user: id, serviceName: 'Spotify' });
+            if (!serviceStatus) {
+                return done(Error('User not found'));
+            }
 
-            user.services = [{ name: 'spotify', accessToken, refreshToken }];
-            user.save();
-            return done(null, {
+            serviceStatus.auth = {
                 accessToken,
                 refreshToken,
-                profile
+                expires_in
+            };
+            const service = await Service.findOne({ _id: serviceStatus.service });
+            service.route = "/spotify/logout"
+            service.save();
+            serviceStatus.isConnected = true;
+            serviceStatus.save();
+            return done(null, {
+                id,
+                accessToken,
+                refreshToken
             });
         }
     )
@@ -41,5 +53,6 @@ router.get('/callback', passport.authenticate('spotify', { failureRedirect: '/lo
     res.redirect('http://localhost:3000/Home');
 });
 router.post('/refresh_token', controller.refreshToken);
+router.get('/logout', controller.logout);
 
 export = router;

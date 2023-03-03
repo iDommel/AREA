@@ -18,6 +18,11 @@ const MONGO_HOST = process.env.MONGO_HOST || `mongodb:27017`;
 const MONGO_DATABASE = process.env.MONGO_DATABASE || undefined;
 const DATABASE_TYPE = process.env.DATABASE_TYPE || 'local';
 
+const SPOTIFY = {
+    client_id: process.env.SPOTIFY_CLIENT_ID || '',
+    client_secret: process.env.SPOTIFY_CLIENT_SECRET || ''
+};
+
 const MONGO = {
     host: MONGO_HOST,
     password: MONGO_PASSWORD,
@@ -38,7 +43,8 @@ const SERVER = {
 
 const config = {
     mongo: MONGO,
-    server: SERVER
+    server: SERVER,
+    spotify: SPOTIFY
 };
 
 export default config;

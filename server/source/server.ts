@@ -10,8 +10,9 @@ import cors from 'cors';
 import passport from 'passport';
 import session from 'express-session';
 import { initScheduledJobs } from './utils/cron';
+import { initializePassport } from './passportconfig';
+import flash from 'express-flash';
 
-import bookRoutes from './routes/book';
 import aboutRoutes from './routes/about';
 import spotifyRoutes from './routes/spotify';
 import workflowRoutes from './routes/workflow';
@@ -22,9 +23,12 @@ import serviceStatusRoutes from './routes/serviceStatus';
 import actionRoutes from './routes/action';
 import reactionRoutes from './routes/reaction';
 import githubRoutes from './routes/github';
+import authRoutes from './routes/auth';
+import userController from './controllers/user';
 import gitlabRoutes from './routes/gitlab';
 import weatherRoutes from './routes/weather';
 import timeRoutes from './routes/time';
+import microsoftRoutes from './routes/microsoft';
 
 const NAMESPACE = 'Server';
 const app = express();
@@ -48,7 +52,7 @@ app.use((req, res, next) => {
 
     res.on('finish', () => {
         /** Log the res */
-        logging.info(NAMESPACE, `METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`);
+        logging.info(NAMESPACE, `--> METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`);
     });
 
     next();
@@ -62,26 +66,18 @@ app.use(bodyParser.json());
 app.use(cors());
 app.options('*', cors());
 
-app.use(session({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
-
 // Initialize Passport!  Also use passport.session() middleware, to support
 // persistent login sessions (recommended).
+app.use(session({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
+app.use(flash());
+initializePassport(passport);
 app.use(passport.initialize());
 app.use(passport.session());
-
-passport.serializeUser(function (user, done) {
-    done(null, user);
-});
-
-passport.deserializeUser(function (user: false | Express.User | null | undefined, done) {
-    done(null, user);
-});
 
 /** cron */
 initScheduledJobs();
 
 /** Routes go here */
-app.use('/books', bookRoutes);
 app.use('/about.json', aboutRoutes);
 app.use('/client.apk', apkRoutes);
 app.use('/spotify', spotifyRoutes);
@@ -92,9 +88,11 @@ app.use('/service-statuses', serviceStatusRoutes);
 app.use('/actions', actionRoutes);
 app.use('/reactions', reactionRoutes);
 app.use('/github', githubRoutes);
+app.use('/auth', authRoutes);
 app.use('/gitlab', gitlabRoutes);
 app.use('/weather', weatherRoutes);
 app.use('/time', timeRoutes);
+app.use('/microsoft', microsoftRoutes);
 
 /** Error handling */
 app.use((req, res, next) => {
