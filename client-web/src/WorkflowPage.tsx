@@ -84,6 +84,7 @@ const WorkflowPage = () => {
         repoName2: values.repoName2 ? values.repoName2 : "",
         titleIssue: values.titleIssue ? values.titleIssue : "",
         bodyIssue: values.bodyIssue ? values.bodyIssue : "",
+        localisation: values.localisation ? values.localisation : "",
       },
     };
     try {
@@ -101,16 +102,31 @@ const WorkflowPage = () => {
     }
   };
 
-  const display = (value: any, element: string) => {
+  const display = (value: any, isAction: boolean) => {
     const service = services.find((service) => service._id === value[0]);
-    const dvPassport = document.getElementById(element);
-    if (dvPassport == null) {
+    const github = document.getElementById("github");
+    const weather = document.getElementById("weather");
+
+    const github2 = document.getElementById("github2");
+
+    if (github == null || weather == null || github2 == null) {
       return;
     }
-    if (service?.name === "GitHub" && dvPassport != null) {
-      dvPassport.style.display = "flex";
+    if (service?.name === "GitHub" && isAction === true) {
+      github.style.display = "flex";
+      weather.style.display = "none";
+    } else if (service?.name === "Weather") {
+      github.style.display = "none";
+      weather.style.display = "flex";
     } else {
-      dvPassport.style.display = "none";
+      github.style.display = "none";
+      weather.style.display = "none";
+    }
+
+    if (service?.name === "GitHub" && isAction === false) {
+      github2.style.display = "flex";
+    } else {
+      github2.style.display = "none";
     }
   };
 
@@ -136,7 +152,7 @@ const WorkflowPage = () => {
           <Title level={3}>Actions</Title>
           <Form.Item label="Action" name="action">
             <Cascader
-              onChange={(value) => display(value, "github")}
+              onChange={(value) => display(value, true)}
               options={services
                 .filter((service) => service.actions.length > 0)
                 .map((service) => {
@@ -164,10 +180,15 @@ const WorkflowPage = () => {
               <Input />
             </FormItem>
           </div>
+          <div id="weather" style={{ display: "none", flexDirection: "column" }}>
+            <FormItem label="Localisation" name="localisation">
+              <Input />
+            </FormItem>
+          </div>
           <Title level={3}>Reactions</Title>
           <Form.Item label="Reaction" name="reaction">
             <Cascader
-              onChange={(value) => display(value, "github2")}
+              onChange={(value) => display(value, false)}
               options={services
                 .filter((service) => service.reactions.length > 0)
                 .map((service) => {

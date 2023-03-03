@@ -28,7 +28,7 @@ const Workflow = ({
     }
   };
 
-  if (service1 === "Weather") service1 = "partly-cloudy-day";
+  if (service1 === "weather") service1 = "partly-cloudy-day";
 
   const renderServiceIcons = () => {
     if (service1 && service2) {

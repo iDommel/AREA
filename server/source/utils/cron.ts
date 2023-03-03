@@ -67,7 +67,8 @@ const checkActions = async () => {
                         }
                         break;
                     case 'IsRaining':
-                        const isRaining = await weatherController.isRaining('Toulouse');
+                        const isRaining = await weatherController.isRaining(workflow.additionalData[0].localisation);
+                        console.log(workflow.additionalData[0].localisation, isRaining)
                         const serviceEnabled2 = await checkServiceEnabled("Weather", workflow.relativeUser);
                         if (isRaining && workflow.relativeUser && workflow.relativeUser !== '' && serviceEnabled2) {
                             console.log('Is it raining?', isRaining);
