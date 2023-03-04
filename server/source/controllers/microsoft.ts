@@ -56,6 +56,8 @@ const sendEmail = async (workflow: any) => {
 }
 
 const createEvent = async (workflow: any) => {
+    const data = workflow.additionalData[0];
+    console.log(data);
     const microsoft = await ServiceStatus.findOne({ serviceName: 'Microsoft', user: workflow.relativeUser });
     const options = {
         authProvider: (done : AuthProviderCallback) => {
@@ -67,17 +69,17 @@ const createEvent = async (workflow: any) => {
         const client = Client.init(options);
 
         const event = {
-            subject: 'Let\'s go for lunch',
+            subject: data.subjectEvent,
             body: {
               contentType: 'HTML',
-              content: 'Does mid month work for you?'
+              content: data.contentEvent,
             },
             start: {
-                dateTime: '2023-03-15T12:00:00',
+                dateTime: data.startDate,
                 timeZone: 'Europe/Paris'
             },
             end: {
-                dateTime: '2023-03-15T14:00:00',
+                dateTime: data.endDate,
                 timeZone: 'Europe/Paris'
             }
         };

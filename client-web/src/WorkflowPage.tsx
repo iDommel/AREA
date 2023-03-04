@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import User from "./User";
 import Menu from "./Component/Menu";
-import { Button, Cascader, Form, Input, Typography, message, DatePicker } from "antd";
+import { Button, Cascader, Form, Input, Typography, message, DatePicker, TimePicker } from "antd";
 import type { FormInstance } from "antd/es/form";
 import { useNavigate } from "react-router-dom";
 
@@ -93,6 +93,10 @@ const WorkflowPage = () => {
         subject : values.subject ? values.subject : "",
         content : values.content ? values.content : "",
         to : values.to ? values.to : "",
+        subjectEvent : values.subjectEvent ? values.subjectEvent : "",
+        contentEvent : values.contentEvent ? values.contentEvent : "",
+        startDate : values.startDate ? dayjs(values.startDate).format("YYYY-MM-DD HH:mm:ss") : "",
+        endDate : values.endDate ? dayjs(values.endDate).format("YYYY-MM-DD HH:mm:ss") : "",
       },
     };
     try {
@@ -250,17 +254,17 @@ const WorkflowPage = () => {
             </FormItem>
           </div>
           <div id="microsoft2" style={{ display: "none", flexDirection: "column" }}>
-            <FormItem label="Subject" name="subject">
+            <FormItem label="subjectEvent" name="subjectEvent">
               <Input />
             </FormItem>
-            <FormItem label="Content" name="content">
+            <FormItem label="contentEvent" name="contentEvent">
               <Input />
             </FormItem>
             <FormItem label="startDate" name="startDate">
-            <DatePicker
-              format="YYYY-MM-DD HH:mm:ss"
-              showTime={{ defaultValue: dayjs('00:00:00', 'HH:mm:ss') }}
-            />
+              <DatePicker
+                format="YYYY-MM-DD HH:mm:ss"
+                showTime={{ defaultValue: dayjs('00:00:00', 'HH:mm:ss') }}
+              />
             </FormItem>
             <FormItem label="endDate" name="endDate">
               <DatePicker
