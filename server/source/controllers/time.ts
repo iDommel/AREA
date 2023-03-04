@@ -31,13 +31,45 @@ const getTime = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-const isMinuteEven = async (timeZone: String) => {
+const isMinuteEven = async () => {
+    const apiEndpoint = 'https://www.timeapi.io/';
+    const apiRoute = 'api/Time/current/zone';
+    const apiParams = '?timeZone=Europe/Amsterdam';
+    try {
+        const response = await axios.get(`${apiEndpoint}${apiRoute}${apiParams}`);
+        if (response.data.minute % 2 === 0) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error: any) {
+        return undefined;
+    }
+};
+
+const isTuesday = async (timeZone: String) => {
     const apiEndpoint = 'https://www.timeapi.io/';
     const apiRoute = 'api/Time/current/zone';
     const apiParams = `?timeZone=${timeZone || 'Europe/Amsterdam'}`;
     try {
         const response = await axios.get(`${apiEndpoint}${apiRoute}${apiParams}`);
-        if (response.data.minute % 2 === 0) {
+        if (response.data.dayOfWeek === 'Sunday') {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error: any) {
+        return undefined;
+    }
+};
+
+const isNoon = async (timeZone: String) => {
+    const apiEndpoint = 'https://www.timeapi.io/';
+    const apiRoute = 'api/Time/current/zone';
+    const apiParams = `?timeZone=${timeZone || 'Europe/Amsterdam'}`;
+    try {
+        const response = await axios.get(`${apiEndpoint}${apiRoute}${apiParams}`);
+        if (response.data.hour === 12 && response.data.minute <= 5) {
             return true;
         } else {
             return false;
@@ -77,4 +109,4 @@ const logout = async (req: Request, res: Response) => {
 }
 
 
-export default { getTime, isMinuteEven, login, logout };
+export default { getTime, isMinuteEven, isTuesday, isNoon, login, logout };
