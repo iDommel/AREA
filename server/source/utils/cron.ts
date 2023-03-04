@@ -69,14 +69,14 @@ const checkActions = async () => {
                         const timeEnabled2 = await checkServiceEnabled("Time", workflow.relativeUser);
                         console.log('Is today Tuesday?', isTuesday);
                         if (isTuesday && workflow.relativeUser && workflow.relativeUser !== '' && timeEnabled2)
-                            IsEvenReaction(workflow);
+                            checkReaction(workflow);
                         break;
                     case 'isNoon':
                         const isNoon = await timerController.isNoon('Europe/Amsterdam');
                         const timeEnabled3 = await checkServiceEnabled("Time", workflow.relativeUser);
                         console.log('Is it noon?', isNoon);
                         if (isNoon && workflow.relativeUser && workflow.relativeUser !== '' && timeEnabled3)
-                            IsEvenReaction(workflow);
+                            checkReaction(workflow);
                         break;
                     case 'IsRaining':
                         const isRaining = await weatherController.isRaining(workflow.additionalData[0].localisation);
@@ -116,7 +116,7 @@ const checkActions = async () => {
     }
 };
 
-const initScheduledJobs = () => 
+const initScheduledJobs = () => {
     const scheduledJobFunction = CronJob.schedule('* * * * *', checkActions);
 
     scheduledJobFunction.start();
