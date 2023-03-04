@@ -2,12 +2,17 @@ import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import User from "./User";
 import Menu from "./Component/Menu";
-import { Button, Cascader, Form, Input, Typography, message } from "antd";
+import { Button, Cascader, Form, Input, Typography, message, DatePicker } from "antd";
 import type { FormInstance } from "antd/es/form";
 import { useNavigate } from "react-router-dom";
 
 import { useAuthContext } from "./Context/AuthContext";
 import FormItem from "antd/es/form/FormItem";
+
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(customParseFormat);
 
 type SizeType = Parameters<typeof Form>[0]["size"];
 const { TextArea } = Input;
@@ -110,10 +115,11 @@ const WorkflowPage = () => {
     const github = document.getElementById("github");
     const weather = document.getElementById("weather");
     const microsoft = document.getElementById("microsoft");
+    const microsoft2 = document.getElementById("microsoft2");
 
     const github2 = document.getElementById("github2");
 
-    if (github == null || weather == null || github2 == null || microsoft == null) {
+    if (github == null || weather == null || github2 == null || microsoft == null || microsoft2 == null) {
       return;
     }
     if (service?.name === "GitHub" && isAction === true) {
@@ -130,9 +136,14 @@ const WorkflowPage = () => {
     if (service?.name === "GitHub" && isAction === false) {
       github2.style.display = "flex";
       microsoft.style.display = "none";
+    } else if (service?.name === "Microsoft" && value[1] === "64031cb83a9dfd1b90a4ee8f") {
+      github2.style.display = "none";
+      microsoft2.style.display = "none";
+      microsoft.style.display = "flex";
     } else if (service?.name === "Microsoft") {
       github2.style.display = "none";
-      microsoft.style.display = "flex";
+      microsoft.style.display = "none";
+      microsoft2.style.display = "flex";
     } else if (isAction === false) {
       github2.style.display = "none";
     }
@@ -236,6 +247,26 @@ const WorkflowPage = () => {
             </FormItem>
             <FormItem label="To" name="to">
               <Input />
+            </FormItem>
+          </div>
+          <div id="microsoft2" style={{ display: "none", flexDirection: "column" }}>
+            <FormItem label="Subject" name="subject">
+              <Input />
+            </FormItem>
+            <FormItem label="Content" name="content">
+              <Input />
+            </FormItem>
+            <FormItem label="startDate" name="startDate">
+            <DatePicker
+              format="YYYY-MM-DD HH:mm:ss"
+              showTime={{ defaultValue: dayjs('00:00:00', 'HH:mm:ss') }}
+            />
+            </FormItem>
+            <FormItem label="endDate" name="endDate">
+              <DatePicker
+                format="YYYY-MM-DD HH:mm:ss"
+                showTime={{ defaultValue: dayjs('00:00:00', 'HH:mm:ss') }}
+              />
             </FormItem>
           </div>
 
