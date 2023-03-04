@@ -7,6 +7,7 @@ import type { FormInstance } from "antd/es/form";
 import { useNavigate } from "react-router-dom";
 
 import { useAuthContext } from "./Context/AuthContext";
+import FormItem from "antd/es/form/FormItem";
 
 type SizeType = Parameters<typeof Form>[0]["size"];
 const { TextArea } = Input;
@@ -60,6 +61,7 @@ const WorkflowPage = () => {
   }, []);
 
   const onSubmit = async (values: any) => {
+    console.log(values);
     const { name, description, action, reaction } = values;
 
     const workflow = {
@@ -74,6 +76,16 @@ const WorkflowPage = () => {
       serviceReaction: services
         .find((service) => service._id === reaction[0])
         ?.name.toLowerCase(),
+      additionalData: {
+        repoOwner: values.repoOwner ? values.repoOwner : "",
+        repoName: values.repoName ? values.repoName : "",
+        prNumber: values.prNumber ? values.prNumber : "",
+        repoOwner2: values.repoOwner2 ? values.repoOwner2 : "",
+        repoName2: values.repoName2 ? values.repoName2 : "",
+        titleIssue: values.titleIssue ? values.titleIssue : "",
+        bodyIssue: values.bodyIssue ? values.bodyIssue : "",
+        localisation: values.localisation ? values.localisation : "",
+      },
     };
     try {
       const response = await fetchAPI(
@@ -87,6 +99,34 @@ const WorkflowPage = () => {
       if (error.response) {
         message.error(error.response.data.message);
       }
+    }
+  };
+
+  const display = (value: any, isAction: boolean) => {
+    const service = services.find((service) => service._id === value[0]);
+    const github = document.getElementById("github");
+    const weather = document.getElementById("weather");
+
+    const github2 = document.getElementById("github2");
+
+    if (github == null || weather == null || github2 == null) {
+      return;
+    }
+    if (service?.name === "GitHub" && isAction === true) {
+      github.style.display = "flex";
+      weather.style.display = "none";
+    } else if (service?.name === "Weather") {
+      github.style.display = "none";
+      weather.style.display = "flex";
+    } else if (isAction === true) {
+      github.style.display = "none";
+      weather.style.display = "none";
+    }
+
+    if (service?.name === "GitHub" && isAction === false) {
+      github2.style.display = "flex";
+    } else if (isAction === false) {
+      github2.style.display = "none";
     }
   };
 
@@ -112,6 +152,7 @@ const WorkflowPage = () => {
           <Title level={3}>Actions</Title>
           <Form.Item label="Action" name="action">
             <Cascader
+              onChange={(value) => display(value, true)}
               options={services
                 .filter((service) => service.actions.length > 0)
                 .map((service) => {
@@ -128,9 +169,26 @@ const WorkflowPage = () => {
                 })}
             />
           </Form.Item>
+          <div id="github" style={{ display: "none", flexDirection: "column" }}>
+            <FormItem label="repoOwner" name="repoOwner">
+              <Input />
+            </FormItem>
+            <FormItem label="repoName" name="repoName">
+              <Input />
+            </FormItem>
+            <FormItem label="prNumber" name="prNumber">
+              <Input />
+            </FormItem>
+          </div>
+          <div id="weather" style={{ display: "none", flexDirection: "column" }}>
+            <FormItem label="Localisation" name="localisation">
+              <Input />
+            </FormItem>
+          </div>
           <Title level={3}>Reactions</Title>
           <Form.Item label="Reaction" name="reaction">
             <Cascader
+              onChange={(value) => display(value, false)}
               options={services
                 .filter((service) => service.reactions.length > 0)
                 .map((service) => {
@@ -147,6 +205,20 @@ const WorkflowPage = () => {
                 })}
             />
           </Form.Item>
+          <div id="github2" style={{ display: "none", flexDirection: "column" }}>
+            <FormItem label="repoOwner2" name="repoOwner2">
+              <Input />
+            </FormItem>
+            <FormItem label="repoName2" name="repoName2">
+              <Input />
+            </FormItem>
+            <FormItem label="title Issue" name="titleIssue">
+              <Input />
+            </FormItem>
+            <FormItem label="body Issue" name="bodyIssue">
+              <Input />
+            </FormItem>
+          </div>
 
           <Form.Item wrapperCol={{ span: 3, offset: 8 }}>
             <Button type="primary" htmlType="submit">

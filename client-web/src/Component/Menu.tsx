@@ -27,22 +27,14 @@ function getItem(
   } as MenuItem;
 }
 
-const serviceList = [
-  "63e1a99689b9860fb46d3698",
-  "63e1ab6fe3a0d2130314394b",
-  "63f49774c9221b400ba2c89f",
-  "63fcb14a7a72bcff0db98339",
-  "63fcdbae7a72bcff0db9834e",
-  "63fcec4c7a72bcff0db98355",
-];
-
 const rootSubmenuKeys = ["/Workflow", "/Service"];
 
 const MenuPage: React.FC = () => {
   const [openKeys, setOpenKeys] = useState(["/WorkflowInfo"]);
   const [workflows, setWorkflows] = useState<MenuItem[]>([]);
   const [services, setServices] = useState<MenuItem[]>([]);
-  const { user, fetchAPI } = useAuthContext();
+  const [serviceIdList, setServiceIdList] = useState<string[]>([]);
+  const { user, fetchAPI,  } = useAuthContext();
   const navigate = useNavigate();
 
   const [items, setItems] = useState<MenuItem[]>([
@@ -77,6 +69,7 @@ const MenuPage: React.FC = () => {
         message.error(data.message);
       } else {
         const services = data.services;
+        setServiceIdList(services.map((service: any) => service._id));
         const serviceItems: MenuItem[] = services.map((service: any) =>
           getItem(service.name, service._id)
         );
@@ -87,36 +80,18 @@ const MenuPage: React.FC = () => {
     }
   };
 
-  const getServiceById = async (id: string) => {
+
+  const getServiceStatus = async (serviceID : string) => {
     try {
       const response = await fetchAPI(
-        `http://localhost:8080/services/${id}`,
+        `/service-statuses?user=${user}&populate=service&service=${serviceID}`,
         "GET"
       );
       const data = response.data;
-      if (response.status !== 200 || !data.service) {
+      if (!data.serviceStatuses) {
         message.error(data.message);
       } else {
-        const service = data.service;
-        return service;
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const updateService = async (status: boolean, id: string) => {
-    try {
-      const response = await fetchAPI(
-        `http://localhost:8080/services/${id}`,
-        "PATCH",
-        {
-          globallyEnabled: status,
-        }
-      );
-      const data = response.data;
-      if (response.status !== 200) {
-        console.error(data);
+        return (data.serviceStatuses)
       }
     } catch (error) {
       console.error(error);
@@ -146,19 +121,15 @@ const MenuPage: React.FC = () => {
   };
 
   const handleSelect = async (e: any) => {
-    console.log(e);
-    if (serviceList.includes(e.key)) {
-      let service = await getServiceById(e.key);
-      if (
-        !service.route.includes("time") &&
-        !service.route.includes("weather") &&
-        !service.globallyEnabled
-      ) {
-        window.location.href = "http://localhost:8080" + service.route;
-        await updateService(true, e.key);
-      } else await updateService(!service.globallyEnabled, e.key);
-      window.location.reload();
-    } else if (e.keyPath && e.keyPath.length > 1) {
+    if (serviceIdList.includes(e.key)) {
+      let serviceStatus = await getServiceStatus(e.key);
+      console.log(serviceStatus[0]);
+      if (serviceStatus[0].serviceName != "Time" && serviceStatus[0].serviceName != "Weather") {
+        window.location.href = "http://localhost:8080" + serviceStatus[0].service.route;
+      }
+      // window.location.reload();
+    } else
+     if (e.keyPath && e.keyPath.length > 1) {
       navigate(e.keyPath[1] + "/" + e.key);
     } else {
       navigate(e.key);

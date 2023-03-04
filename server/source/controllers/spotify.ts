@@ -6,6 +6,7 @@ import User from '../models/user';
 import { getUserIdFromCookie } from '../utils/utils';
 import SpotifyWebApi from 'spotify-web-api-node';
 import ServiceStatus from '../models/serviceStatus';
+import Service from '../models/service';
 
 let client_id = 'd21affede3984ecea64c0ebaceff41e3'; // Your client id
 let client_secret = '734ebfb934c84261963f5794e5783c9f'; // Your secret
@@ -173,4 +174,20 @@ const spotifyReaction = async (relativeUser: string, newName: string) => {
     }
 };
 
-export default { loginFunction, callbackFunction, refreshToken, spotifyReaction };
+const logout = async (req: Request, res: Response) => {
+    try {
+        const logout = await ServiceStatus.findOne({ serviceName: 'Spotify', user: getUserIdFromCookie(req)});
+        logout.isConnected = false;
+        logout.auth = null;
+        const service = await Service.findOne({ _id: logout.service });
+        service.route = "/spotify/login"
+        logout.save();
+        service.save();
+        res.redirect('http://localhost:3000/Home');
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+export default { loginFunction, callbackFunction, refreshToken, spotifyReaction, logout };

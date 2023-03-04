@@ -6,7 +6,7 @@ import aqp from 'api-query-params';
 import JWT, { decode } from 'jsonwebtoken';
 
 const createWorkflow = async (req: Request, res: Response, next: NextFunction) => {
-    let { name, description, actions, reactions, serviceAction, serviceReaction } = req.body;
+    let { name, description, actions, reactions, serviceAction, serviceReaction, additionalData } = req.body;
 
     try {
         // retrieve the token that matcher the "Bearer token" regex
@@ -43,7 +43,8 @@ const createWorkflow = async (req: Request, res: Response, next: NextFunction) =
             reactions,
             relativeUser,
             serviceAction,
-            serviceReaction
+            serviceReaction,
+            additionalData
         });
 
         const result = await workflow.save();

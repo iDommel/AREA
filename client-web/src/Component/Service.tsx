@@ -25,8 +25,11 @@ const Service = ({ id, name, route, isConnected, isActivated }: AppProps) => {
     }
   }, [isConnected]);
 
-  const imgClass =
+  let imgClass =
     "https://img.icons8.com/color/112/000000/" + name.toLowerCase() + ".png";
+
+  if (name === "Weather")
+    imgClass = "https://img.icons8.com/color/112/000000/partly-cloudy-day.png";
 
   return (
     <div className="service">
