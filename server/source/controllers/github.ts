@@ -99,10 +99,15 @@ const logout = async (req: Request, res: Response) => {
 }
 
 interface AdditionalData {
-    titleIssue: string;
-    bodyIssue: string;
-    repoOwner2: string;
-    repoName2: string;
+    repoOwner: string
+    repoName: string
+    prNumber: string
+    repoOwner2: string
+    repoName2: string
+    titleIssue: string
+    bodyIssue: string
+    issueNb : string
+    content : string
 }
 
 interface Workflow {
@@ -152,8 +157,8 @@ const githubReaction2 = async (workflow: Workflow): Promise<GithubReactionRespon
         const Github = await ServiceStatus.findOne({ serviceName: 'GitHub', user: workflow.relativeUser });
 
         const response = await axios.post('http://localhost:8080/github/reactions', {
-            issueNb: info.titleIssue,
-            content: info.bodyIssue,
+            issueNb: info.issueNb,
+            content: info.content,
             repoOwner: info.repoOwner2,
             repoName: info.repoName2
         }, {

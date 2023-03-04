@@ -85,6 +85,8 @@ const WorkflowPage = () => {
         titleIssue: values.titleIssue ? values.titleIssue : "",
         bodyIssue: values.bodyIssue ? values.bodyIssue : "",
         localisation: values.localisation ? values.localisation : "",
+        issueNb : values.issueNb ? values.issueNb : "",
+        content : values.content ? values.content : "",
       },
     };
     try {
@@ -108,8 +110,9 @@ const WorkflowPage = () => {
     const weather = document.getElementById("weather");
 
     const github2 = document.getElementById("github2");
+    const github3 = document.getElementById("github3");
 
-    if (github == null || weather == null || github2 == null) {
+    if (github == null || weather == null || github2 == null || github3 == null) {
       return;
     }
     if (service?.name === "GitHub" && isAction === true) {
@@ -123,8 +126,12 @@ const WorkflowPage = () => {
       weather.style.display = "none";
     }
 
-    if (service?.name === "GitHub" && isAction === false) {
+    if (service?.name === "GitHub" && isAction === false && value[1] === "63f49f3716c5004cdec50c1e") {
       github2.style.display = "flex";
+      github3.style.display = "none";
+    } else if (service?.name === "GitHub" && isAction === false && value[1] === "640324493a9dfd1b90a4ee90") {
+      github2.style.display = "none";
+      github3.style.display = "flex";
     } else if (isAction === false) {
       github2.style.display = "none";
     }
@@ -219,6 +226,22 @@ const WorkflowPage = () => {
               <Input />
             </FormItem>
           </div>
+
+          <div id="github3" style={{ display: "none", flexDirection: "column" }}>
+            <FormItem label="repoOwner2" name="repoOwner2">
+              <Input />
+            </FormItem>
+            <FormItem label="repoName2" name="repoName2">
+              <Input />
+            </FormItem>
+            <FormItem label="issueNb" name="issueNb">
+              <Input />
+            </FormItem>
+            <FormItem label="content" name="content">
+              <Input />
+            </FormItem>
+          </div>
+
 
           <Form.Item wrapperCol={{ span: 3, offset: 8 }}>
             <Button type="primary" htmlType="submit">
