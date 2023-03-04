@@ -5,6 +5,7 @@ import User from '../models/user';
 import spotifyController from '../controllers/spotify';
 import weatherController from '../controllers/weather';
 import githubController from '../controllers/github';
+import gitlabController from '../controllers/gitlab';
 import Service from '../models/service';
 import serviceStatus from '../models/serviceStatus';
 import { getUserIdFromCookie } from './utils';
@@ -43,6 +44,14 @@ const checkReaction = async (workflow: any) => {
             console.log('github bug 401 bad credentials');
             if (reaction.name === 'Create issue')
                 githubController.githubReaction(workflow);
+            break;
+        case 'gitlab':
+            const serviceEnabled3 = await checkServiceEnabled("GitLab", workflow.relativeUser);
+            if (serviceEnabled3 === false)
+                return;
+            //console.log('gitlab bug 401 bad credentials');
+            if (reaction.name === 'Create commit')
+                gitlabController.gitlabCommit(workflow);
             break;
         default:
             break;

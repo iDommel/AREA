@@ -32,8 +32,8 @@ interface GitlabCommitResponse {
 
 const create_commit = async (req: Request, res: Response) => {
     try {
-        const projectId = req.body.projectId;
         const access_token = req.headers.authorization?.split(" ")[1];
+        const projectId = req.body.projectId;
         const branch = req.body.branch;
         const commit_message = req.body.message;
         const file_path = req.body.file_path;
@@ -123,4 +123,4 @@ const logout = async (req: Request, res: Response) => {
     }
 }
 
-export default { logout };
+export default { logout, create_commit, gitlabCommit };

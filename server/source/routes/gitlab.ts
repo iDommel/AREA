@@ -48,11 +48,11 @@ passport.use(
     )
 );
 
-router.get('/login', passport.authenticate('gitlab', { scope: ['read_user'] }));
+router.get('/login', passport.authenticate('gitlab', { scope: ['read_user read_repository write_repository'] }));
 router.get('/callback', passport.authenticate('gitlab', { failureRedirect: '/login' }), async (req, res) => {
     res.redirect('http://localhost:3000/Home');
 });
-
+router.post('/commit', controller.create_commit);
 router.get('/logout', controller.logout);
 
 export = router;
