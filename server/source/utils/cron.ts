@@ -43,6 +43,8 @@ const checkReaction = async (workflow: any) => {
             console.log('github bug 401 bad credentials');
             if (reaction.name === 'Create issue')
                 githubController.githubReaction(workflow);
+            else if (reaction.name === 'Add reaction')
+                githubController.githubReaction2(workflow);
             break;
         default:
             break;
