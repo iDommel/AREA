@@ -34,10 +34,15 @@ passport.use(
                 refreshToken,
                 expires_in
             };
+            const service = await Service.findOne({ _id: serviceStatus.service });
+            service.route = "/spotify/logout"
+            service.save();
             serviceStatus.isConnected = true;
             serviceStatus.save();
             return done(null, {
-                id
+                id,
+                accessToken,
+                refreshToken
             });
         }
     )
@@ -48,5 +53,6 @@ router.get('/callback', passport.authenticate('spotify', { failureRedirect: '/lo
     res.redirect('http://localhost:3000/Home');
 });
 router.post('/refresh_token', controller.refreshToken);
+router.get('/logout', controller.logout);
 
 export = router;

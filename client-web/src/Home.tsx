@@ -30,8 +30,8 @@ type WorkflowType = {
   _id: string;
   name: string;
   isActivated: string;
-  service1: string;
-  service2: string;
+  serviceAction: string;
+  serviceReaction: string;
   preview: string;
 };
 
@@ -69,6 +69,7 @@ const Home = () => {
         message.error(data.message);
       } else {
         setServiceStatuses(data.serviceStatuses);
+        console.log(data.serviceStatuses);
       }
     } catch (error) {
       console.error(error);
@@ -113,8 +114,8 @@ const Home = () => {
         name={workflow.name}
         isActivated={workflow.isActivated}
         preview={workflow.preview}
-        service1="time"
-        service2="spotify"
+        service1={workflow.serviceAction}
+        service2={workflow.serviceReaction}
       />
     ));
   };
