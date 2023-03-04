@@ -66,6 +66,25 @@ const createEvent = async (workflow: any) => {
     try {
         const client = Client.init(options);
 
+        const event = {
+            subject: 'Let\'s go for lunch',
+            body: {
+              contentType: 'HTML',
+              content: 'Does mid month work for you?'
+            },
+            start: {
+                dateTime: '2023-03-15T12:00:00',
+                timeZone: 'Europe/Paris'
+            },
+            end: {
+                dateTime: '2023-03-15T14:00:00',
+                timeZone: 'Europe/Paris'
+            }
+        };
+        const res = await client.api('/me/events').post(event);
+        if (!res.error)
+            console.log('Event created');
+
     } catch (error) {
         console.log(error);
     }

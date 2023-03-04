@@ -47,7 +47,7 @@ passport.use(
     )
 );
 
-router.get('/login', passport.authenticate('microsoft', { scope: ['User.Read Mail.ReadWrite Mail.Send Notes.Create Notes.ReadWrite'] }));
+router.get('/login', passport.authenticate('microsoft', { scope: ['User.Read Mail.ReadWrite Mail.Send Calendars.ReadWrite'] }));
 router.get('/callback', passport.authenticate('microsoft', { failureRedirect: '/login' }), async (req, res) => {
     res.redirect('http://localhost:3000/Home');
 });
