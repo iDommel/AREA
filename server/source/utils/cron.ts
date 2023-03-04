@@ -63,7 +63,7 @@ const IsEvenReaction = async (workflow: any) => {
             if (serviceEnabled2 === false)
                 return;
             console.log('github bug 401 bad credentials');
-            // githubReaction(workflow.description);
+            githubReaction(workflow.description);
             break;
         default:
             break;
@@ -98,11 +98,24 @@ const checkActions = async () => {
                         if (isNoon && workflow.relativeUser && workflow.relativeUser !== '' && timeEnabled3)
                             IsEvenReaction(workflow);
                         break;
-                    case 'isRaining':
-                        const isRaining = await weatherController.isRaining('Toulouse');
+                    case 'IsRaining':
+                        const isRaining = await weatherController.isRaining('');
                         const weatherEnabled = await checkServiceEnabled("Weather", workflow.relativeUser);
                         console.log('Is it raining?', isRaining);
-                        if (isRaining && workflow.relativeUser && workflow.relativeUser !== '' && weatherEnabled) {}
+                        if (isRaining && workflow.relativeUser && workflow.relativeUser !== '' && weatherEnabled)
+                            IsEvenReaction(workflow);
+                    case 'IsDay':
+                        const isDay = await weatherController.isDay('');
+                        const weatherEnabled2 = await checkServiceEnabled("Weather", workflow.relativeUser);
+                        console.log('Is it day?', isDay);
+                        if (isDay && workflow.relativeUser && workflow.relativeUser !== '' && weatherEnabled2)
+                            IsEvenReaction(workflow);
+                    case 'IsCold':
+                        const isCold = await weatherController.isCold('');
+                        const weatherEnabled3 = await checkServiceEnabled("Weather", workflow.relativeUser);
+                        console.log('Is it cold?', isCold);
+                        if (isCold && workflow.relativeUser && workflow.relativeUser !== '' && weatherEnabled3)
+                            IsEvenReaction(workflow);
                 }
             });
         });
@@ -113,7 +126,7 @@ const checkActions = async () => {
 
 const initScheduledJobs = () => {
     const scheduledJobFunction = CronJob.schedule('* * * * *', checkActions);
-// 
+
     scheduledJobFunction.start();
     // checkActions();
 };
