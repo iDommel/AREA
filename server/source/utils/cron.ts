@@ -58,7 +58,8 @@ const checkActions = async () => {
                 console.log(action.name)
                 switch (action.name) {
                     case 'isMinuteEven':
-                        const isEven = await timerController.isMinuteEven();
+                        // const isEven = await timerController.isMinuteEven();
+                        const isEven = true;
                         const timeEnabled = await checkServiceEnabled("Time", workflow.relativeUser);
                         console.log('Is minute even?', isEven);
                         if (isEven && workflow.relativeUser && workflow.relativeUser !== '' && timeEnabled)
@@ -88,17 +89,19 @@ const checkActions = async () => {
                         }
                         break;
                     case 'IsDay':
-                        const isDay = await weatherController.isDay('');
+                        const isDay = await weatherController.isDay(workflow.additionalData[0].localisation);
                         const weatherEnabled2 = await checkServiceEnabled("Weather", workflow.relativeUser);
                         console.log('Is it day?', isDay);
                         if (isDay && workflow.relativeUser && workflow.relativeUser !== '' && weatherEnabled2)
                             checkReaction(workflow);
+                        break;
                     case 'IsCold':
-                        const isCold = await weatherController.isCold('');
+                        const isCold = await weatherController.isCold(workflow.additionalData[0].localisation);
                         const weatherEnabled3 = await checkServiceEnabled("Weather", workflow.relativeUser);
                         console.log('Is it cold?', isCold);
                         if (isCold && workflow.relativeUser && workflow.relativeUser !== '' && weatherEnabled3)
                             checkReaction(workflow);
+                        break;
                     case 'IsPullRequestMerged':
                         const serviceEnabled3 = await checkServiceEnabled("GitHub", workflow.relativeUser);
                         if (serviceEnabled3 === false)
@@ -108,6 +111,7 @@ const checkActions = async () => {
                             console.log('Is pull request merged?', isPullRequestMerged);
                             checkReaction(workflow);
                         }
+                        break;
                 }
             });
         });
@@ -117,10 +121,10 @@ const checkActions = async () => {
 };
 
 const initScheduledJobs = () => {
-    const scheduledJobFunction = CronJob.schedule('* * * * *', checkActions);
+    // const scheduledJobFunction = CronJob.schedule('* * * * *', checkActions);
 
-    scheduledJobFunction.start();
-    // checkActions();
+    // scheduledJobFunction.start();
+    checkActions();
 };
 
 export { initScheduledJobs };

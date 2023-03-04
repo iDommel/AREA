@@ -25,10 +25,10 @@ const get_issues = async (req: Request, res: Response) => {
 const create_issue = async (req: Request, res: Response) => {
     try {
         const token = req.headers.authorization?.split(' ')[1];
-        console.log(req.body)
         const octokit = new Octokit({
             auth: token
         });
+        console.log(req.body);
         const new_issue = await octokit.request("POST /repos/{owner}/{repo}/issues", {
             owner: req.body.repoOwner,
             repo: req.body.repoName,
