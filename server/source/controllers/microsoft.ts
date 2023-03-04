@@ -27,19 +27,21 @@ const sendEmail = async (workflow: any) => {
         }
     };
 
+    console.log(workflow.additionalData[0]);
+
     try {
         const client = Client.init(options);
 
         const message = {
-            subject: 'Hello World',
+            subject: workflow.additionalData[0].subject,
             body: {
                 contentType: 'HTML',
-                content: `<h1>Hello </h1><p>This is a test email</p>`,
+                content: workflow.additionalData[0].content,
             },
             toRecipients: [
                 {
                     emailAddress: {
-                        address: "maxence.folio@epitech.eu",
+                        address: workflow.additionalData[0].to,
                     },
                 },
             ],

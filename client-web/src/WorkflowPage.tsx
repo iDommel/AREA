@@ -85,6 +85,9 @@ const WorkflowPage = () => {
         titleIssue: values.titleIssue ? values.titleIssue : "",
         bodyIssue: values.bodyIssue ? values.bodyIssue : "",
         localisation: values.localisation ? values.localisation : "",
+        subject : values.subject ? values.subject : "",
+        content : values.content ? values.content : "",
+        to : values.to ? values.to : "",
       },
     };
     try {
@@ -106,10 +109,11 @@ const WorkflowPage = () => {
     const service = services.find((service) => service._id === value[0]);
     const github = document.getElementById("github");
     const weather = document.getElementById("weather");
+    const microsoft = document.getElementById("microsoft");
 
     const github2 = document.getElementById("github2");
 
-    if (github == null || weather == null || github2 == null) {
+    if (github == null || weather == null || github2 == null || microsoft == null) {
       return;
     }
     if (service?.name === "GitHub" && isAction === true) {
@@ -125,6 +129,10 @@ const WorkflowPage = () => {
 
     if (service?.name === "GitHub" && isAction === false) {
       github2.style.display = "flex";
+      microsoft.style.display = "none";
+    } else if (service?.name === "Microsoft") {
+      github2.style.display = "none";
+      microsoft.style.display = "flex";
     } else if (isAction === false) {
       github2.style.display = "none";
     }
@@ -216,6 +224,17 @@ const WorkflowPage = () => {
               <Input />
             </FormItem>
             <FormItem label="body Issue" name="bodyIssue">
+              <Input />
+            </FormItem>
+          </div>
+          <div id="microsoft" style={{ display: "none", flexDirection: "column" }}>
+            <FormItem label="Subject" name="subject">
+              <Input />
+            </FormItem>
+            <FormItem label="Content" name="content">
+              <Input />
+            </FormItem>
+            <FormItem label="To" name="to">
               <Input />
             </FormItem>
           </div>
