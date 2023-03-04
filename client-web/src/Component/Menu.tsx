@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppstoreOutlined,
   HomeOutlined,
@@ -7,6 +7,7 @@ import {
 import type { MenuProps } from "antd";
 import { Menu, message } from "antd";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../Context/AuthContext";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -26,42 +27,34 @@ function getItem(
   } as MenuItem;
 }
 
-const serviceList = ["63e1a99689b9860fb46d3698", "63e1ab6fe3a0d2130314394b"];
-
-const rootSubmenuKeys = ["sub1", "sub2"];
+const rootSubmenuKeys = ["/Workflow", "/Service"];
 
 const MenuPage: React.FC = () => {
-  const [openKeys, setOpenKeys] = useState(["sub1"]);
+  const [openKeys, setOpenKeys] = useState(["/WorkflowInfo"]);
+  const [workflows, setWorkflows] = useState<MenuItem[]>([]);
+  const [services, setServices] = useState<MenuItem[]>([]);
+  const [serviceIdList, setServiceIdList] = useState<string[]>([]);
+  const { user, fetchAPI,  } = useAuthContext();
   const navigate = useNavigate();
+
   const [items, setItems] = useState<MenuItem[]>([
-    getItem("Home", "1", <HomeOutlined />),
-    getItem("Workflows", "2", <AppstoreOutlined />),
+    getItem("Home", "/Home", <HomeOutlined />),
+    getItem("Workflows", "/WorkflowInfo", <AppstoreOutlined />),
+    getItem("Services", "/Service", <SettingOutlined />),
   ]);
 
   const getWorkflows = async () => {
     try {
-      const response = await fetch("http://localhost:8080/workflows", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
+      const response = await fetchAPI(`/workflows?relativeUser=${user}`, "GET");
+      const data = response.data;
       if (response.status !== 200 || !data.workflows) {
         message.error(data.message);
       } else {
         const workflows = data.workflows;
-        const workflowItems: MenuItem[] = [];
-        workflows.map((workflow: any) => {
-          console.log(workflow._id, workflow.name);
-          workflowItems.push(getItem(workflow.name, workflow._id));
-        });
-        items[1] = getItem(
-          "Workflows",
-          "2",
-          <AppstoreOutlined />,
-          workflowItems
+        const workflowItems: MenuItem[] = workflows.map((workflow: any) =>
+          getItem(workflow.name, workflow._id)
         );
+        setWorkflows(workflowItems);
       }
     } catch (error) {
       console.error(error);
@@ -70,36 +63,53 @@ const MenuPage: React.FC = () => {
 
   const getServices = async () => {
     try {
-      const response = await fetch("http://localhost:8080/services", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
+      const response = await fetchAPI(`/services`, "GET");
+      const data = response.data;
       if (response.status !== 200 || !data.services) {
         message.error(data.message);
       } else {
         const services = data.services;
-        const serviceItems: MenuItem[] = [];
-        services.map((service: any) => {
-          console.log(service._id, service.name);
-          serviceItems.push(getItem(service.name, service._id));
-        });
-        setItems([
-          ...items,
-          getItem("Services", "3", <SettingOutlined />, serviceItems),
-        ]);
+        setServiceIdList(services.map((service: any) => service._id));
+        const serviceItems: MenuItem[] = services.map((service: any) =>
+          getItem(service.name, service._id)
+        );
+        setServices(serviceItems);
       }
     } catch (error) {
       console.error(error);
     }
   };
 
-  React.useEffect(() => {
+
+  const getServiceStatus = async (serviceID : string) => {
+    try {
+      const response = await fetchAPI(
+        `/service-statuses?user=${user}&populate=service&service=${serviceID}`,
+        "GET"
+      );
+      const data = response.data;
+      if (!data.serviceStatuses) {
+        message.error(data.message);
+      } else {
+        return (data.serviceStatuses)
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
     getWorkflows();
     getServices();
   }, []);
+
+  useEffect(() => {
+    setItems([
+      getItem("Home", "/Home", <HomeOutlined />),
+      getItem("Workflows", "/WorkflowInfo", <AppstoreOutlined />, workflows),
+      getItem("Services", "/Service", <SettingOutlined />, services),
+    ]);
+  }, [workflows, services]);
 
   const onOpenChange: MenuProps["onOpenChange"] = (keys) => {
     const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
@@ -110,16 +120,19 @@ const MenuPage: React.FC = () => {
     }
   };
 
-  const handleSelect = (e: any) => {
-    console.log(e);
-    if (e.key === "1") {
-      navigate("/home");
-    } else if (e.key === "2-1") {
-      navigate("/Workflow");
-    } else if (serviceList.includes(e.key)) {
-      message.info("Service n°" + e.key + " is not implemented yet");
+  const handleSelect = async (e: any) => {
+    if (serviceIdList.includes(e.key)) {
+      let serviceStatus = await getServiceStatus(e.key);
+      console.log(serviceStatus[0]);
+      if (serviceStatus[0].serviceName != "Time" && serviceStatus[0].serviceName != "Weather") {
+        window.location.href = "http://localhost:8080" + serviceStatus[0].service.route;
+      }
+      // window.location.reload();
+    } else
+     if (e.keyPath && e.keyPath.length > 1) {
+      navigate(e.keyPath[1] + "/" + e.key);
     } else {
-      navigate("/WorkflowInfo/" + e.key);
+      navigate(e.key);
     }
   };
 

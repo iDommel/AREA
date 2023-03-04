@@ -4,14 +4,15 @@ import Reaction from '../models/reaction';
 import aqp from 'api-query-params';
 
 const createReaction = async (req: Request, res: Response, next: NextFunction) => {
-    let { name, description, enabled } = req.body;
+    let { name, description, enabled , auth} = req.body;
 
-    try {
+    try {   
         const reaction = new Reaction({
             _id: new mongoose.Types.ObjectId(),
             name,
             description,
-            enabled
+            enabled,
+            auth
         });
 
         const result = await reaction.save();

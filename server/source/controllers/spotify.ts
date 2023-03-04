@@ -2,6 +2,11 @@ import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import querystring from 'querystring';
 import axios from 'axios';
+import User from '../models/user';
+import { getUserIdFromCookie } from '../utils/utils';
+import SpotifyWebApi from 'spotify-web-api-node';
+import ServiceStatus from '../models/serviceStatus';
+import Service from '../models/service';
 
 let client_id = 'd21affede3984ecea64c0ebaceff41e3'; // Your client id
 let client_secret = '734ebfb934c84261963f5794e5783c9f'; // Your secret
@@ -54,9 +59,6 @@ const callbackFunction = async (req: Request, res: Response, next: NextFunction)
     let state = req.query.state || null;
     let storedState = req.cookies ? req.cookies[stateKey] : null;
 
-    console.log('code', code);
-    console.log('state', state);
-    console.log('stateKey', stateKey);
     if (state === null || state !== storedState) {
         res.redirect(
             '/#' +
@@ -139,4 +141,53 @@ const refreshToken = async (req: Request, res: Response, next: NextFunction) => 
     }
 };
 
-export default { loginFunction, callbackFunction, refreshToken };
+type ActionType = {
+    _id: string;
+    name: string;
+    description: string;
+};
+
+let spotifyApi = new SpotifyWebApi({
+    clientId: 'd21affede3984ecea64c0ebaceff41e3',
+    clientSecret: '734ebfb934c84261963f5794e5783c9f',
+    redirectUri: 'http://localhost:3000/Home'
+});
+
+type ServiceType = {
+    name: string;
+    accessToken: string;
+    refreshToken: string;
+};
+
+const spotifyReaction = async (relativeUser: string, newName: string) => {
+    try {
+        const serviceStatus = await ServiceStatus.findOne({ user: relativeUser, serviceName: 'Spotify' });
+        if (!serviceStatus) return;
+        spotifyApi.setAccessToken(serviceStatus.auth.accessToken);
+        const res = await spotifyApi.changePlaylistDetails('0y0zkkH8WQCCKSXbG39dOa', {
+            name: newName,
+            public: false
+        });
+        console.log('Playlist is now private!');
+    } catch (error: any) {
+        console.log('Something went wrong!', error);
+    }
+};
+
+const logout = async (req: Request, res: Response) => {
+    try {
+        const logout = await ServiceStatus.findOne({ serviceName: 'Spotify', user: getUserIdFromCookie(req)});
+        logout.isConnected = false;
+        logout.auth = null;
+        const service = await Service.findOne({ _id: logout.service });
+        service.route = "/spotify/login"
+        logout.save();
+        service.save();
+        res.redirect('http://localhost:3000/Home');
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+export default { loginFunction, callbackFunction, refreshToken, spotifyReaction, logout };

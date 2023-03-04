@@ -6,17 +6,18 @@ import ServiceStatus from '../models/serviceStatus';
 import { getUserIdFromCookie } from '../utils/utils';
 import Service from '../models/service';
 
-let endpoint = 'http://localhost:8080';
+const apiKey = process.env.WEATHER_API_KEY as string;
 
-const getTime = async (req: Request, res: Response, next: NextFunction) => {
-    const apiEndpoint = 'https://www.timeapi.io/';
-    const apiRoute = 'api/Time/current/zone';
-    const apiParams = '?timeZone=Europe/Amsterdam';
+const getWeather = async (req: Request, res: Response, next: NextFunction) => {
+    const apiEndpoint = 'http://api.weatherapi.com/v1/';
+    const apiRoute = 'current.json?key=';
+    const apiParams = '&q=Toulouse';
+
     try {
-        const response = await axios.get(`${apiEndpoint}${apiRoute}${apiParams}`);
+        const response = await axios.get(`${apiEndpoint}${apiRoute}${apiKey}${apiParams}`);
         if (response.status === 200) {
             return res.status(200).json({
-                time: response.data
+                weather: response.data
             });
         } else {
             return res.status(500).json({
@@ -31,28 +32,29 @@ const getTime = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-const isMinuteEven = async (timeZone: String) => {
-    const apiEndpoint = 'https://www.timeapi.io/';
-    const apiRoute = 'api/Time/current/zone';
-    const apiParams = `?timeZone=${timeZone || 'Europe/Amsterdam'}`;
+const isRaining = async (location: string) => {
+    const apiEndpoint = 'http://api.weatherapi.com/v1/';
+    const apiRoute = 'current.json?key=';
+    const apiParams = `&q=${location || 'Toulouse'}`;
+
     try {
-        const response = await axios.get(`${apiEndpoint}${apiRoute}${apiParams}`);
-        if (response.data.minute % 2 === 0) {
+        const response = await axios.get(`${apiEndpoint}${apiRoute}${apiKey}${apiParams}`);
+        if (response.data.text === 'Light rain') {
             return true;
         } else {
             return false;
         }
     } catch (error: any) {
-        return undefined;
+        return error;
     }
 };
 
 const login = async (req: Request, res: Response) => {
     try {
-        const logout = await ServiceStatus.findOne({ serviceName: 'Time', user: getUserIdFromCookie(req)});
+        const logout = await ServiceStatus.findOne({ serviceName: 'Weather', user: getUserIdFromCookie(req)});
         logout.isConnected = true;
         const service = await Service.findOne({ _id: logout.service });
-        service.route = "/time/logout"
+        service.route = "/weather/logout"
         logout.save();
         service.save();
         res.redirect('http://localhost:3000/Home');
@@ -63,11 +65,11 @@ const login = async (req: Request, res: Response) => {
 
 const logout = async (req: Request, res: Response) => {
     try {
-        const logout = await ServiceStatus.findOne({ serviceName: 'Time', user: getUserIdFromCookie(req)});
+        const logout = await ServiceStatus.findOne({ serviceName: 'Weather', user: getUserIdFromCookie(req)});
         logout.isConnected = false;
         logout.auth = null;
         const service = await Service.findOne({ _id: logout.service });
-        service.route = "/Time/login"
+        service.route = "/weather/login"
         logout.save();
         service.save();
         res.redirect('http://localhost:3000/Home');
@@ -77,4 +79,4 @@ const logout = async (req: Request, res: Response) => {
 }
 
 
-export default { getTime, isMinuteEven, login, logout };
+export default { getWeather, isRaining , login, logout };
