@@ -35,11 +35,45 @@ const getWeather = async (req: Request, res: Response, next: NextFunction) => {
 const isRaining = async (location: string) => {
     const apiEndpoint = 'http://api.weatherapi.com/v1/';
     const apiRoute = 'current.json?key=';
+    const apiParams = `&q=${location || 'London'}`;
+
+    try {
+        const response = await axios.get(`${apiEndpoint}${apiRoute}${apiKey}${apiParams}`);
+        if (response.data.current.condition.text === 'Light rain') {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error: any) {
+        return error;
+    }
+};
+
+const isDay = async (location: string) => {
+    const apiEndpoint = 'http://api.weatherapi.com/v1/';
+    const apiRoute = 'current.json?key=';
+    const apiParams = `&q=${location || 'Tokyo'}`;
+
+    try {
+        const response = await axios.get(`${apiEndpoint}${apiRoute}${apiKey}${apiParams}`);
+        if (response.data.current.is_day === 1) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error: any) {
+        return error;
+    }
+};
+
+const isCold = async (location: string) => {
+    const apiEndpoint = 'http://api.weatherapi.com/v1/';
+    const apiRoute = 'current.json?key=';
     const apiParams = `&q=${location || 'Toulouse'}`;
 
     try {
         const response = await axios.get(`${apiEndpoint}${apiRoute}${apiKey}${apiParams}`);
-        if (response.data.text === 'Light rain') {
+        if (response.data.current.temp_c <= 10) {
             return true;
         } else {
             return false;
@@ -79,4 +113,4 @@ const logout = async (req: Request, res: Response) => {
 }
 
 
-export default { getWeather, isRaining , login, logout };
+export default { getWeather, isRaining, isDay, isCold, login, logout };
