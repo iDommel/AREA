@@ -50,7 +50,10 @@ const checkReaction = async (workflow: any) => {
             if (serviceEnabled3 === false)
                 return;
             console.log('microsoft reaction');
-            microsoftController.sendEmail(workflow);
+            if (reaction.name === 'Send email')
+                microsoftController.sendEmail(workflow);
+            else if (reaction.name === 'Create event')
+                microsoftController.createEvent(workflow);
             break;
         default:
             break;

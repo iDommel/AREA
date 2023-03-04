@@ -55,4 +55,20 @@ const sendEmail = async (workflow: any) => {
     }
 }
 
-export default { logout , sendEmail };
+const createEvent = async (workflow: any) => {
+    const microsoft = await ServiceStatus.findOne({ serviceName: 'Microsoft', user: workflow.relativeUser });
+    const options = {
+        authProvider: (done : AuthProviderCallback) => {
+            done(null, microsoft.auth.accessToken);
+        }
+    };
+
+    try {
+        const client = Client.init(options);
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export default { logout , sendEmail , createEvent };

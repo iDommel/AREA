@@ -47,12 +47,13 @@ passport.use(
     )
 );
 
-router.get('/login', passport.authenticate('microsoft', { scope: ['User.Read Mail.ReadWrite Mail.Send'] }));
+router.get('/login', passport.authenticate('microsoft', { scope: ['User.Read Mail.ReadWrite Mail.Send Notes.Create Notes.ReadWrite'] }));
 router.get('/callback', passport.authenticate('microsoft', { failureRedirect: '/login' }), async (req, res) => {
     res.redirect('http://localhost:3000/Home');
 });
 
 router.get('/logout', controller.logout);
 router.get("/send_email", controller.sendEmail)
+router.get("/create_event", controller.createEvent)
 
 export = router;
