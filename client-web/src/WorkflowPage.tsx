@@ -85,6 +85,10 @@ const WorkflowPage = () => {
         titleIssue: values.titleIssue ? values.titleIssue : "",
         bodyIssue: values.bodyIssue ? values.bodyIssue : "",
         localisation: values.localisation ? values.localisation : "",
+        projectID: values.projectID ? values.projectID : "",
+        branch : values.branch ? values.branch : "",
+        commitMessage : values.commitMessage ? values.commitMessage : "",
+        filePath : values.filePath ? values.filePath : "",
       },
     };
     try {
@@ -106,10 +110,11 @@ const WorkflowPage = () => {
     const service = services.find((service) => service._id === value[0]);
     const github = document.getElementById("github");
     const weather = document.getElementById("weather");
+    const gitlab = document.getElementById("gitlab");
 
     const github2 = document.getElementById("github2");
 
-    if (github == null || weather == null || github2 == null) {
+    if (github == null || weather == null || github2 == null || gitlab == null) {
       return;
     }
     if (service?.name === "GitHub" && isAction === true) {
@@ -125,6 +130,10 @@ const WorkflowPage = () => {
 
     if (service?.name === "GitHub" && isAction === false) {
       github2.style.display = "flex";
+      gitlab.style.display = "none";
+    } else if (service?.name === "GitLab" && isAction === false) {
+      github2.style.display = "none";
+      gitlab.style.display = "flex";
     } else if (isAction === false) {
       github2.style.display = "none";
     }
@@ -216,6 +225,21 @@ const WorkflowPage = () => {
               <Input />
             </FormItem>
             <FormItem label="body Issue" name="bodyIssue">
+              <Input />
+            </FormItem>
+          </div>
+
+          <div id="gitlab" style={{ display: "none", flexDirection: "column" }}>
+            <FormItem label="projectID" name="projectID">
+              <Input />
+            </FormItem>
+            <FormItem label="branch" name="branch">
+              <Input />
+            </FormItem>
+            <FormItem label="commitMessage" name="commitMessage">
+              <Input />
+            </FormItem>
+            <FormItem label="filePath" name="filePath">
               <Input />
             </FormItem>
           </div>

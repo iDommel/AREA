@@ -5,15 +5,19 @@ import Service from '../models/service';
 import axios, { AxiosRequestConfig } from "axios";
 
 interface AdditionalData {
-    repoOwner: string
-    repoName: string
-    prNumber: string
-    repoOwner2: string
-    repoName2: string
-    titleIssue: string
-    bodyIssue: string
-    issueNb : string
-    content : string
+    // repoOwner: string
+    // repoName: string
+    // prNumber: string
+    // repoOwner2: string
+    // repoName2: string
+    // titleIssue: string
+    // bodyIssue: string
+    // issueNb : string
+    // content : string
+    projectId: string
+    branch: string
+    commitMessage: string
+    filePath: string
 }
 
 interface Workflow {
