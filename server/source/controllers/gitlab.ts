@@ -4,6 +4,28 @@ import { getUserIdFromCookie } from '../utils/utils';
 import Service from '../models/service';
 import axios, { AxiosRequestConfig } from "axios";
 
+interface AdditionalData {
+    repoOwner: string
+    repoName: string
+    prNumber: string
+    repoOwner2: string
+    repoName2: string
+    titleIssue: string
+    bodyIssue: string
+    issueNb : string
+    content : string
+}
+
+interface Workflow {
+    additionalData: AdditionalData[];
+    relativeUser: string;
+}
+
+interface GitlabCommitResponse {
+    success: boolean;
+    message?: string;
+}
+
 const create_commit = async (req: Request, res: Response) => {
     try {
         const projectId = req.body.projectId;
@@ -11,7 +33,6 @@ const create_commit = async (req: Request, res: Response) => {
         const branch = req.body.branch;
         const commit_message = req.body.message;
         const file_path = req.body.file_path;
-        const content = req.body.content;
 
         const axiosConfig: AxiosRequestConfig = {
             headers: {
@@ -32,13 +53,8 @@ const create_commit = async (req: Request, res: Response) => {
                 {
                     action: "create",
                     file_path,
-                    content,
                 },
             ],
-            author_email: "example@example.com",
-            author_name: "Example User",
-            start_branch: branch,
-            start_sha: latestCommit.commit.id,
         };
 
         const { data: new_commit } = await axios.post(
@@ -66,7 +82,6 @@ const gitlabCommit = async (workflow: Workflow): Promise<GitlabCommitResponse> =
                 {
                     action: 'create',
                     file_path: info.filePath,
-                    content: info.fileContent
                 }
             ]
         }, {
