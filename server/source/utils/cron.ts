@@ -75,6 +75,18 @@ const checkActions = async () => {
                             checkReaction(workflow);
                         }
                         break;
+                    case 'IsDay':
+                        const isDay = await weatherController.isDay('');
+                        const weatherEnabled2 = await checkServiceEnabled("Weather", workflow.relativeUser);
+                        console.log('Is it day?', isDay);
+                        if (isDay && workflow.relativeUser && workflow.relativeUser !== '' && weatherEnabled2)
+                            checkReaction(workflow);
+                    case 'IsCold':
+                        const isCold = await weatherController.isCold('');
+                        const weatherEnabled3 = await checkServiceEnabled("Weather", workflow.relativeUser);
+                        console.log('Is it cold?', isCold);
+                        if (isCold && workflow.relativeUser && workflow.relativeUser !== '' && weatherEnabled3)
+                            checkReaction(workflow);
                     case 'IsPullRequestMerged':
                         const serviceEnabled3 = await checkServiceEnabled("GitHub", workflow.relativeUser);
                         if (serviceEnabled3 === false)
@@ -92,11 +104,11 @@ const checkActions = async () => {
     }
 };
 
-const initScheduledJobs = () => {
-//     const scheduledJobFunction = CronJob.schedule('* * * * *', checkActions);
-// // 
-//     scheduledJobFunction.start();
-    checkActions();
+const initScheduledJobs = () => 
+    const scheduledJobFunction = CronJob.schedule('* * * * *', checkActions);
+
+    scheduledJobFunction.start();
+    // checkActions();
 };
 
 export { initScheduledJobs };
