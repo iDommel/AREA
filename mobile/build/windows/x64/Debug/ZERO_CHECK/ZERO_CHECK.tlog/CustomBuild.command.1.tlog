@@ -1,0 +1,10 @@
+^C:\USERS\IONAN\DEV\AREA\MOBILE\BUILD\WINDOWS\CMAKEFILES\94F3DB7DE142C8E6D0C48DB8E19244BB\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/ionan/dev/AREA/mobile/windows -BC:/Users/ionan/dev/AREA/mobile/build/windows --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/ionan/dev/AREA/mobile/build/windows/mobile.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
