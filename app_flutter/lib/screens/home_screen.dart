@@ -166,6 +166,24 @@ Future<ServiceStatuses?> getServicesSatusesHttp(String auth) async {
   return null;
 }
 
+Future<WorkflowStatuses?> getWorkflowSatusesHttp(String auth) async {
+  final response = await http.get(
+      Uri.parse("http://localhost:8080/workflows?relativeUser=${auth}"),
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Charset": 'utf-8'
+      });
+  print(auth);
+  final WorkflowStatuses workflowStatuses;
+  if (response.statusCode == 200) {
+    workflowStatuses = workflowStatusesFromJson(response.body);
+    return workflowStatuses;
+  } else if (response.statusCode != 200) {
+    return null;
+  }
+  return null;
+}
+
 class ServiceBox extends StatelessWidget {
   const ServiceBox({
     Key? key,
@@ -256,24 +274,60 @@ class WorkflowBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthContext>(context);
+    WorkflowStatuses workflowStatuses;
+
     return SizedBox(
-      width: 80,
+      width: 300,
       height: 80,
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        color: Color.fromARGB(255, 217, 217, 217),
-        child: TextButton(
+      child: FutureBuilder(
+          future: getWorkflowSatusesHttp(auth.user),
+          builder: ((context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done &&
+                snapshot.data != null) {
+              workflowStatuses = snapshot.data!;
+              List<Widget> services =
+                  getListWorkflow(workflowStatuses, context);
+              return ListView(
+                scrollDirection: Axis.horizontal,
+                children: services,
+              );
+            } else {
+              print(snapshot.data);
+              return CircularProgressIndicator();
+            }
+          })),
+    );
+  }
+
+  List<Widget> getListWorkflow(
+      WorkflowStatuses workflowStatuses, BuildContext context) {
+    List<Widget> workflow = [];
+    for (var workflowStatus in workflowStatuses.workflows) {
+      workflow.add(
+        SizedBox(
+          width: 80,
+          height: 80,
+          child: ElevatedButton(
+              onPressed: () async {},
+              style: ButtonStyle(
+                padding: MaterialStateProperty.all(EdgeInsets.all(20)),
+                backgroundColor: MaterialStateProperty.all(Colors.grey),
+              ),
+              child: Text(workflowStatus.name)),
+        ),
+      );
+    }
+    workflow.add(
+      SizedBox(
+        width: 80,
+        height: 80,
+        child: ElevatedButton(
             onPressed: () {
               Navigator.pushNamed(context, '/homePage/createWorkflow');
             },
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                  (Set<MaterialState> states) {
-                if (states.contains(MaterialState.pressed)) {
-                  return Theme.of(context).colorScheme.primary.withOpacity(1);
-                }
-                return null;
-              }),
+              backgroundColor: MaterialStateProperty.all(Colors.grey),
             ),
             child: Center(
               child: Row(
@@ -282,5 +336,6 @@ class WorkflowBox extends StatelessWidget {
             )),
       ),
     );
+    return workflow;
   }
 }

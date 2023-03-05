@@ -54,7 +54,7 @@ Future<Reactions?> getReactionsHttp() async {
 List<DropdownMenuItem<Object>>? getActions(
     ActionsArea? actions, String serviceName, Service? service) {
   List<DropdownMenuItem<Object>>? action = [];
-  for (var i = 0; i < actions!.actions.length - 1; i++) {
+  for (var i = 0; i < actions!.actions.length; i++) {
     if (service != null &&
         service.services
             .singleWhere((element) => element.name == serviceName)
@@ -73,11 +73,12 @@ List<DropdownMenuItem<Object>>? getActions(
 List<DropdownMenuItem<Object>>? getReactions(
     Reactions? reaction, String serviceName, Service? service) {
   List<DropdownMenuItem<Object>>? reactions = [];
-  for (var i = 0; i < reaction!.reactions.length - 1; i++) {
-    if (service != null && service.services
-        .singleWhere((element) => element.name == serviceName)
-        .reactions
-        .contains(reaction.reactions[i].id)) {
+  for (var i = 0; i < reaction!.reactions.length; i++) {
+    if (service != null &&
+        service.services
+            .singleWhere((element) => element.name == serviceName)
+            .reactions
+            .contains(reaction.reactions[i].id)) {
       var newItem = DropdownMenuItem(
         value: reaction.reactions[i].name,
         child: Text(reaction.reactions[i].name),
@@ -90,7 +91,7 @@ List<DropdownMenuItem<Object>>? getReactions(
 
 List<DropdownMenuItem<Object>>? getServices(Service? service) {
   List<DropdownMenuItem<Object>>? services = [];
-  for (var i = 0; i < service!.count - 1; i++) {
+  for (var i = 0; i < service!.count; i++) {
     var newItem = DropdownMenuItem(
       value: service.services[i].name,
       child: Text(service.services[i].name),
@@ -149,6 +150,7 @@ class _CreateActionsState extends State<CreateActions> {
                           onChanged: ((value) {
                             setState(() {
                               selectedService = value as String;
+                              selectedAction = null;
                             });
                           }),
                           autofocus: true,
@@ -181,6 +183,9 @@ class _CreateActionsState extends State<CreateActions> {
                           value: selectedAction,
                           onChanged: ((value) {
                             setState(() {
+                              print("actions: $actions");
+                              print("selectedAction $selectedAction");
+                              print("value $value");
                               selectedAction = value as String;
                             });
                           }),
@@ -266,6 +271,7 @@ class _CreateReactionState extends State<CreateReaction> {
                           onChanged: ((value) {
                             setState(() {
                               selectedService = value as String;
+                              selectedReaction = null;
                             });
                           }),
                           autofocus: true,
