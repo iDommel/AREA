@@ -69,8 +69,7 @@ const checkActions = async () => {
                 console.log(action.name)
                 switch (action.name) {
                     case 'isMinuteEven':
-                        // const isEven = await timerController.isMinuteEven();
-                        const isEven = true;
+                        const isEven = await timerController.isMinuteEven();
                         const timeEnabled = await checkServiceEnabled("Time", workflow.relativeUser);
                         console.log('Is minute even?', isEven);
                         if (isEven && workflow.relativeUser && workflow.relativeUser !== '' && timeEnabled)
@@ -141,10 +140,9 @@ const checkActions = async () => {
 };
 
 const initScheduledJobs = () => {
-    // const scheduledJobFunction = CronJob.schedule('* * * * *', checkActions);
+    const scheduledJobFunction = CronJob.schedule('* * * * *', checkActions);
 
-    // scheduledJobFunction.start();
-    checkActions();
+    scheduledJobFunction.start();
 };
 
 export { initScheduledJobs };

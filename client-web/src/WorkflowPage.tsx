@@ -101,7 +101,6 @@ const WorkflowPage = () => {
         newPlaylistName : values.newPlaylistName ? values.newPlaylistName : "",
         trackName : values.trackName ? values.trackName : "",
         issueNb : values.issueNb ? values.issueNb : "",
-        content : values.content ? values.content : "",
       },
     };
     try {
