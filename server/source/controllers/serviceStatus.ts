@@ -4,12 +4,13 @@ import { NextFunction, Request, Response } from 'express';
 import aqp from 'api-query-params';
 
 const createServiceStatus = async (req: Request, res: Response, next: NextFunction) => {
-    let { service, user } = req.body;
+    let { service, user, serviceName } = req.body;
 
     try {
         const serviceStatus = new ServiceStatus({
             _id: new mongoose.Types.ObjectId(),
             service,
+            serviceName,
             user
         });
         const result = await serviceStatus.save();
