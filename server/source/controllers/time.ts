@@ -7,6 +7,8 @@ import { getUserIdFromCookie } from '../utils/utils';
 import Service from '../models/service';
 
 let endpoint = 'http://localhost:8080';
+const Home = process.env.WEB_HOSTNAME as string;
+const Port = process.env.WEB_PORT as string;
 
 const getTime = async (req: Request, res: Response, next: NextFunction) => {
     const apiEndpoint = 'https://www.timeapi.io/';
@@ -87,7 +89,7 @@ const login = async (req: Request, res: Response) => {
         service.route = "/time/logout"
         logout.save();
         service.save();
-        res.redirect('http://localhost:3000/Home');
+        res.redirect('http://' + Home + ':' + Port + '/');
     } catch (error) {
         console.log(error);
     }
@@ -102,7 +104,7 @@ const logout = async (req: Request, res: Response) => {
         service.route = "/Time/login"
         logout.save();
         service.save();
-        res.redirect('http://localhost:3000/Home');
+        res.redirect('http://' + Home + ':' + Port + '/');
     } catch (error) {
         console.log(error);
     }

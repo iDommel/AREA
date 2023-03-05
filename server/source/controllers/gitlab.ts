@@ -30,6 +30,9 @@ interface GitlabCommitResponse {
     message?: string;
 }
 
+const Home = process.env.WEB_HOSTNAME as string;
+const Port = process.env.WEB_PORT as string;
+
 const create_commit = async (req: Request, res: Response) => {
     try {
         const access_token = req.headers.authorization?.split(" ")[1];
@@ -117,7 +120,7 @@ const logout = async (req: Request, res: Response) => {
         service.route = "/gitlab/login"
         logout.save();
         service.save();
-        res.redirect('http://localhost:3000/Home');
+        res.redirect('http://' + Home + ':' + Port + '/');
     } catch (error) {
         console.log(error);
     }

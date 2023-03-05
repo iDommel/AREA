@@ -7,6 +7,8 @@ import { getUserIdFromCookie } from '../utils/utils';
 import Service from '../models/service';
 
 const apiKey = process.env.WEATHER_API_KEY as string;
+const Home = process.env.WEB_HOSTNAME as string;
+const Port = process.env.WEB_PORT as string;
 
 const getWeather = async (req: Request, res: Response, next: NextFunction) => {
     const apiEndpoint = 'http://api.weatherapi.com/v1/';
@@ -91,7 +93,7 @@ const login = async (req: Request, res: Response) => {
         service.route = "/weather/logout"
         logout.save();
         service.save();
-        res.redirect('http://localhost:3000/Home');
+        res.redirect('http://' + Home + ':' + Port + '/');
     } catch (error) {
         console.log(error);
     }
@@ -106,7 +108,7 @@ const logout = async (req: Request, res: Response) => {
         service.route = "/weather/login"
         logout.save();
         service.save();
-        res.redirect('http://localhost:3000/Home');
+        res.redirect('http://' + Home + ':' + Port + '/');
     } catch (error) {
         console.log(error);
     }

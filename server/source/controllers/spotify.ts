@@ -13,6 +13,9 @@ const client_secret = process.env.SPOTIFY_CLIENT_SECRET as string;
 let endpoint = 'http://localhost:8080';
 let redirect_uri = `${endpoint}/spotify/callback`; // Your redirect uri
 
+const Home = process.env.WEB_HOSTNAME as string;
+const Port = process.env.WEB_PORT as string;
+
 /**
  * Generates a random string containing numbers and letters
  * @param  {number} length The length of the string
@@ -150,7 +153,7 @@ type ActionType = {
 let spotifyApi = new SpotifyWebApi({
     clientId: client_id,
     clientSecret: client_secret,
-    redirectUri: 'http://localhost:3000/Home'
+    redirectUri: 'http://' + Home + ':' + Port + '/'
 });
 
 type ServiceType = {
@@ -210,7 +213,7 @@ const logout = async (req: Request, res: Response) => {
         service.route = "/spotify/login"
         logout.save();
         service.save();
-        res.redirect('http://localhost:3000/Home');
+        res.redirect('http://' + Home + ':' + Port + '/');
     } catch (error) {
         console.log(error);
     }

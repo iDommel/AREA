@@ -13,6 +13,8 @@ const GitHubStrategy = passportGithub.Strategy;
 
 const clientID = process.env.GITHUB_CLIENT_ID as string;
 const clientSecret = process.env.GITHUB_CLIENT_SECRET as string;
+const Home = process.env.WEB_HOSTNAME as string;
+const Port = process.env.WEB_PORT as string;
 
 passport.use(
     new GitHubStrategy(
@@ -50,7 +52,8 @@ passport.use(
 
 router.get('/login', passport.authenticate('github', { scope: ['user:email repo'] }));
 router.get('/callback', passport.authenticate('github', { failureRedirect: '/login' }), async (req, res) => {
-    res.redirect('http://localhost:3000/Home');
+    console.log("here")
+    res.redirect("http://" + Home + ':' + Port + '/');
 });
 router.get('/issues', controller.get_issues);
 router.post('/issues', controller.create_issue);
