@@ -90,6 +90,10 @@ const WorkflowPage = () => {
         titleIssue: values.titleIssue ? values.titleIssue : "",
         bodyIssue: values.bodyIssue ? values.bodyIssue : "",
         localisation: values.localisation ? values.localisation : "",
+        projectID: values.projectID ? values.projectID : "",
+        branch : values.branch ? values.branch : "",
+        commitMessage : values.commitMessage ? values.commitMessage : "",
+        filePath : values.filePath ? values.filePath : "",
         subject : values.subject ? values.subject : "",
         content : values.content ? values.content : "",
         to : values.to ? values.to : "",
@@ -122,6 +126,7 @@ const WorkflowPage = () => {
     const service = services.find((service) => service._id === value[0]);
     const github = document.getElementById("github");
     const weather = document.getElementById("weather");
+    const gitlab = document.getElementById("gitlab");
     const microsoft = document.getElementById("microsoft");
     const microsoft2 = document.getElementById("microsoft2");
     const spotify = document.getElementById("spotify");
@@ -130,7 +135,7 @@ const WorkflowPage = () => {
     const github2 = document.getElementById("github2");
     const github3 = document.getElementById("github3");
 
-    if (github == null || weather == null || github2 == null || microsoft == null || microsoft2 == null || spotify == null || spotify2 == null || github3 == null) {
+    if (github == null || weather == null || github2 == null || microsoft == null || microsoft2 == null || spotify == null || spotify2 == null || github3 == null || gitlab == null) {
       return;
     }
     if (service?.name === "GitHub" && isAction === true) {
@@ -153,6 +158,14 @@ const WorkflowPage = () => {
 
     if (service?.name === "GitHub" && isAction === false && value[1] === "63f49f3716c5004cdec50c1e") {
       github2.style.display = "flex";
+      gitlab.style.display = "none";
+      microsoft.style.display = "none";
+      microsoft2.style.display = "none";
+      spotify2.style.display = "none";
+      github3.style.display = "none";
+    } else if (service?.name === "GitLab" && isAction === false) {
+      github2.style.display = "none";
+      gitlab.style.display = "flex";
       microsoft.style.display = "none";
       microsoft2.style.display = "none";
       spotify2.style.display = "none";
@@ -335,6 +348,21 @@ const WorkflowPage = () => {
             </FormItem>
           </div>
 
+
+          <div id="gitlab" style={{ display: "none", flexDirection: "column" }}>
+            <FormItem label="projectID" name="projectID">
+              <Input />
+            </FormItem>
+            <FormItem label="branch" name="branch">
+              <Input />
+            </FormItem>
+            <FormItem label="commitMessage" name="commitMessage">
+              <Input />
+            </FormItem>
+            <FormItem label="filePath" name="filePath">
+              <Input />
+            </FormItem>
+          </div>
 
           <Form.Item wrapperCol={{ span: 3, offset: 8 }}>
             <Button type="primary" htmlType="submit">

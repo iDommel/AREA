@@ -12,6 +12,8 @@ const MicrosoftStrategy = passportMicrosoft.Strategy;
 
 const clientID = process.env.MICROSOFT_CLIENT_ID as string;
 const clientSecret = process.env.MICROSOFT_CLIENT_SECRET as string;
+const Home = process.env.WEB_HOSTNAME as string;
+const Port = process.env.WEB_PORT as string;
 
 passport.use(
     new MicrosoftStrategy (
@@ -49,7 +51,7 @@ passport.use(
 
 router.get('/login', passport.authenticate('microsoft', { scope: ['User.Read Mail.ReadWrite Mail.Send Calendars.ReadWrite'] }));
 router.get('/callback', passport.authenticate('microsoft', { failureRedirect: '/login' }), async (req, res) => {
-    res.redirect('http://localhost:3000/Home');
+    res.redirect('http://' + Home + ':' + Port + '/');
 });
 
 router.get('/logout', controller.logout);

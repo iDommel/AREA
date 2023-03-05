@@ -5,6 +5,7 @@ import User from '../models/user';
 import spotifyController from '../controllers/spotify';
 import weatherController from '../controllers/weather';
 import githubController from '../controllers/github';
+import gitlabController from '../controllers/gitlab';
 import microsoftController from '../controllers/microsoft';
 import Service from '../models/service';
 import serviceStatus from '../models/serviceStatus';
@@ -55,6 +56,13 @@ const checkReaction = async (workflow: any) => {
             else if (reaction.name === 'Create event')
                 microsoftController.createEvent(workflow);
             break;
+        case 'gitlab':
+            const serviceEnabled4 = await checkServiceEnabled("GitLab", workflow.relativeUser);
+            if (serviceEnabled4 === false)
+                return;
+            if (reaction.name === 'Create commit')
+                gitlabController.gitlabCommit(workflow);
+            break;
         default:
             break;
     }
@@ -69,7 +77,7 @@ const checkActions = async () => {
                 console.log(action.name)
                 switch (action.name) {
                     case 'isMinuteEven':
-                        const isEven = await timerController.isMinuteEven();
+                        const isEven = true;//await timerController.isMinuteEven();
                         const timeEnabled = await checkServiceEnabled("Time", workflow.relativeUser);
                         console.log('Is minute even?', isEven);
                         if (isEven && workflow.relativeUser && workflow.relativeUser !== '' && timeEnabled)
@@ -140,9 +148,10 @@ const checkActions = async () => {
 };
 
 const initScheduledJobs = () => {
-    const scheduledJobFunction = CronJob.schedule('* * * * *', checkActions);
+    // const scheduledJobFunction = CronJob.schedule('* * * * *', checkActions);
 
-    scheduledJobFunction.start();
+    // scheduledJobFunction.start();
+    checkActions();
 };
 
 export { initScheduledJobs };

@@ -6,11 +6,16 @@ import { useState, useEffect } from "react";
 import { Typography, message } from "antd";
 import { useParams } from "react-router-dom";
 import { useAuthContext } from "./Context/AuthContext";
+import { useNavigate } from "react-router-dom";
 const { Title } = Typography;
+
+const adress = process.env.IP_ADRESS;
+const port = process.env.PORT;
 
 const WorkflowInfo = () => {
   const { id } = useParams();
   const { user, fetchAPI } = useAuthContext();
+  const navigate = useNavigate();
 
   const [workflow, setWorkflow] = useState({
     _id: "",
@@ -85,7 +90,7 @@ const WorkflowInfo = () => {
       if (response.status !== 200) {
         message.error(data.message);
       } else {
-        window.location.href = "/Home";
+        window.location.href = "http://" + adress + ":" + port + "/";
       }
     } catch (error) {
       console.error(error);

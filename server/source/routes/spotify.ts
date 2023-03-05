@@ -12,6 +12,8 @@ const SpotifyStrategy = passportSpotify.Strategy;
 
 const clientID = process.env.SPOTIFY_CLIENT_ID as string;
 const clientSecret = process.env.SPOTIFY_CLIENT_SECRET as string;
+const Home = process.env.WEB_HOSTNAME as string;
+const Port = process.env.WEB_PORT as string;
 
 passport.use(
     new SpotifyStrategy(
@@ -51,7 +53,7 @@ passport.use(
 router.get('/login', passport.authenticate('spotify', { scope: ['user-read-email', 'user-read-private', 
 'playlist-modify-private', 'playlist-modify-public', 'user-read-currently-playing', 'user-read-currently-playing'] }));
 router.get('/callback', passport.authenticate('spotify', { failureRedirect: '/login' }), async (req, res) => {
-    res.redirect('http://localhost:3000/Home');
+    res.redirect('http://' + Home + ':' + Port + '/');
 });
 router.post('/refresh_token', controller.refreshToken);
 router.get('/ifPlaying', controller.ifPlaying);

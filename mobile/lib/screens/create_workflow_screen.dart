@@ -89,9 +89,9 @@ class _CreateWorkflowScreenState extends State<CreateWorkflowScreen> {
                                 return null;
                               }),
                             ),
-                            child: const Center(
+                            child:  Center(
                               child: Row(
-                                children: [
+                                children: const [
                                   Text(
                                     'Ajouter une action',
                                     style: TextStyle(color: Colors.white),
@@ -126,9 +126,9 @@ class _CreateWorkflowScreenState extends State<CreateWorkflowScreen> {
                                 return null;
                               }),
                             ),
-                            child: const Center(
+                            child:  Center(
                               child: Row(
-                                children: [
+                                children: const [
                                   Text('Passer aux réactions',
                                       style: TextStyle(color: Colors.white))
                                 ],

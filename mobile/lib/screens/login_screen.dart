@@ -209,7 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ]),
-              const Stack(alignment: Alignment.bottomCenter, children: <Widget>[
+              Stack(alignment: Alignment.bottomCenter, children: const <Widget>[
                 SizedBox(
                   width: 177,
                   height: 10,

@@ -9,6 +9,9 @@ import axios from 'axios';
 //     auth: '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'
 // });
 
+const Home = process.env.WEB_HOSTNAME as string;
+const Port = process.env.WEB_PORT as string;
+
 const get_issues = async (req: Request, res: Response) => {
     try {
         console.log('octokit')
@@ -92,7 +95,7 @@ const logout = async (req: Request, res: Response) => {
         service.route = "/github/login"
         logout.save();
         service.save();
-        res.redirect('http://localhost:3000/Home');
+        res.redirect("http://" + Home + ':' + Port + '/');
     } catch (error) {
         console.log(error);
     }

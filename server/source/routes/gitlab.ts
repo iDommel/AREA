@@ -12,6 +12,8 @@ const GitLabStrategy = passportGitLab.Strategy;
 
 const clientID = process.env.GITLAB_APP_ID as string;
 const clientSecret = process.env.GITLAB_APP_SECRET as string;
+const Home = process.env.WEB_HOSTNAME as string;
+const Port = process.env.WEB_PORT as string;
 
 passport.use(
     new GitLabStrategy (
@@ -48,11 +50,11 @@ passport.use(
     )
 );
 
-router.get('/login', passport.authenticate('gitlab', { scope: ['read_user'] }));
+router.get('/login', passport.authenticate('gitlab', { scope: ['api read_api read_user read_repository write_repository read_registry write_registry sudo admin_mode openid profile email'] }));
 router.get('/callback', passport.authenticate('gitlab', { failureRedirect: '/login' }), async (req, res) => {
-    res.redirect('http://localhost:3000/Home');
+    res.redirect('http://' + Home + ':' + Port + '/');
 });
-
+router.post('/commit', controller.create_commit);
 router.get('/logout', controller.logout);
 
 export = router;

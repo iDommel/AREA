@@ -4,7 +4,7 @@ import Service from '../models/service';
 import aqp from 'api-query-params';
 
 const createService = async (req: Request, res: Response, next: NextFunction) => {
-    let { name, description, actions, reactions, globallyEnabled } = req.body;
+    let { name, description, actions, reactions, globallyEnabled, route } = req.body;
 
     try {
         const service = new Service({
@@ -13,7 +13,8 @@ const createService = async (req: Request, res: Response, next: NextFunction) =>
             description,
             actions,
             reactions,
-            globallyEnabled
+            globallyEnabled,
+            route
         });
 
         const result = await service.save();
