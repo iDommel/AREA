@@ -159,13 +159,15 @@ type ServiceType = {
     refreshToken: string;
 };
 
-const spotifyReaction = async (relativeUser: string, newName: string) => {
+const spotifyReaction = async (workflow : any) => {
     try {
-        const serviceStatus = await ServiceStatus.findOne({ user: relativeUser, serviceName: 'Spotify' });
+        const info = workflow.additionalData[0]
+        const id = info.playlistUrl.split('/playlist/')[1];
+        const serviceStatus = await ServiceStatus.findOne({ user: workflow.relativeUser, serviceName: 'Spotify' });
         if (!serviceStatus) return;
         spotifyApi.setAccessToken(serviceStatus.auth.accessToken);
-        const res = await spotifyApi.changePlaylistDetails('4MaF7XxeJ4JTJ5dZPATfGO', {
-            name: newName,
+        const res = await spotifyApi.changePlaylistDetails(id, {
+            name: info.newPlaylistName,
             public: false
         });
         console.log('Playlist is now private!');
@@ -186,6 +188,7 @@ const ifPlaying = async (relativeUser: string) => {
                 Authorization: 'Bearer ' + serviceStatus.auth.accessToken
             }
         });
+        // console.log(res.data);
         const isPlaying = res.data.is_playing;
         if (isPlaying) {
             return true

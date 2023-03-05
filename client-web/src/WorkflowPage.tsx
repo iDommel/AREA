@@ -97,6 +97,8 @@ const WorkflowPage = () => {
         contentEvent : values.contentEvent ? values.contentEvent : "",
         startDate : values.startDate ? dayjs(values.startDate).format("YYYY-MM-DD HH:mm:ss") : "",
         endDate : values.endDate ? dayjs(values.endDate).format("YYYY-MM-DD HH:mm:ss") : "",
+        playlistUrl : values.playlistUrl ? values.playlistUrl : "",
+        newPlaylistName : values.newPlaylistName ? values.newPlaylistName : "",
       },
     };
     try {
@@ -120,10 +122,11 @@ const WorkflowPage = () => {
     const weather = document.getElementById("weather");
     const microsoft = document.getElementById("microsoft");
     const microsoft2 = document.getElementById("microsoft2");
+    const spotify = document.getElementById("spotify");
 
     const github2 = document.getElementById("github2");
 
-    if (github == null || weather == null || github2 == null || microsoft == null || microsoft2 == null) {
+    if (github == null || weather == null || github2 == null || microsoft == null || microsoft2 == null || spotify == null) {
       return;
     }
     if (service?.name === "GitHub" && isAction === true) {
@@ -148,6 +151,11 @@ const WorkflowPage = () => {
       github2.style.display = "none";
       microsoft.style.display = "none";
       microsoft2.style.display = "flex";
+    } else if (service?.name === "Spotify" && isAction === false) {
+      github2.style.display = "none";
+      microsoft.style.display = "none";
+      microsoft2.style.display = "none";
+      spotify.style.display = "flex";
     } else if (isAction === false) {
       github2.style.display = "none";
     }
@@ -271,6 +279,14 @@ const WorkflowPage = () => {
                 format="YYYY-MM-DD HH:mm:ss"
                 showTime={{ defaultValue: dayjs('00:00:00', 'HH:mm:ss') }}
               />
+            </FormItem>
+          </div>
+          <div id="spotify" style={{ display: "none", flexDirection: "column" }}>
+            <FormItem label="playlistUrl" name="playlistUrl">
+              <Input />
+            </FormItem>
+            <FormItem label="newPlaylistName" name="newPlaylistName">
+              <Input />
             </FormItem>
           </div>
 

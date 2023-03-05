@@ -34,14 +34,12 @@ const checkReaction = async (workflow: any) => {
             const serviceEnabled = await checkServiceEnabled("Spotify", workflow.relativeUser);
             if (serviceEnabled === false)
                 return;
-            console.log('spotify bug fetch user');
-            spotifyController.spotifyReaction(workflow.relativeUser, workflow.description);
+            spotifyController.spotifyReaction(workflow);
             break;
         case 'github':
             const serviceEnabled2 = await checkServiceEnabled("GitHub", workflow.relativeUser);
             if (serviceEnabled2 === false)
                 return;
-            console.log('github bug 401 bad credentials');
             if (reaction.name === 'Create issue')
                 githubController.githubReaction(workflow);
             break;
