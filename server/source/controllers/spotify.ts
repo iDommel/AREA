@@ -8,8 +8,8 @@ import SpotifyWebApi from 'spotify-web-api-node';
 import ServiceStatus from '../models/serviceStatus';
 import Service from '../models/service';
 
-let client_id = 'd21affede3984ecea64c0ebaceff41e3'; // Your client id
-let client_secret = '734ebfb934c84261963f5794e5783c9f'; // Your secret
+const client_id = process.env.SPOTIFY_CLIENT_ID as string;
+const client_secret = process.env.SPOTIFY_CLIENT_SECRET as string;
 let endpoint = 'http://localhost:8080';
 let redirect_uri = `${endpoint}/spotify/callback`; // Your redirect uri
 
@@ -148,8 +148,8 @@ type ActionType = {
 };
 
 let spotifyApi = new SpotifyWebApi({
-    clientId: 'd21affede3984ecea64c0ebaceff41e3',
-    clientSecret: '734ebfb934c84261963f5794e5783c9f',
+    clientId: client_id,
+    clientSecret: client_secret,
     redirectUri: 'http://localhost:3000/Home'
 });
 
