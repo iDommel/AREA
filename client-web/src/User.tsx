@@ -26,11 +26,7 @@ const User: React.FC = () => {
 
   const getApk = async () => {
     try {
-      const res = await fetchAPI(`/client.apk/`, "GET");
-
-      if (res.status === 200) {
-        console.log(res);
-      }
+      window.open("http://172.22.0.1:8080/client.apk/");
     } catch (error) {
       message.error("Une erreur est survenue lors du téléchargement");
     }
