@@ -1,0 +1,28 @@
+^C:\USERS\IONAN\DEV\AREA\MOBILE\BUILD\WINDOWS\CMAKEFILES\B0B8B57E2618A230A5B2CF5521728E18\FLUTTER_WINDOWS.DLL.RULE
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E env FLUTTER_ROOT=C:\Users\ionan\src\flutter PROJECT_DIR=C:\Users\ionan\dev\AREA\mobile FLUTTER_ROOT=C:\Users\ionan\src\flutter FLUTTER_EPHEMERAL_DIR=C:\Users\ionan\dev\AREA\mobile\windows\flutter\ephemeral PROJECT_DIR=C:\Users\ionan\dev\AREA\mobile FLUTTER_TARGET=C:\Users\ionan\dev\AREA\mobile\lib\main.dart DART_DEFINES=RkxVVFRFUl9XRUJfQVVUT19ERVRFQ1Q9dHJ1ZQ== DART_OBFUSCATION=false TRACK_WIDGET_CREATION=true TREE_SHAKE_ICONS=false PACKAGE_CONFIG=C:\Users\ionan\dev\AREA\mobile\.dart_tool\package_config.json C:/Users/ionan/src/flutter/packages/flutter_tools/bin/tool_backend.bat windows-x64 Debug
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\IONAN\DEV\AREA\MOBILE\BUILD\WINDOWS\CMAKEFILES\81C8511F18C6C56EF31371082DDFE700\FLUTTER_ASSEMBLE.RULE
+setlocal
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\IONAN\DEV\AREA\MOBILE\WINDOWS\FLUTTER\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:/Users/ionan/dev/AREA/mobile/windows -BC:/Users/ionan/dev/AREA/mobile/build/windows --check-stamp-file C:/Users/ionan/dev/AREA/mobile/build/windows/flutter/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
