@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:area_app/screens/auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:area_app/parser.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:flutter/material.dart';
 
@@ -57,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
             automaticallyImplyLeading: false,
             centerTitle: true,
-            backgroundColor: Color.fromARGB(255, 73, 71, 131),
+            backgroundColor: const Color.fromARGB(255, 73, 71, 131),
             toolbarHeight: 88,
             title: SizedBox(
               width: 101,
@@ -68,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () {
                     Navigator.pushNamed(context, '/');
                   },
-                  child: Text('Disconnect'),
+                  child: const Text('Disconnect'),
                 ),
               ),
             )),
@@ -77,11 +76,12 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.all(1.0),
             child: Column(
               children: <Widget>[
-                SizedBox(
+                const SizedBox(
                   height: 55,
                 ),
-                Text('Workflow', textScaleFactor: 3, textAlign: TextAlign.left),
-                SizedBox(
+                const Text('Workflow',
+                    textScaleFactor: 3, textAlign: TextAlign.left),
+                const SizedBox(
                   height: 28,
                 ),
                 Stack(alignment: Alignment.bottomCenter, children: <Widget>[
@@ -91,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Card(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
-                      color: Color.fromARGB(255, 61, 61, 61),
+                      color: const Color.fromARGB(255, 61, 61, 61),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
@@ -100,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: 80,
                               child: ListView(
                                 scrollDirection: Axis.horizontal,
-                                children: [
+                                children: const [
                                   WorkflowBox(),
                                 ],
                               ))
@@ -109,11 +109,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ]),
-                SizedBox(
+                const SizedBox(
                   height: 55,
                 ),
-                Text('Services', textScaleFactor: 3, textAlign: TextAlign.left),
-                SizedBox(
+                const Text('Services',
+                    textScaleFactor: 3, textAlign: TextAlign.left),
+                const SizedBox(
                   height: 28,
                 ),
                 Stack(alignment: Alignment.bottomCenter, children: <Widget>[
@@ -123,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Card(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
-                      color: Color.fromARGB(255, 61, 61, 61),
+                      color: const Color.fromARGB(255, 61, 61, 61),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
@@ -132,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: 80,
                               child: ListView(
                                 scrollDirection: Axis.horizontal,
-                                children: [
+                                children: const [
                                   ServiceBox(),
                                 ],
                               ))
@@ -150,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 Future<ServiceStatuses?> getServicesSatusesHttp(String auth) async {
   final response = await http.get(
-      Uri.parse("http://localhost:8080/service-statuses?user=${auth}"),
+      Uri.parse("http://localhost:8080/service-statuses?user=$auth"),
       headers: {
         "Content-Type": "application/json;charset=UTF-8",
         "Charset": 'utf-8'
@@ -168,7 +169,7 @@ Future<ServiceStatuses?> getServicesSatusesHttp(String auth) async {
 
 Future<WorkflowStatuses?> getWorkflowSatusesHttp(String auth) async {
   final response = await http.get(
-      Uri.parse("http://localhost:8080/workflows?relativeUser=${auth}"),
+      Uri.parse("http://localhost:8080/workflows?relativeUser=$auth"),
       headers: {
         "Content-Type": "application/json;charset=UTF-8",
         "Charset": 'utf-8'
@@ -209,7 +210,7 @@ class ServiceBox extends StatelessWidget {
                 );
               } else {
                 print(snapshot.data);
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               }
             })));
   }
@@ -244,8 +245,8 @@ class ServiceBox extends StatelessWidget {
             // }
           },
           style: ButtonStyle(
-            shape: MaterialStateProperty.all(CircleBorder()),
-            padding: MaterialStateProperty.all(EdgeInsets.all(20)),
+            shape: MaterialStateProperty.all(const CircleBorder()),
+            padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
             backgroundColor:
                 MaterialStateProperty.resolveWith<Color?>((states) {
               if (serviceStatus.isEnabled == true) {
@@ -294,7 +295,7 @@ class WorkflowBox extends StatelessWidget {
               );
             } else {
               print(snapshot.data);
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             }
           })),
     );
@@ -311,7 +312,7 @@ class WorkflowBox extends StatelessWidget {
           child: ElevatedButton(
               onPressed: () async {},
               style: ButtonStyle(
-                padding: MaterialStateProperty.all(EdgeInsets.all(20)),
+                padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
                 backgroundColor: MaterialStateProperty.all(Colors.grey),
               ),
               child: Text(workflowStatus.name)),
@@ -329,7 +330,7 @@ class WorkflowBox extends StatelessWidget {
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(Colors.grey),
             ),
-            child: Center(
+            child: const Center(
               child: Row(
                 children: <Widget>[Icon(Icons.add)],
               ),

@@ -17,9 +17,9 @@ class _IpConnectScreenState extends State<IpConnectScreen> {
         appBar: AppBar(
             automaticallyImplyLeading: false,
             centerTitle: true,
-            backgroundColor: Color.fromARGB(255, 73, 71, 131),
+            backgroundColor: const Color.fromARGB(255, 73, 71, 131),
             toolbarHeight: 88,
-            title: SizedBox(
+            title: const SizedBox(
               width: 101,
               height: 101,
               child: Card(
@@ -32,7 +32,7 @@ class _IpConnectScreenState extends State<IpConnectScreen> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: <Widget>[
-              SizedBox(
+              const SizedBox(
                 height: 63,
               ),
               Stack(alignment: Alignment.center, children: <Widget>[
@@ -42,13 +42,13 @@ class _IpConnectScreenState extends State<IpConnectScreen> {
                   child: Card(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
-                    color: Color.fromARGB(255, 217, 217, 217),
+                    color: const Color.fromARGB(255, 217, 217, 217),
                     child: Column(
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           height: 85,
                         ),
-                        Text('Connect to server',
+                        const Text('Connect to server',
                             textScaleFactor: 2, textAlign: TextAlign.left),
                         SizedBox(
                             width: 177,
@@ -56,25 +56,25 @@ class _IpConnectScreenState extends State<IpConnectScreen> {
                             child: Card(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10)),
-                                color: Color.fromARGB(255, 61, 61, 61),
+                                color: const Color.fromARGB(255, 61, 61, 61),
                                 child: TextField(
                                   obscureText: true,
                                   controller: TextEditingController(text: ip),
                                   onChanged: (value) {
                                     ip = value;
                                   },
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     hintStyle: TextStyle(color: Colors.white54),
                                     labelText: 'Enter IP+Port',
                                   ),
                                 ))),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Container(
                             width: 177,
                             height: 48,
-                            color: Color.fromARGB(255, 73, 71, 131),
+                            color: const Color.fromARGB(255, 73, 71, 131),
                             child: Consumer<AuthContext>(
                                 builder: (context, auth, child) {
                               return TextButton(
@@ -82,7 +82,7 @@ class _IpConnectScreenState extends State<IpConnectScreen> {
                                   setState(() {});
                                   Navigator.pushNamed(context, '/login');
                                 },
-                                child: Text('Connect',
+                                child: const Text('Connect',
                                     style: TextStyle(color: Colors.white)),
                               );
                             })),
@@ -91,7 +91,7 @@ class _IpConnectScreenState extends State<IpConnectScreen> {
                   ),
                 ),
               ]),
-              Stack(alignment: Alignment.bottomCenter, children: <Widget>[
+              const Stack(alignment: Alignment.bottomCenter, children: <Widget>[
                 SizedBox(
                   width: 177,
                   height: 10,

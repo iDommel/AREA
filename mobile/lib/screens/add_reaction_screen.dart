@@ -9,9 +9,9 @@ class AddReactionView extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
             centerTitle: true,
-            backgroundColor: Color.fromARGB(255, 73, 71, 131),
+            backgroundColor: const Color.fromARGB(255, 73, 71, 131),
             toolbarHeight: 88,
-            title: SizedBox(
+            title: const SizedBox(
               width: 101,
               height: 101,
               child: Card(
@@ -22,25 +22,25 @@ class AddReactionView extends StatelessWidget {
           child: Padding(
               padding: const EdgeInsets.all(1.0),
               child: Column(children: <Widget>[
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
-                Text('Création de workflow',
+                const Text('Création de workflow',
                     textScaleFactor: 2,
                     textAlign: TextAlign.left,
                     style: TextStyle(color: Colors.white)),
-                SizedBox(
+                const SizedBox(
                   height: 11,
                 ),
-                Text('Les Réactions',
+                const Text('Les Réactions',
                     textScaleFactor: 1.5,
                     textAlign: TextAlign.left,
                     style: TextStyle(color: Colors.white)),
-                SizedBox(
+                const SizedBox(
                   height: 12,
                 ),
-                CreateReaction(),
-                SizedBox(height: 21),
+                const CreateReaction(),
+                const SizedBox(height: 21),
                 SizedBox(
                     height: 50,
                     child: Row(
@@ -53,7 +53,7 @@ class AddReactionView extends StatelessWidget {
                             child: Card(
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10)),
-                              color: Color.fromARGB(255, 61, 61, 61),
+                              color: const Color.fromARGB(255, 61, 61, 61),
                               child: TextButton(
                                 onPressed: () {},
                                 style: ButtonStyle(
@@ -70,7 +70,7 @@ class AddReactionView extends StatelessWidget {
                                     return null;
                                   }),
                                 ),
-                                child: Icon(Icons.arrow_back_sharp),
+                                child: const Icon(Icons.arrow_back_sharp),
                               ),
                             )),
                         SizedBox(
@@ -79,7 +79,7 @@ class AddReactionView extends StatelessWidget {
                           child: Card(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)),
-                            color: Color.fromARGB(255, 61, 61, 61),
+                            color: const Color.fromARGB(255, 61, 61, 61),
                             child: TextButton(
                                 onPressed: () {},
                                 style: ButtonStyle(
@@ -96,7 +96,7 @@ class AddReactionView extends StatelessWidget {
                                     return null;
                                   }),
                                 ),
-                                child: Center(
+                                child: const Center(
                                   child: Row(
                                     children: [
                                       Text(
@@ -114,7 +114,7 @@ class AddReactionView extends StatelessWidget {
                           child: Card(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)),
-                            color: Color.fromARGB(255, 61, 61, 61),
+                            color: const Color.fromARGB(255, 61, 61, 61),
                             child: TextButton(
                                 onPressed: () {
                                   Navigator.popUntil(context,
@@ -134,7 +134,7 @@ class AddReactionView extends StatelessWidget {
                                     return null;
                                   }),
                                 ),
-                                child: Center(
+                                child: const Center(
                                   child: Row(
                                     children: [
                                       Text('Sauvegarder',

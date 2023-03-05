@@ -8,7 +8,7 @@ import 'dart:convert';
 class AuthProvider extends StatelessWidget {
   final Widget child;
 
-  AuthProvider({required this.child});
+  const AuthProvider({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {

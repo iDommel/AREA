@@ -19,9 +19,9 @@ class _LoginScreenState extends State<LoginScreen> {
         appBar: AppBar(
             automaticallyImplyLeading: false,
             centerTitle: true,
-            backgroundColor: Color.fromARGB(255, 73, 71, 131),
+            backgroundColor: const Color.fromARGB(255, 73, 71, 131),
             toolbarHeight: 88,
-            title: SizedBox(
+            title: const SizedBox(
               width: 101,
               height: 101,
               child: Card(
@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: <Widget>[
-              SizedBox(
+              const SizedBox(
                 height: 63,
               ),
               Stack(alignment: Alignment.center, children: <Widget>[
@@ -44,15 +44,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Card(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
-                    color: Color.fromARGB(255, 217, 217, 217),
+                    color: const Color.fromARGB(255, 217, 217, 217),
                     child: Column(
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           height: 85,
                         ),
-                        Text('Login',
+                        const Text('Login',
                             textScaleFactor: 2, textAlign: TextAlign.left),
-                        SizedBox(
+                        const SizedBox(
                           height: 12,
                         ),
                         SizedBox(
@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Card(
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10)),
-                              color: Color.fromARGB(255, 61, 61, 61),
+                              color: const Color.fromARGB(255, 61, 61, 61),
                               child: TextField(
                                 controller: TextEditingController(text: email),
                                 onChanged: (value) {
@@ -69,14 +69,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                 },
                                 keyboardType: TextInputType.name,
                                 scribbleEnabled: false,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: Color.fromARGB(255, 255, 255, 255)),
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                     hintStyle: TextStyle(color: Colors.white54),
                                     labelText: 'Enter your Email'),
                               ),
                             )),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         SizedBox(
@@ -85,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Card(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10)),
-                                color: Color.fromARGB(255, 61, 61, 61),
+                                color: const Color.fromARGB(255, 61, 61, 61),
                                 child: TextField(
                                   obscureText: true,
                                   controller:
@@ -93,24 +93,24 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onChanged: (value) {
                                     password = value;
                                   },
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     hintStyle: TextStyle(color: Colors.white54),
                                     labelText: 'Enter your Password',
                                   ),
                                 ))),
-                        Text(
+                        const Text(
                           'Forgot Password',
                           textScaleFactor: 0.5,
                           textAlign: TextAlign.right,
                           style: (TextStyle(color: Colors.blueAccent)),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Container(
                             width: 177,
                             height: 48,
-                            color: Color.fromARGB(255, 73, 71, 131),
+                            color: const Color.fromARGB(255, 73, 71, 131),
                             child: Consumer<AuthContext>(
                                 builder: (context, auth, child) {
                               return TextButton(
@@ -121,13 +121,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Navigator.pushNamed(context, '/homePage');
                                   }
                                 },
-                                child: Text('Connect',
+                                child: const Text('Connect',
                                     style: TextStyle(color: Colors.white)),
                               );
                             })),
-                        Text('Connect With :',
+                        const Text('Connect With :',
                             textScaleFactor: 1.5, textAlign: TextAlign.right),
-                        SizedBox(
+                        const SizedBox(
                           height: 9,
                         ),
                         Row(
@@ -140,9 +140,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: () {},
                                   style: ButtonStyle(
                                     shape: MaterialStateProperty.all(
-                                        CircleBorder()),
+                                        const CircleBorder()),
                                     padding: MaterialStateProperty.all(
-                                        EdgeInsets.all(5)),
+                                        const EdgeInsets.all(5)),
                                     backgroundColor: MaterialStateProperty.all(
                                         Colors.white), // <-- Button color
                                     overlayColor: MaterialStateProperty
@@ -163,9 +163,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: () {},
                                   style: ButtonStyle(
                                     shape: MaterialStateProperty.all(
-                                        CircleBorder()),
+                                        const CircleBorder()),
                                     padding: MaterialStateProperty.all(
-                                        EdgeInsets.all(5)),
+                                        const EdgeInsets.all(5)),
                                     backgroundColor: MaterialStateProperty.all(
                                         Colors.white), // <-- Button color
                                     overlayColor: MaterialStateProperty
@@ -186,9 +186,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: () {},
                                   style: ButtonStyle(
                                     shape: MaterialStateProperty.all(
-                                        CircleBorder()),
+                                        const CircleBorder()),
                                     padding: MaterialStateProperty.all(
-                                        EdgeInsets.all(5)),
+                                        const EdgeInsets.all(5)),
                                     backgroundColor: MaterialStateProperty.all(
                                         Colors.white), // <-- Button color
                                     overlayColor: MaterialStateProperty
@@ -209,7 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ]),
-              Stack(alignment: Alignment.bottomCenter, children: <Widget>[
+              const Stack(alignment: Alignment.bottomCenter, children: <Widget>[
                 SizedBox(
                   width: 177,
                   height: 10,
@@ -227,15 +227,15 @@ Widget workflow() {
     children: <Widget>[
       TextButton(
         onPressed: () {},
-        child: Text("+"),
+        child: const Text("+"),
       ),
       TextButton(
         onPressed: () {},
-        child: Text("+"),
+        child: const Text("+"),
       ),
       TextButton(
         onPressed: () {},
-        child: Text("+"),
+        child: const Text("+"),
       ),
     ],
   );

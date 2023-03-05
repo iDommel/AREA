@@ -22,9 +22,9 @@ class _CreateWorkflowScreenState extends State<CreateWorkflowScreen> {
     return Scaffold(
         appBar: AppBar(
             centerTitle: true,
-            backgroundColor: Color.fromARGB(255, 73, 71, 131),
+            backgroundColor: const Color.fromARGB(255, 73, 71, 131),
             toolbarHeight: 88,
-            title: SizedBox(
+            title: const SizedBox(
               width: 101,
               height: 101,
               child: Card(
@@ -35,25 +35,25 @@ class _CreateWorkflowScreenState extends State<CreateWorkflowScreen> {
           padding: const EdgeInsets.all(1.0),
           child: Column(
             children: <Widget>[
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              Text('Création de workflow',
+              const Text('Création de workflow',
                   textScaleFactor: 2,
                   textAlign: TextAlign.left,
                   style: TextStyle(color: Colors.white)),
-              SizedBox(
+              const SizedBox(
                 height: 11,
               ),
-              Text('Les Actions',
+              const Text('Les Actions',
                   textScaleFactor: 1.5,
                   textAlign: TextAlign.left,
                   style: TextStyle(color: Colors.white)),
-              SizedBox(
+              const SizedBox(
                 height: 12,
               ),
-              CreateActions(),
-              SizedBox(height: 21),
+              const CreateActions(),
+              const SizedBox(height: 21),
               SizedBox(
                 height: 50,
                 child: Row(
@@ -66,13 +66,14 @@ class _CreateWorkflowScreenState extends State<CreateWorkflowScreen> {
                       child: Card(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
-                        color: Color.fromARGB(255, 61, 61, 61),
+                        color: const Color.fromARGB(255, 61, 61, 61),
                         child: TextButton(
                             onPressed: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => AddServiceView()),
+                                    builder: (context) =>
+                                        const AddServiceView()),
                               );
                             },
                             style: ButtonStyle(
@@ -88,7 +89,7 @@ class _CreateWorkflowScreenState extends State<CreateWorkflowScreen> {
                                 return null;
                               }),
                             ),
-                            child: Center(
+                            child: const Center(
                               child: Row(
                                 children: [
                                   Text(
@@ -106,7 +107,7 @@ class _CreateWorkflowScreenState extends State<CreateWorkflowScreen> {
                       child: Card(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
-                        color: Color.fromARGB(255, 61, 61, 61),
+                        color: const Color.fromARGB(255, 61, 61, 61),
                         child: TextButton(
                             onPressed: () {
                               Navigator.pushNamed(context,
@@ -125,7 +126,7 @@ class _CreateWorkflowScreenState extends State<CreateWorkflowScreen> {
                                 return null;
                               }),
                             ),
-                            child: Center(
+                            child: const Center(
                               child: Row(
                                 children: [
                                   Text('Passer aux réactions',

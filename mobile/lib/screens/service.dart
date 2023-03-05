@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:area_app/parser.dart';
-import 'dart:developer' as dev;
 
 Future<Service?> getServiceHttp() async {
   final response = await http.get(Uri.parse("http://localhost:8080/services"),
@@ -124,9 +123,9 @@ class _CreateActionsState extends State<CreateActions> {
         child: Card(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          color: Color.fromARGB(255, 61, 61, 61),
+          color: const Color.fromARGB(255, 61, 61, 61),
           child: Column(children: [
-            SizedBox(
+            const SizedBox(
               height: 27,
             ),
             SizedBox(
@@ -135,7 +134,7 @@ class _CreateActionsState extends State<CreateActions> {
               child: Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
-                  color: Color.fromARGB(255, 217, 217, 217),
+                  color: const Color.fromARGB(255, 217, 217, 217),
                   child: FutureBuilder(
                     future: getServiceHttp(),
                     builder: (context, snapshot) {
@@ -156,12 +155,12 @@ class _CreateActionsState extends State<CreateActions> {
                           autofocus: true,
                         );
                       } else {
-                        return CircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       }
                     },
                   )),
             ),
-            SizedBox(
+            const SizedBox(
               height: 26,
             ),
             SizedBox(
@@ -170,7 +169,7 @@ class _CreateActionsState extends State<CreateActions> {
               child: Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
-                  color: Color.fromARGB(255, 217, 217, 217),
+                  color: const Color.fromARGB(255, 217, 217, 217),
                   child: FutureBuilder(
                     future: getActionsHttp(),
                     builder: (context, snapshot) {
@@ -192,12 +191,12 @@ class _CreateActionsState extends State<CreateActions> {
                           autofocus: true,
                         );
                       } else {
-                        return CircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       }
                     },
                   )),
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
             SizedBox(
@@ -206,8 +205,8 @@ class _CreateActionsState extends State<CreateActions> {
               child: Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
-                  color: Color.fromARGB(255, 217, 217, 217),
-                  child: TextField(
+                  color: const Color.fromARGB(255, 217, 217, 217),
+                  child: const TextField(
                     obscureText: false,
                     decoration: InputDecoration(
                       hintStyle: TextStyle(color: Colors.black),
@@ -245,9 +244,9 @@ class _CreateReactionState extends State<CreateReaction> {
         child: Card(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          color: Color.fromARGB(255, 61, 61, 61),
+          color: const Color.fromARGB(255, 61, 61, 61),
           child: Column(children: [
-            SizedBox(
+            const SizedBox(
               height: 27,
             ),
             SizedBox(
@@ -256,7 +255,7 @@ class _CreateReactionState extends State<CreateReaction> {
               child: Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
-                  color: Color.fromARGB(255, 217, 217, 217),
+                  color: const Color.fromARGB(255, 217, 217, 217),
                   child: FutureBuilder(
                     future: getServiceHttp(),
                     builder: (context, snapshot) {
@@ -277,12 +276,12 @@ class _CreateReactionState extends State<CreateReaction> {
                           autofocus: true,
                         );
                       } else {
-                        return CircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       }
                     },
                   )),
             ),
-            SizedBox(
+            const SizedBox(
               height: 26,
             ),
             SizedBox(
@@ -291,7 +290,7 @@ class _CreateReactionState extends State<CreateReaction> {
               child: Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
-                  color: Color.fromARGB(255, 217, 217, 217),
+                  color: const Color.fromARGB(255, 217, 217, 217),
                   child: FutureBuilder(
                     future: getReactionsHttp(),
                     builder: (context, snapshot) {
@@ -310,12 +309,12 @@ class _CreateReactionState extends State<CreateReaction> {
                           autofocus: true,
                         );
                       } else {
-                        return CircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       }
                     },
                   )),
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
             SizedBox(
@@ -324,8 +323,8 @@ class _CreateReactionState extends State<CreateReaction> {
               child: Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
-                  color: Color.fromARGB(255, 217, 217, 217),
-                  child: TextField(
+                  color: const Color.fromARGB(255, 217, 217, 217),
+                  child: const TextField(
                     obscureText: false,
                     decoration: InputDecoration(
                       hintStyle: TextStyle(color: Colors.black),
