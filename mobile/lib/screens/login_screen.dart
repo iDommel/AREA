@@ -1,8 +1,6 @@
-import 'dart:convert';
-import 'dart:developer' as dev;
-import 'package:area_app/screens/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:area_app/screens/auth.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -11,39 +9,12 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late TextEditingController _valuePasswordController, _valueEmailController;
-
-  late bool status_;
-  late String message;
-
-  String serverUrl = "http://localhost:8080/services";
-  @override
-  void initState() {
-    _valuePasswordController = TextEditingController();
-    _valueEmailController = TextEditingController();
-
-    status_ = false;
-    message = "";
-
-    super.initState();
-  }
-
-  Future<void> getService() async {
-    final response = await http.get(Uri.parse(serverUrl),
-        headers: {"Content-Type": "application/json"});
-
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body);
-      setState(() {
-        status_ = false;
-        message = "good";
-        dev.log(data.toString());
-      });
-    }
-  }
+  String email = '';
+  String password = '';
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthContext>(context);
     return Scaffold(
         appBar: AppBar(
             automaticallyImplyLeading: false,
@@ -92,7 +63,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   borderRadius: BorderRadius.circular(10)),
                               color: Color.fromARGB(255, 61, 61, 61),
                               child: TextField(
-                                controller: _valueEmailController,
+                                controller: TextEditingController(text: email),
+                                onChanged: (value) {
+                                  email = value;
+                                },
                                 keyboardType: TextInputType.name,
                                 scribbleEnabled: false,
                                 style: TextStyle(
@@ -114,6 +88,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 color: Color.fromARGB(255, 61, 61, 61),
                                 child: TextField(
                                   obscureText: true,
+                                  controller:
+                                      TextEditingController(text: password),
+                                  onChanged: (value) {
+                                    password = value;
+                                  },
                                   decoration: InputDecoration(
                                     hintStyle: TextStyle(color: Colors.white54),
                                     labelText: 'Enter your Password',
@@ -129,19 +108,23 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 10,
                         ),
                         Container(
-                          width: 177,
-                          height: 48,
-                          color: Color.fromARGB(255, 73, 71, 131),
-                          child: TextButton(
-                            onPressed: () {
-                              setState(() {});
-                              Navigator.pushNamed(context, '/homePage');
-                            },
-                            child: Text('Connect',
-                                style: TextStyle(color: Colors.white)),
-                          ),
-                        ),
-                        Text(status_ ? message : message),
+                            width: 177,
+                            height: 48,
+                            color: Color.fromARGB(255, 73, 71, 131),
+                            child: Consumer<AuthContext>(
+                                builder: (context, auth, child) {
+                              return TextButton(
+                                onPressed: () {
+                                  setState(() {});
+                                  auth.login(email, password);
+                                  if (auth.isAuthenticated) {
+                                    Navigator.pushNamed(context, '/homePage');
+                                  }
+                                },
+                                child: Text('Connect',
+                                    style: TextStyle(color: Colors.white)),
+                              );
+                            })),
                         Text('Connect With :',
                             textScaleFactor: 1.5, textAlign: TextAlign.right),
                         SizedBox(
@@ -171,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       return null; // <-- Splash color
                                     }),
                                   ),
-                                  child: Image.asset('assets/google.png'),
+                                  child: Image.asset('assets/Google.png'),
                                 )),
                             SizedBox(
                                 width: 50,
@@ -194,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       return null; // <-- Splash color
                                     }),
                                   ),
-                                  child: Image.asset('assets/microsoft.png'),
+                                  child: Image.asset('assets/Microsoft.png'),
                                 )),
                             SizedBox(
                                 width: 50,
@@ -217,7 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       return null; // <-- Splash color
                                     }),
                                   ),
-                                  child: Image.asset('assets/github.png'),
+                                  child: Image.asset('assets/GitHub.png'),
                                 ))
                           ],
                         )

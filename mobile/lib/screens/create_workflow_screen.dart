@@ -1,9 +1,21 @@
-import 'package:area_app/screens/add_reaction_screen.dart';
 import 'package:area_app/screens/add_service_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:area_app/screens/service.dart';
 
-class CreateWorkflowScreen extends StatelessWidget {
+class CreateWorkflowScreen extends StatefulWidget {
   const CreateWorkflowScreen({Key? key}) : super(key: key);
+
+  @override
+  State<CreateWorkflowScreen> createState() => _CreateWorkflowScreenState();
+}
+
+class _CreateWorkflowScreenState extends State<CreateWorkflowScreen> {
+  String serverUrl = "http://localhost:8080/services";
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,71 +52,7 @@ class CreateWorkflowScreen extends StatelessWidget {
               SizedBox(
                 height: 12,
               ),
-              Stack(alignment: Alignment.bottomCenter, children: <Widget>[
-                SizedBox(
-                  width: 336,
-                  height: 420,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                    color: Color.fromARGB(255, 61, 61, 61),
-                    child: Column(children: [
-                      SizedBox(
-                        height: 27,
-                      ),
-                      SizedBox(
-                        width: 305,
-                        height: 42,
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          color: Color.fromARGB(255, 217, 217, 217),
-                          child: DropdownButton(
-                            items: [],
-                            onChanged: (value) {},
-                            hint: Text("Service de l'Action"),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 26,
-                      ),
-                      SizedBox(
-                        width: 305,
-                        height: 42,
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          color: Color.fromARGB(255, 217, 217, 217),
-                          child: DropdownButton(
-                            items: [],
-                            onChanged: (value) {},
-                            hint: Text("L'Action"),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      SizedBox(
-                        width: 305,
-                        height: 241,
-                        child: Card(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                            color: Color.fromARGB(255, 217, 217, 217),
-                            child: TextField(
-                              obscureText: false,
-                              decoration: InputDecoration(
-                                hintStyle: TextStyle(color: Colors.black),
-                                hintText: 'Que fait le bail',
-                              ),
-                            )),
-                      )
-                    ]),
-                  ),
-                ),
-              ]),
+              CreateActions(),
               SizedBox(height: 21),
               SizedBox(
                 height: 50,
