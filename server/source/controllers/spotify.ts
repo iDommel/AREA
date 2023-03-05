@@ -164,7 +164,7 @@ const spotifyReaction = async (relativeUser: string, newName: string) => {
         const serviceStatus = await ServiceStatus.findOne({ user: relativeUser, serviceName: 'Spotify' });
         if (!serviceStatus) return;
         spotifyApi.setAccessToken(serviceStatus.auth.accessToken);
-        const res = await spotifyApi.changePlaylistDetails('0y0zkkH8WQCCKSXbG39dOa', {
+        const res = await spotifyApi.changePlaylistDetails('4MaF7XxeJ4JTJ5dZPATfGO', {
             name: newName,
             public: false
         });

@@ -16,8 +16,8 @@ const clientSecret = process.env.SPOTIFY_CLIENT_SECRET as string;
 passport.use(
     new SpotifyStrategy(
         {
-            clientID: config.spotify.client_id,
-            clientSecret: config.spotify.client_secret,
+            clientID,
+            clientSecret,
             callbackURL: 'http://localhost:8080/spotify/callback',
             passReqToCallback: true
         },
