@@ -99,6 +99,7 @@ const WorkflowPage = () => {
         endDate : values.endDate ? dayjs(values.endDate).format("YYYY-MM-DD HH:mm:ss") : "",
         playlistUrl : values.playlistUrl ? values.playlistUrl : "",
         newPlaylistName : values.newPlaylistName ? values.newPlaylistName : "",
+        trackName : values.trackName ? values.trackName : "",
       },
     };
     try {
@@ -123,39 +124,51 @@ const WorkflowPage = () => {
     const microsoft = document.getElementById("microsoft");
     const microsoft2 = document.getElementById("microsoft2");
     const spotify = document.getElementById("spotify");
+    const spotify2 = document.getElementById("spotify2");
 
     const github2 = document.getElementById("github2");
 
-    if (github == null || weather == null || github2 == null || microsoft == null || microsoft2 == null || spotify == null) {
+    if (github == null || weather == null || github2 == null || microsoft == null || microsoft2 == null || spotify == null || spotify2 == null) {
       return;
     }
     if (service?.name === "GitHub" && isAction === true) {
       github.style.display = "flex";
       weather.style.display = "none";
+      spotify.style.display = "none";
     } else if (service?.name === "Weather") {
       github.style.display = "none";
       weather.style.display = "flex";
+      spotify.style.display = "none";
+    } else if (service?.name === "Spotify" && isAction === true) {
+      spotify.style.display = "flex";
+      github.style.display = "none";
+      weather.style.display = "none";
     } else if (isAction === true) {
       github.style.display = "none";
       weather.style.display = "none";
+      spotify.style.display = "none";
     }
 
     if (service?.name === "GitHub" && isAction === false) {
       github2.style.display = "flex";
       microsoft.style.display = "none";
+      microsoft2.style.display = "none";
+      spotify2.style.display = "none";
     } else if (service?.name === "Microsoft" && value[1] === "64031cb83a9dfd1b90a4ee8f") {
       github2.style.display = "none";
       microsoft2.style.display = "none";
       microsoft.style.display = "flex";
+      spotify2.style.display = "none";
     } else if (service?.name === "Microsoft") {
       github2.style.display = "none";
       microsoft.style.display = "none";
       microsoft2.style.display = "flex";
+      spotify2.style.display = "none";
     } else if (service?.name === "Spotify" && isAction === false) {
       github2.style.display = "none";
       microsoft.style.display = "none";
       microsoft2.style.display = "none";
-      spotify.style.display = "flex";
+      spotify2.style.display = "flex";
     } else if (isAction === false) {
       github2.style.display = "none";
     }
@@ -213,6 +226,11 @@ const WorkflowPage = () => {
           </div>
           <div id="weather" style={{ display: "none", flexDirection: "column" }}>
             <FormItem label="Localisation" name="localisation">
+              <Input />
+            </FormItem>
+          </div>
+          <div id="spotify" style={{ display: "none", flexDirection: "column" }}>
+            <FormItem label="trackName" name="trackName">
               <Input />
             </FormItem>
           </div>
@@ -281,7 +299,7 @@ const WorkflowPage = () => {
               />
             </FormItem>
           </div>
-          <div id="spotify" style={{ display: "none", flexDirection: "column" }}>
+          <div id="spotify2" style={{ display: "none", flexDirection: "column" }}>
             <FormItem label="playlistUrl" name="playlistUrl">
               <Input />
             </FormItem>

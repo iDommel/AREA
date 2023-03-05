@@ -176,9 +176,10 @@ const spotifyReaction = async (workflow : any) => {
     }
 };
 
-const ifPlaying = async (relativeUser: string) => {
+const ifPlaying = async (workflow : any) => {
     try {
-        const serviceStatus = await ServiceStatus.findOne({ user: relativeUser, serviceName: 'Spotify' });
+        const info = workflow.additionalData[0]
+        const serviceStatus = await ServiceStatus.findOne({ user: workflow.relativeUser, serviceName: 'Spotify' });
         if (!serviceStatus) return;
         spotifyApi.setAccessToken(serviceStatus.auth.accessToken);
 
@@ -188,9 +189,10 @@ const ifPlaying = async (relativeUser: string) => {
                 Authorization: 'Bearer ' + serviceStatus.auth.accessToken
             }
         });
-        // console.log(res.data);
         const isPlaying = res.data.is_playing;
-        if (isPlaying) {
+        if (isPlaying && res.data.item.name.toLowerCase() === info.trackName.toLowerCase()) {
+            return true
+        } else if (isPlaying && info.trackName === '') {
             return true
         }
         return false
