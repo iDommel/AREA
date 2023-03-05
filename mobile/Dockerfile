@@ -60,6 +60,3 @@ WORKDIR /usr/src/app
 
 # Copy the APK from the builder stage
 COPY --from=builder /home/developer/app/build/app/outputs/apk/release/app-release.apk /usr/src/app/apk/app-release.apk
-
-# Set the entrypoint
-CMD [ "cp" , "apk/app-release.apk", "/usr/src/app/apk/app-release.apk" ]

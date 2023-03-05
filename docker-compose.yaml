@@ -32,6 +32,8 @@ services:
     networks:
       - area
       - db
+    volumes:
+      - mobile-apk:/usr/src/app/apk
 
 
 networks:
