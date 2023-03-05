@@ -4,6 +4,9 @@ import { getUserIdFromCookie } from '../utils/utils';
 import Service from '../models/service';
 import { Client, AuthProviderCallback } from '@microsoft/microsoft-graph-client';
 
+const Home = process.env.WEB_HOSTNAME as string;
+const Port = process.env.WEB_PORT as string;
+
 const logout = async (req: Request, res: Response) => {
     try {
         const logout = await ServiceStatus.findOne({ serviceName: 'Microsoft', user: getUserIdFromCookie(req)});
@@ -13,7 +16,7 @@ const logout = async (req: Request, res: Response) => {
         service.route = "/microsoft/login"
         logout.save();
         service.save();
-        res.redirect('http://localhost:3000/Home');
+        res.redirect("http://" + Home + ':' + Port + '/');
     } catch (error) {
         console.log(error);
     }
