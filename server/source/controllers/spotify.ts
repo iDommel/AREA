@@ -174,6 +174,28 @@ const spotifyReaction = async (relativeUser: string, newName: string) => {
     }
 };
 
+const ifPlaying = async (relativeUser: string) => {
+    try {
+        const serviceStatus = await ServiceStatus.findOne({ user: relativeUser, serviceName: 'Spotify' });
+        if (!serviceStatus) return;
+        spotifyApi.setAccessToken(serviceStatus.auth.accessToken);
+
+        const res = await axios.get('https://api.spotify.com/v1/me/player/currently-playing', {
+            headers: {
+                contentType: 'application/json',
+                Authorization: 'Bearer ' + serviceStatus.auth.accessToken
+            }
+        });
+        const isPlaying = res.data.is_playing;
+        if (isPlaying) {
+            return true
+        }
+        return false
+    } catch (error: any) {
+        console.log('Something went wrong!', error);
+    }
+};  
+
 const logout = async (req: Request, res: Response) => {
     try {
         const logout = await ServiceStatus.findOne({ serviceName: 'Spotify', user: getUserIdFromCookie(req)});
@@ -190,4 +212,4 @@ const logout = async (req: Request, res: Response) => {
 }
 
 
-export default { loginFunction, callbackFunction, refreshToken, spotifyReaction, logout };
+export default { loginFunction, callbackFunction, refreshToken, spotifyReaction, ifPlaying, logout };

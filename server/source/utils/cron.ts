@@ -123,6 +123,15 @@ const checkActions = async () => {
                             checkReaction(workflow);
                         }
                         break;
+                    case 'IsPlaying':
+                        const serviceEnabled4 = await checkServiceEnabled("Spotify", workflow.relativeUser);
+                        if (serviceEnabled4 === false)
+                            return;
+                        const isPlaying = await spotifyController.ifPlaying(workflow.relativeUser);
+                        if (isPlaying && workflow.relativeUser && workflow.relativeUser !== '' && serviceEnabled4) {
+                            console.log('Is playing?', isPlaying);
+                            checkReaction(workflow);
+                        }
                 }
             });
         });

@@ -48,11 +48,13 @@ passport.use(
     )
 );
 
-router.get('/login', passport.authenticate('spotify', { scope: ['user-read-email', 'user-read-private', 'playlist-modify-private', 'playlist-modify-public'] }));
+router.get('/login', passport.authenticate('spotify', { scope: ['user-read-email', 'user-read-private', 
+'playlist-modify-private', 'playlist-modify-public', 'user-read-currently-playing', 'user-read-currently-playing'] }));
 router.get('/callback', passport.authenticate('spotify', { failureRedirect: '/login' }), async (req, res) => {
     res.redirect('http://localhost:3000/Home');
 });
 router.post('/refresh_token', controller.refreshToken);
+router.get('/ifPlaying', controller.ifPlaying);
 router.get('/logout', controller.logout);
 
 export = router;
