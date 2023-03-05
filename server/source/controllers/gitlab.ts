@@ -14,7 +14,7 @@ interface AdditionalData {
     // bodyIssue: string
     // issueNb : string
     // content : string
-    projectId: string
+    projectID: string
     branch: string
     commitMessage: string
     filePath: string
@@ -33,20 +33,20 @@ interface GitlabCommitResponse {
 const create_commit = async (req: Request, res: Response) => {
     try {
         const access_token = req.headers.authorization?.split(" ")[1];
-        const projectId = req.body.projectId;
+        const projectID = req.body.projectID;
         const branch = req.body.branch;
-        const commit_message = req.body.message;
-        const file_path = req.body.file_path;
+        const commit_message = req.body.commit_message;
+        const file_path = req.body.actions[0].file_path;
 
         const axiosConfig: AxiosRequestConfig = {
             headers: {
                 Authorization: `Bearer ${access_token}`,
             },
         };
-
+        
         // Get latest commit sha of the branch
         const { data: latestCommit } = await axios.get(
-            `https://gitlab.com/api/v4/projects/${projectId}/repository/branches/${branch}`,
+            `https://gitlab.com/api/v4/projects/${projectID}/repository/branches/${branch}`,
             axiosConfig
         );
 
@@ -60,9 +60,9 @@ const create_commit = async (req: Request, res: Response) => {
                 },
             ],
         };
-
+        
         const { data: new_commit } = await axios.post(
-            `https://gitlab.com/api/v4/projects/${projectId}/repository/commits`,
+            `https://gitlab.com/api/v4/projects/${projectID}/repository/commits`,
             commitPayload,
             axiosConfig
         );
@@ -79,7 +79,8 @@ const gitlabCommit = async (workflow: Workflow): Promise<GitlabCommitResponse> =
         const info = workflow.additionalData[0];
         const gitlab = await ServiceStatus.findOne({ serviceName: 'GitLab', user: workflow.relativeUser });
 
-        const response = await axios.post(`https://gitlab.com/api/v4/projects/${info.projectId}/repository/commits`, {
+        const response = await axios.post('http://localhost:8080/gitlab/commit', {
+            projectID: info.projectID,
             branch: info.branch,
             commit_message: info.commitMessage,
             actions: [
@@ -91,10 +92,9 @@ const gitlabCommit = async (workflow: Workflow): Promise<GitlabCommitResponse> =
         }, {
             headers: {
                 'Content-Type': 'application/json',
-                'PRIVATE-TOKEN': gitlab.auth.accessToken
+                Authorization: `token ${gitlab.auth.accessToken}`
             }
         });
-
         if (response.status !== 201) {
             console.log(`Something went wrong with GitLab commit! ${response.data.message}`);
             return { success: false, message: response.data.message };
