@@ -21,12 +21,13 @@ class AuthProvider extends StatelessWidget {
 
 class AuthContext extends ChangeNotifier {
   bool isAuthenticated = false;
-  late String user;
+  String user = '';
   late String token;
+  late String serverIp = 'http://localhost:8080';
 
   void login(String email, String password) async {
     try {
-      final url = Uri.parse('http://localhost:8080/auth/login');
+      final url = Uri.parse('$serverIp/auth/login');
       final response = await http.post(
         url,
         body: json.encode({
@@ -63,12 +64,12 @@ class AuthContext extends ChangeNotifier {
     // Implement the logout method
   }
 
-  Future<dynamic> fetchAPI(
-      String url, String method, Object? body, String? token) async {
-    final finalUrl = Uri.parse('http://localhost:8080/$url');
+  Future<dynamic> fetchAPI(String url, String method,
+      [Object? body, String? token]) async {
+    final finalUrl = Uri.parse('$serverIp/$url');
     final header = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
+      if (token != null) 'Authorization': 'Bearer $token',
     };
 
     switch (method) {
@@ -81,11 +82,24 @@ class AuthContext extends ChangeNotifier {
       case "POST":
         final response = await http.post(
           finalUrl,
-          body: json.encode(body),
+          body: body != null ? json.encode(body) : null,
           headers: header,
         );
         return response;
+      case "DELETE":
+        final response = await http.delete(
+          finalUrl,
+          headers: header,
+        );
+        return response;
+      default:
+        throw UnsupportedError("Unsupported HTTP method: $method");
     }
+  }
+
+  void updateServerIp(String newServerIp) {
+    serverIp = newServerIp;
+    notifyListeners();
   }
 
   Future<void> refreshToken() async {

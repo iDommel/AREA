@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:area_app/screens/auth.dart';
@@ -58,7 +60,6 @@ class _IpConnectScreenState extends State<IpConnectScreen> {
                                     borderRadius: BorderRadius.circular(10)),
                                 color: const Color.fromARGB(255, 61, 61, 61),
                                 child: TextField(
-                                  obscureText: true,
                                   controller: TextEditingController(text: ip),
                                   onChanged: (value) {
                                     ip = value;
@@ -79,7 +80,7 @@ class _IpConnectScreenState extends State<IpConnectScreen> {
                                 builder: (context, auth, child) {
                               return TextButton(
                                 onPressed: () {
-                                  setState(() {});
+                                  auth.updateServerIp(ip);
                                   Navigator.pushNamed(context, '/login');
                                 },
                                 child: const Text('Connect',

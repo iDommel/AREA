@@ -1,13 +1,11 @@
+import 'package:area_app/screens/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:area_app/parser.dart';
 
 Future<Service?> getServiceHttp() async {
-  final response = await http.get(Uri.parse("http://localhost:8080/services"),
-      headers: {
-        "Content-Type": "application/json;charset=UTF-8",
-        "Charset": 'utf-8'
-      });
+  final AuthContext auth = AuthContext();
+  final response = await auth.fetchAPI("services", "GET");
   final Service service;
   if (response.statusCode == 200) {
     service = serviceFromJson(response.body);
@@ -19,11 +17,8 @@ Future<Service?> getServiceHttp() async {
 }
 
 Future<ActionsArea?> getActionsHttp() async {
-  final response = await http.get(Uri.parse("http://localhost:8080/actions"),
-      headers: {
-        "Content-Type": "application/json;charset=UTF-8",
-        "Charset": 'utf-8'
-      });
+  final AuthContext auth = AuthContext();
+  final response = await auth.fetchAPI("actions", "GET");
   final ActionsArea actions;
   if (response.statusCode == 200) {
     actions = actionsFromJson(response.body);
@@ -35,11 +30,8 @@ Future<ActionsArea?> getActionsHttp() async {
 }
 
 Future<Reactions?> getReactionsHttp() async {
-  final response = await http.get(Uri.parse("http://localhost:8080/reactions"),
-      headers: {
-        "Content-Type": "application/json;charset=UTF-8",
-        "Charset": 'utf-8'
-      });
+  final AuthContext auth = AuthContext();
+  final response = await auth.fetchAPI("reactions", "GET");
   final Reactions reaction;
   if (response.statusCode == 200) {
     reaction = reactionsFromJson(response.body);

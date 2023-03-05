@@ -15,31 +15,17 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final PageController _pageController = PageController(initialPage: 0);
+  final AuthContext auth = AuthContext();
 
   late bool status_;
   late String message;
 
-  String serverUrl = "http://localhost:8080/services";
   @override
   void initState() {
     status_ = false;
     message = "";
 
     super.initState();
-  }
-
-  Future<void> getService() async {
-    final response = await http.get(Uri.parse("$serverUrl?populate=service"),
-        headers: {"Content-Type": "application/json"});
-
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body);
-      setState(() {
-        status_ = false;
-        message = "good";
-        //dev.log(json.encode(data));
-      });
-    }
   }
 
   @override
@@ -149,36 +135,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-Future<ServiceStatuses?> getServicesSatusesHttp(String auth) async {
-  final response = await http.get(
-      Uri.parse("http://localhost:8080/service-statuses?user=$auth"),
-      headers: {
-        "Content-Type": "application/json;charset=UTF-8",
-        "Charset": 'utf-8'
-      });
-  print(auth);
+Future<ServiceStatuses?> getServicesSatusesHttp() async {
+  final AuthContext auth = AuthContext();
+  final response = await auth.fetchAPI("service-statuses?user=$auth", "GET");
   final ServiceStatuses serviceStatuses;
   if (response.statusCode == 200) {
     serviceStatuses = serviceStatusesFromJson(response.body);
     return serviceStatuses;
-  } else if (response.statusCode != 200) {
-    return null;
-  }
-  return null;
-}
-
-Future<WorkflowStatuses?> getWorkflowSatusesHttp(String auth) async {
-  final response = await http.get(
-      Uri.parse("http://localhost:8080/workflows?relativeUser=$auth"),
-      headers: {
-        "Content-Type": "application/json;charset=UTF-8",
-        "Charset": 'utf-8'
-      });
-  print(auth);
-  final WorkflowStatuses workflowStatuses;
-  if (response.statusCode == 200) {
-    workflowStatuses = workflowStatusesFromJson(response.body);
-    return workflowStatuses;
   } else if (response.statusCode != 200) {
     return null;
   }
@@ -192,13 +155,12 @@ class ServiceBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthContext>(context);
     ServiceStatuses serviceStatuses;
     return SizedBox(
         width: 300,
         height: 80,
         child: FutureBuilder(
-            future: getServicesSatusesHttp(auth.user),
+            future: getServicesSatusesHttp(),
             builder: ((context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done &&
                   snapshot.data != null) {
@@ -209,7 +171,6 @@ class ServiceBox extends StatelessWidget {
                   children: services,
                 );
               } else {
-                print(snapshot.data);
                 return const CircularProgressIndicator();
               }
             })));
@@ -227,22 +188,6 @@ class ServiceBox extends StatelessWidget {
             } else {
               serviceStatus.isEnabled = true;
             }
-            // if (serviceStatus.isConnected == true) {
-            // serviceStatus.isConnected = false;
-            // } else {
-            // final response = await http.get(Uri.parse(
-            // "http://localhost:8080${serviceStatus.service.route}"));
-            // if (response.statusCode == 200) {
-            // Uri url = Uri.parse(response.body);
-            // if (await canLaunchUrl(url)) {
-            // await launchUrl(url);
-            // } else {
-            // throw 'Could not launch $url';
-            // }
-            // } else {
-            // throw 'Request failed with status: ${response.statusCode}.';
-            // }
-            // }
           },
           style: ButtonStyle(
             shape: MaterialStateProperty.all(const CircleBorder()),
@@ -273,6 +218,20 @@ class WorkflowBox extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
+  Future<WorkflowStatuses?> getWorkflowSatusesHttp() async {
+    final AuthContext auth = AuthContext();
+    final response =
+        await auth.fetchAPI("workflows?relativeUser${auth.user}", "GET");
+    final WorkflowStatuses workflowStatuses;
+    if (response.statusCode == 200) {
+      workflowStatuses = workflowStatusesFromJson(response.body);
+      return workflowStatuses;
+    } else if (response.statusCode != 200) {
+      return null;
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthContext>(context);
@@ -282,7 +241,7 @@ class WorkflowBox extends StatelessWidget {
       width: 300,
       height: 80,
       child: FutureBuilder(
-          future: getWorkflowSatusesHttp(auth.user),
+          future: getWorkflowSatusesHttp(),
           builder: ((context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done &&
                 snapshot.data != null) {
