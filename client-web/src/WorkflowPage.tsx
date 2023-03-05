@@ -2,12 +2,17 @@ import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import User from "./User";
 import Menu from "./Component/Menu";
-import { Button, Cascader, Form, Input, Typography, message } from "antd";
+import { Button, Cascader, Form, Input, Typography, message, DatePicker, TimePicker } from "antd";
 import type { FormInstance } from "antd/es/form";
 import { useNavigate } from "react-router-dom";
 
 import { useAuthContext } from "./Context/AuthContext";
 import FormItem from "antd/es/form/FormItem";
+
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(customParseFormat);
 
 type SizeType = Parameters<typeof Form>[0]["size"];
 const { TextArea } = Input;
@@ -85,6 +90,16 @@ const WorkflowPage = () => {
         titleIssue: values.titleIssue ? values.titleIssue : "",
         bodyIssue: values.bodyIssue ? values.bodyIssue : "",
         localisation: values.localisation ? values.localisation : "",
+        subject : values.subject ? values.subject : "",
+        content : values.content ? values.content : "",
+        to : values.to ? values.to : "",
+        subjectEvent : values.subjectEvent ? values.subjectEvent : "",
+        contentEvent : values.contentEvent ? values.contentEvent : "",
+        startDate : values.startDate ? dayjs(values.startDate).format("YYYY-MM-DD HH:mm:ss") : "",
+        endDate : values.endDate ? dayjs(values.endDate).format("YYYY-MM-DD HH:mm:ss") : "",
+        playlistUrl : values.playlistUrl ? values.playlistUrl : "",
+        newPlaylistName : values.newPlaylistName ? values.newPlaylistName : "",
+        trackName : values.trackName ? values.trackName : "",
         issueNb : values.issueNb ? values.issueNb : "",
         content : values.content ? values.content : "",
       },
@@ -108,30 +123,65 @@ const WorkflowPage = () => {
     const service = services.find((service) => service._id === value[0]);
     const github = document.getElementById("github");
     const weather = document.getElementById("weather");
+    const microsoft = document.getElementById("microsoft");
+    const microsoft2 = document.getElementById("microsoft2");
+    const spotify = document.getElementById("spotify");
+    const spotify2 = document.getElementById("spotify2");
 
     const github2 = document.getElementById("github2");
     const github3 = document.getElementById("github3");
 
-    if (github == null || weather == null || github2 == null || github3 == null) {
+    if (github == null || weather == null || github2 == null || microsoft == null || microsoft2 == null || spotify == null || spotify2 == null || github3 == null) {
       return;
     }
     if (service?.name === "GitHub" && isAction === true) {
       github.style.display = "flex";
       weather.style.display = "none";
+      spotify.style.display = "none";
     } else if (service?.name === "Weather") {
       github.style.display = "none";
       weather.style.display = "flex";
+      spotify.style.display = "none";
+    } else if (service?.name === "Spotify" && isAction === true) {
+      spotify.style.display = "flex";
+      github.style.display = "none";
+      weather.style.display = "none";
     } else if (isAction === true) {
       github.style.display = "none";
       weather.style.display = "none";
+      spotify.style.display = "none";
     }
 
     if (service?.name === "GitHub" && isAction === false && value[1] === "63f49f3716c5004cdec50c1e") {
       github2.style.display = "flex";
+      microsoft.style.display = "none";
+      microsoft2.style.display = "none";
+      spotify2.style.display = "none";
+      github3.style.display = "none";
+    } else if (service?.name === "Microsoft" && value[1] === "64031cb83a9dfd1b90a4ee8f") {
+      github2.style.display = "none";
+      microsoft2.style.display = "none";
+      microsoft.style.display = "flex";
+      spotify2.style.display = "none";
+      github3.style.display = "none";
+    } else if (service?.name === "Microsoft") {
+      github2.style.display = "none";
+      microsoft.style.display = "none";
+      microsoft2.style.display = "flex";
+      spotify2.style.display = "none";
+      github3.style.display = "none";
+    } else if (service?.name === "Spotify" && isAction === false) {
+      github2.style.display = "none";
+      microsoft.style.display = "none";
+      microsoft2.style.display = "none";
+      spotify2.style.display = "flex";
       github3.style.display = "none";
     } else if (service?.name === "GitHub" && isAction === false && value[1] === "640324493a9dfd1b90a4ee90") {
       github2.style.display = "none";
       github3.style.display = "flex";
+      microsoft.style.display = "none";
+      microsoft2.style.display = "none";
+      spotify2.style.display = "none";
     } else if (isAction === false) {
       github2.style.display = "none";
     }
@@ -192,6 +242,11 @@ const WorkflowPage = () => {
               <Input />
             </FormItem>
           </div>
+          <div id="spotify" style={{ display: "none", flexDirection: "column" }}>
+            <FormItem label="trackName" name="trackName">
+              <Input />
+            </FormItem>
+          </div>
           <Title level={3}>Reactions</Title>
           <Form.Item label="Reaction" name="reaction">
             <Cascader
@@ -223,6 +278,45 @@ const WorkflowPage = () => {
               <Input />
             </FormItem>
             <FormItem label="body Issue" name="bodyIssue">
+              <Input />
+            </FormItem>
+          </div>
+          <div id="microsoft" style={{ display: "none", flexDirection: "column" }}>
+            <FormItem label="Subject" name="subject">
+              <Input />
+            </FormItem>
+            <FormItem label="Content" name="content">
+              <Input />
+            </FormItem>
+            <FormItem label="To" name="to">
+              <Input />
+            </FormItem>
+          </div>
+          <div id="microsoft2" style={{ display: "none", flexDirection: "column" }}>
+            <FormItem label="subjectEvent" name="subjectEvent">
+              <Input />
+            </FormItem>
+            <FormItem label="contentEvent" name="contentEvent">
+              <Input />
+            </FormItem>
+            <FormItem label="startDate" name="startDate">
+              <DatePicker
+                format="YYYY-MM-DD HH:mm:ss"
+                showTime={{ defaultValue: dayjs('00:00:00', 'HH:mm:ss') }}
+              />
+            </FormItem>
+            <FormItem label="endDate" name="endDate">
+              <DatePicker
+                format="YYYY-MM-DD HH:mm:ss"
+                showTime={{ defaultValue: dayjs('00:00:00', 'HH:mm:ss') }}
+              />
+            </FormItem>
+          </div>
+          <div id="spotify2" style={{ display: "none", flexDirection: "column" }}>
+            <FormItem label="playlistUrl" name="playlistUrl">
+              <Input />
+            </FormItem>
+            <FormItem label="newPlaylistName" name="newPlaylistName">
               <Input />
             </FormItem>
           </div>
