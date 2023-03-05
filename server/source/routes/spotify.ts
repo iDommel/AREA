@@ -16,8 +16,8 @@ const clientSecret = process.env.SPOTIFY_CLIENT_SECRET as string;
 passport.use(
     new SpotifyStrategy(
         {
-            clientID: config.spotify.client_id,
-            clientSecret: config.spotify.client_secret,
+            clientID,
+            clientSecret,
             callbackURL: 'http://localhost:8080/spotify/callback',
             passReqToCallback: true
         },
@@ -48,11 +48,13 @@ passport.use(
     )
 );
 
-router.get('/login', passport.authenticate('spotify', { scope: ['user-read-email', 'user-read-private', 'playlist-modify-private', 'playlist-modify-public'] }));
+router.get('/login', passport.authenticate('spotify', { scope: ['user-read-email', 'user-read-private', 
+'playlist-modify-private', 'playlist-modify-public', 'user-read-currently-playing', 'user-read-currently-playing'] }));
 router.get('/callback', passport.authenticate('spotify', { failureRedirect: '/login' }), async (req, res) => {
     res.redirect('http://localhost:3000/Home');
 });
 router.post('/refresh_token', controller.refreshToken);
+router.get('/ifPlaying', controller.ifPlaying);
 router.get('/logout', controller.logout);
 
 export = router;

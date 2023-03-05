@@ -5,6 +5,7 @@ import User from '../models/user';
 import spotifyController from '../controllers/spotify';
 import weatherController from '../controllers/weather';
 import githubController from '../controllers/github';
+import microsoftController from '../controllers/microsoft';
 import Service from '../models/service';
 import serviceStatus from '../models/serviceStatus';
 import { getUserIdFromCookie } from './utils';
@@ -33,16 +34,26 @@ const checkReaction = async (workflow: any) => {
             const serviceEnabled = await checkServiceEnabled("Spotify", workflow.relativeUser);
             if (serviceEnabled === false)
                 return;
-            console.log('spotify bug fetch user');
-            spotifyController.spotifyReaction(workflow.relativeUser, workflow.description);
+            spotifyController.spotifyReaction(workflow);
             break;
         case 'github':
             const serviceEnabled2 = await checkServiceEnabled("GitHub", workflow.relativeUser);
             if (serviceEnabled2 === false)
                 return;
-            console.log('github bug 401 bad credentials');
             if (reaction.name === 'Create issue')
                 githubController.githubReaction(workflow);
+            else if (reaction.name === 'Add reaction')
+                githubController.githubReaction2(workflow);
+            break;
+        case 'microsoft':
+            const serviceEnabled3 = await checkServiceEnabled("Microsoft", workflow.relativeUser);
+            if (serviceEnabled3 === false)
+                return;
+            console.log('microsoft reaction');
+            if (reaction.name === 'Send email')
+                microsoftController.sendEmail(workflow);
+            else if (reaction.name === 'Create event')
+                microsoftController.createEvent(workflow);
             break;
         default:
             break;
@@ -58,8 +69,7 @@ const checkActions = async () => {
                 console.log(action.name)
                 switch (action.name) {
                     case 'isMinuteEven':
-                        // const isEven = await timerController.isMinuteEven();
-                        const isEven = true;
+                        const isEven = await timerController.isMinuteEven();
                         const timeEnabled = await checkServiceEnabled("Time", workflow.relativeUser);
                         console.log('Is minute even?', isEven);
                         if (isEven && workflow.relativeUser && workflow.relativeUser !== '' && timeEnabled)
@@ -112,6 +122,15 @@ const checkActions = async () => {
                             checkReaction(workflow);
                         }
                         break;
+                    case 'IsPlaying':
+                        const serviceEnabled4 = await checkServiceEnabled("Spotify", workflow.relativeUser);
+                        if (serviceEnabled4 === false)
+                            return;
+                        const isPlaying = await spotifyController.ifPlaying(workflow);
+                        if (isPlaying && workflow.relativeUser && workflow.relativeUser !== '' && serviceEnabled4) {
+                            console.log('Is playing?', isPlaying);
+                            checkReaction(workflow);
+                        }
                 }
             });
         });
@@ -121,10 +140,9 @@ const checkActions = async () => {
 };
 
 const initScheduledJobs = () => {
-    // const scheduledJobFunction = CronJob.schedule('* * * * *', checkActions);
+    const scheduledJobFunction = CronJob.schedule('* * * * *', checkActions);
 
-    // scheduledJobFunction.start();
-    checkActions();
+    scheduledJobFunction.start();
 };
 
 export { initScheduledJobs };
