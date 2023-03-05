@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import fs from 'fs';
 
 const getApk = (req: Request, res: Response, next: NextFunction) => {
-    const apkPath: string | undefined = fs.readdirSync('/usr/src/app/apk').find((file) => file.endsWith('.apk'));
+    const apkPath: string | undefined = fs.readdirSync('/usr/src/app/apk/').find((file) => file.endsWith('.apk'));
     const finalPath = `/usr/src/app/apk/${apkPath}`;
     if (!apkPath) {
         return res.status(404).json({

@@ -11,17 +11,9 @@ services:
     networks:
       - area
   client-mobile:
-    container_name: client-mobile
+    container_name: mobile
     build:
-      args:
-        EXPO_TOKEN: ${EXPO_TOKEN}
-      context: ./client-mobile
-    ports:
-      - "8082:80"
-    env_file:
-      - client-mobile-variables.env
-    networks:
-      - area
+      context: ./mobile
     volumes:
       - mobile-apk:/usr/src/app/apk
   api:
@@ -40,22 +32,7 @@ services:
     networks:
       - area
       - db
-    depends_on:
-      - mongodb
 
-  mongodb:
-    image: mongo
-    restart: always
-    networks:
-      - db
-    environment:
-        MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:-admin}
-        MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-admin}
-        MONGO_INITDB_DATABASE: ${MONGO_DATABASE:-areadb}
-    volumes:
-      - mongodb_data_container:/data/db
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-    command: [--auth]
 
 networks:
   area:
