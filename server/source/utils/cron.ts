@@ -42,6 +42,8 @@ const checkReaction = async (workflow: any) => {
                 return;
             if (reaction.name === 'Create issue')
                 githubController.githubReaction(workflow);
+            else if (reaction.name === 'Add reaction')
+                githubController.githubReaction2(workflow);
             break;
         case 'microsoft':
             const serviceEnabled3 = await checkServiceEnabled("Microsoft", workflow.relativeUser);

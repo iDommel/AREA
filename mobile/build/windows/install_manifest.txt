@@ -1,0 +1,13 @@
+C:/Users/ionan/dev/AREA/mobile/build/windows/runner/Debug/data/icudtl.dat
+C:/Users/ionan/dev/AREA/mobile/build/windows/runner/Debug/flutter_windows.dll
+C:/Users/ionan/dev/AREA/mobile/build/windows/runner/Debug/data/flutter_assets/AssetManifest.bin
+C:/Users/ionan/dev/AREA/mobile/build/windows/runner/Debug/data/flutter_assets/AssetManifest.json
+C:/Users/ionan/dev/AREA/mobile/build/windows/runner/Debug/data/flutter_assets/assets/github.png
+C:/Users/ionan/dev/AREA/mobile/build/windows/runner/Debug/data/flutter_assets/assets/google.png
+C:/Users/ionan/dev/AREA/mobile/build/windows/runner/Debug/data/flutter_assets/assets/microsoft.png
+C:/Users/ionan/dev/AREA/mobile/build/windows/runner/Debug/data/flutter_assets/assets/spotify.png
+C:/Users/ionan/dev/AREA/mobile/build/windows/runner/Debug/data/flutter_assets/FontManifest.json
+C:/Users/ionan/dev/AREA/mobile/build/windows/runner/Debug/data/flutter_assets/fonts/MaterialIcons-Regular.otf
+C:/Users/ionan/dev/AREA/mobile/build/windows/runner/Debug/data/flutter_assets/kernel_blob.bin
+C:/Users/ionan/dev/AREA/mobile/build/windows/runner/Debug/data/flutter_assets/NOTICES.Z
+C:/Users/ionan/dev/AREA/mobile/build/windows/runner/Debug/data/flutter_assets/shaders/ink_sparkle.frag
