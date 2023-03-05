@@ -1,3 +1,4 @@
+import 'package:area_app/screens/service.dart';
 import 'package:flutter/material.dart';
 
 class AddReactionView extends StatelessWidget {
@@ -38,71 +39,7 @@ class AddReactionView extends StatelessWidget {
                 SizedBox(
                   height: 12,
                 ),
-                Stack(alignment: Alignment.bottomCenter, children: <Widget>[
-                  SizedBox(
-                    width: 336,
-                    height: 420,
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      color: Color.fromARGB(255, 61, 61, 61),
-                      child: Column(children: [
-                        SizedBox(
-                          height: 27,
-                        ),
-                        SizedBox(
-                          width: 305,
-                          height: 42,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                            color: Color.fromARGB(255, 217, 217, 217),
-                            child: DropdownButton(
-                              items: [],
-                              onChanged: (value) {},
-                              hint: Text("Service de la réaction"),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 26,
-                        ),
-                        SizedBox(
-                          width: 305,
-                          height: 42,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                            color: Color.fromARGB(255, 217, 217, 217),
-                            child: DropdownButton(
-                              items: [],
-                              onChanged: (value) {},
-                              hint: Text("La réaction"),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 16,
-                        ),
-                        SizedBox(
-                          width: 305,
-                          height: 241,
-                          child: Card(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              color: Color.fromARGB(255, 217, 217, 217),
-                              child: TextField(
-                                obscureText: false,
-                                decoration: InputDecoration(
-                                  hintStyle: TextStyle(color: Colors.black),
-                                  hintText: 'Que fait le bail',
-                                ),
-                              )),
-                        )
-                      ]),
-                    ),
-                  ),
-                ]),
+                CreateReaction(),
                 SizedBox(height: 21),
                 SizedBox(
                     height: 50,

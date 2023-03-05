@@ -2,10 +2,12 @@ import 'package:area_app/screens/add_reaction_screen.dart';
 import 'package:area_app/screens/create_workflow_screen.dart';
 import 'package:area_app/screens/home_screen.dart';
 import 'package:area_app/screens/login_screen.dart';
+import 'package:area_app/screens/ip_connect_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:area_app/screens/auth.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(AuthProvider(child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -16,7 +18,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       initialRoute: '/',
       routes: {
-        '/': (context) => LoginScreen(),
+        '/': (context) => IpConnectScreen(),
+        '/login': (context) => LoginScreen(),
         '/homePage': (context) => HomeScreen(),
         '/homePage/createWorkflow': (context) => CreateWorkflowScreen(),
         '/homePage/createWorkflow/addReaction': (context) => AddReactionView()
