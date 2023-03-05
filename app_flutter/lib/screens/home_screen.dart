@@ -1,6 +1,9 @@
 import 'dart:convert';
-import 'dart:developer' as dev;
+import 'package:provider/provider.dart';
+import 'package:area_app/screens/auth.dart';
 import 'package:http/http.dart' as http;
+import 'package:area_app/parser.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:flutter/material.dart';
 
@@ -27,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> getService() async {
-    final response = await http.get(Uri.parse(serverUrl),
+    final response = await http.get(Uri.parse("$serverUrl?populate=service"),
         headers: {"Content-Type": "application/json"});
 
     if (response.statusCode == 200) {
@@ -49,6 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthContext>(context);
     return Scaffold(
         appBar: AppBar(
             automaticallyImplyLeading: false,
@@ -144,6 +148,24 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+Future<ServiceStatuses?> getServicesSatusesHttp(String auth) async {
+  final response = await http.get(
+      Uri.parse("http://localhost:8080/service-statuses?user=${auth}"),
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Charset": 'utf-8'
+      });
+  print(auth);
+  final ServiceStatuses serviceStatuses;
+  if (response.statusCode == 200) {
+    serviceStatuses = serviceStatusesFromJson(response.body);
+    return serviceStatuses;
+  } else if (response.statusCode != 200) {
+    return null;
+  }
+  return null;
+}
+
 class ServiceBox extends StatelessWidget {
   const ServiceBox({
     Key? key,
@@ -151,25 +173,79 @@ class ServiceBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthContext>(context);
+    ServiceStatuses serviceStatuses;
     return SizedBox(
-        width: 80,
+        width: 300,
         height: 80,
-        child: ElevatedButton(
-          onPressed: () {},
+        child: FutureBuilder(
+            future: getServicesSatusesHttp(auth.user),
+            builder: ((context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.data != null) {
+                serviceStatuses = snapshot.data!;
+                List<Widget> services = getListService(serviceStatuses);
+                return ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: services,
+                );
+              } else {
+                print(snapshot.data);
+                return CircularProgressIndicator();
+              }
+            })));
+  }
+
+  List<Widget> getListService(ServiceStatuses serviceStatuses) {
+    List<Widget> services = [];
+    for (var serviceStatus in serviceStatuses.serviceStatuses) {
+      services.add(
+        ElevatedButton(
+          onPressed: () async {
+            if (serviceStatus.isEnabled == true &&
+                serviceStatus.isConnected == true) {
+              serviceStatus.isEnabled = false;
+            } else {
+              serviceStatus.isEnabled = true;
+            }
+            // if (serviceStatus.isConnected == true) {
+            // serviceStatus.isConnected = false;
+            // } else {
+            // final response = await http.get(Uri.parse(
+            // "http://localhost:8080${serviceStatus.service.route}"));
+            // if (response.statusCode == 200) {
+            // Uri url = Uri.parse(response.body);
+            // if (await canLaunchUrl(url)) {
+            // await launchUrl(url);
+            // } else {
+            // throw 'Could not launch $url';
+            // }
+            // } else {
+            // throw 'Request failed with status: ${response.statusCode}.';
+            // }
+            // }
+          },
           style: ButtonStyle(
             shape: MaterialStateProperty.all(CircleBorder()),
             padding: MaterialStateProperty.all(EdgeInsets.all(20)),
             backgroundColor:
-                MaterialStateProperty.all(Colors.blue), // <-- Button color
-            overlayColor: MaterialStateProperty.resolveWith<Color?>((states) {
-              if (states.contains(MaterialState.pressed)) {
-                return Colors.red;
+                MaterialStateProperty.resolveWith<Color?>((states) {
+              if (serviceStatus.isEnabled == true) {
+                return Colors.green;
               }
-              return null; // <-- Splash color
-            }),
+              if (serviceStatus.isEnabled == false &&
+                  serviceStatus.isConnected == true) {
+                return Colors.red;
+              } else {
+                return Colors.grey;
+              }
+            }), // <-- Button color
           ),
-          child: Image.asset('assets/spotify.png'),
-        ));
+          child: Image.asset('assets/${serviceStatus.serviceName}.png'),
+        ),
+      );
+    }
+    return services;
   }
 }
 

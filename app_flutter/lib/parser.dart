@@ -226,3 +226,108 @@ class ActionArea {
         "__v": v,
       };
 }
+
+
+// To parse this JSON data, do
+//
+//     final serviceStatuses = serviceStatusesFromJson(jsonString);
+
+ServiceStatuses serviceStatusesFromJson(String str) => ServiceStatuses.fromJson(json.decode(str));
+
+String serviceStatusesToJson(ServiceStatuses data) => json.encode(data.toJson());
+
+class ServiceStatuses {
+    ServiceStatuses({
+        required this.serviceStatuses,
+        required this.count,
+    });
+
+    List<ServiceStatus> serviceStatuses;
+    int count;
+
+    factory ServiceStatuses.fromJson(Map<String, dynamic> json) => ServiceStatuses(
+        serviceStatuses: List<ServiceStatus>.from(json["serviceStatuses"].map((x) => ServiceStatus.fromJson(x))),
+        count: json["count"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "serviceStatuses": List<dynamic>.from(serviceStatuses.map((x) => x.toJson())),
+        "count": count,
+    };
+}
+
+class ServiceStatus {
+    ServiceStatus({
+        this.auth,
+        required this.isConnected,
+        required this.isEnabled,
+        required this.id,
+        required this.service,
+        required this.serviceName,
+        required this.user,
+        required this.createdAt,
+        required this.updatedAt,
+        required this.v,
+    });
+
+    Auth? auth;
+    bool isConnected;
+    bool isEnabled;
+    String id;
+    String service;
+    String serviceName;
+    String user;
+    DateTime createdAt;
+    DateTime updatedAt;
+    int v;
+
+    factory ServiceStatus.fromJson(Map<String, dynamic> json) => ServiceStatus(
+        auth: json["auth"] == null ? null : Auth.fromJson(json["auth"]),
+        isConnected: json["isConnected"],
+        isEnabled: json["isEnabled"],
+        id: json["_id"],
+        service: json["service"],
+        serviceName: json["serviceName"],
+        user: json["user"],
+        createdAt: DateTime.parse(json["createdAt"]),
+        updatedAt: DateTime.parse(json["updatedAt"]),
+        v: json["__v"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "auth": auth?.toJson(),
+        "isConnected": isConnected,
+        "isEnabled": isEnabled,
+        "_id": id,
+        "service": service,
+        "serviceName": serviceName,
+        "user": user,
+        "createdAt": createdAt.toIso8601String(),
+        "updatedAt": updatedAt.toIso8601String(),
+        "__v": v,
+    };
+}
+
+class Auth {
+    Auth({
+        required this.accessToken,
+        this.refreshToken,
+        required this.expiresIn,
+    });
+
+    String accessToken;
+    String? refreshToken;
+    int expiresIn;
+
+    factory Auth.fromJson(Map<String, dynamic> json) => Auth(
+        accessToken: json["accessToken"],
+        refreshToken: json["refreshToken"],
+        expiresIn: json["expires_in"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "accessToken": accessToken,
+        "refreshToken": refreshToken,
+        "expires_in": expiresIn,
+    };
+}

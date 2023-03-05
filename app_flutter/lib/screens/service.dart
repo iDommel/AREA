@@ -54,17 +54,12 @@ Future<Reactions?> getReactionsHttp() async {
 List<DropdownMenuItem<Object>>? getActions(
     ActionsArea? actions, String serviceName, Service? service) {
   List<DropdownMenuItem<Object>>? action = [];
-  print(serviceName);
-  var newItem = DropdownMenuItem(
-    value: ' ',
-    child: Text(' '),
-  );
-  action.add(newItem);
   for (var i = 0; i < actions!.actions.length - 1; i++) {
-    if (service!.services
-        .singleWhere((element) => element.name == serviceName)
-        .actions
-        .contains(actions.actions[i].id)) {
+    if (service != null &&
+        service.services
+            .singleWhere((element) => element.name == serviceName)
+            .actions
+            .contains(actions.actions[i].id)) {
       var newItem = DropdownMenuItem(
         value: actions.actions[i].name,
         child: Text(actions.actions[i].name),
@@ -78,13 +73,8 @@ List<DropdownMenuItem<Object>>? getActions(
 List<DropdownMenuItem<Object>>? getReactions(
     Reactions? reaction, String serviceName, Service? service) {
   List<DropdownMenuItem<Object>>? reactions = [];
-  var newItem = DropdownMenuItem(
-    value: ' ',
-    child: Text(' '),
-  );
-  reactions.add(newItem);
   for (var i = 0; i < reaction!.reactions.length - 1; i++) {
-    if (service!.services
+    if (service != null && service.services
         .singleWhere((element) => element.name == serviceName)
         .reactions
         .contains(reaction.reactions[i].id)) {
@@ -120,9 +110,9 @@ class CreateActions extends StatefulWidget {
 }
 
 class _CreateActionsState extends State<CreateActions> {
+  Service? service;
   String? selectedService = 'Spotify';
   String? selectedAction;
-  late Service? service;
 
   @override
   Widget build(BuildContext context) {
@@ -192,6 +182,123 @@ class _CreateActionsState extends State<CreateActions> {
                           onChanged: ((value) {
                             setState(() {
                               selectedAction = value as String;
+                            });
+                          }),
+                          autofocus: true,
+                        );
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    },
+                  )),
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            SizedBox(
+              width: 305,
+              height: 241,
+              child: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  color: Color.fromARGB(255, 217, 217, 217),
+                  child: TextField(
+                    obscureText: false,
+                    decoration: InputDecoration(
+                      hintStyle: TextStyle(color: Colors.black),
+                      hintText: 'Que fait le bail',
+                    ),
+                  )),
+            )
+          ]),
+        ),
+      ),
+    ]);
+  }
+}
+
+class CreateReaction extends StatefulWidget {
+  const CreateReaction({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<CreateReaction> createState() => _CreateReactionState();
+}
+
+class _CreateReactionState extends State<CreateReaction> {
+  Service? service;
+  String? selectedService = 'Spotify';
+  String? selectedReaction;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(alignment: Alignment.bottomCenter, children: <Widget>[
+      SizedBox(
+        width: 336,
+        height: 420,
+        child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          color: Color.fromARGB(255, 61, 61, 61),
+          child: Column(children: [
+            SizedBox(
+              height: 27,
+            ),
+            SizedBox(
+              width: 305,
+              height: 42,
+              child: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  color: Color.fromARGB(255, 217, 217, 217),
+                  child: FutureBuilder(
+                    future: getServiceHttp(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done &&
+                          snapshot.data != null) {
+                        service = snapshot.data;
+                        List<DropdownMenuItem<Object>>? services =
+                            getServices(snapshot.data);
+                        return DropdownButton(
+                          items: services,
+                          value: selectedService,
+                          onChanged: ((value) {
+                            setState(() {
+                              selectedService = value as String;
+                            });
+                          }),
+                          autofocus: true,
+                        );
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    },
+                  )),
+            ),
+            SizedBox(
+              height: 26,
+            ),
+            SizedBox(
+              width: 305,
+              height: 42,
+              child: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  color: Color.fromARGB(255, 217, 217, 217),
+                  child: FutureBuilder(
+                    future: getReactionsHttp(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done &&
+                          snapshot.data != null) {
+                        List<DropdownMenuItem<Object>>? reaction = getReactions(
+                            snapshot.data, selectedService!, service);
+                        return DropdownButton(
+                          items: reaction,
+                          value: selectedReaction,
+                          onChanged: ((value) {
+                            setState(() {
+                              selectedReaction = value as String;
                             });
                           }),
                           autofocus: true,
