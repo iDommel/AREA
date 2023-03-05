@@ -9,7 +9,8 @@ import { useAuthContext } from "./Context/AuthContext";
 import { useNavigate } from "react-router-dom";
 const { Title } = Typography;
 
-const ip = "http://" + process.env.IP_ADRESS + ":" + process.env.PORT + "/";
+const adress = process.env.IP_ADRESS;
+const port = process.env.PORT;
 
 const WorkflowInfo = () => {
   const { id } = useParams();
@@ -89,7 +90,7 @@ const WorkflowInfo = () => {
       if (response.status !== 200) {
         message.error(data.message);
       } else {
-        window.location.href = ip;
+        window.location.href = "http://" + adress + ":" + port + "/";
       }
     } catch (error) {
       console.error(error);
