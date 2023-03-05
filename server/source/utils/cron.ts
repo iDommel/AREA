@@ -40,9 +40,10 @@ const checkReaction = async (workflow: any) => {
             const serviceEnabled2 = await checkServiceEnabled("GitHub", workflow.relativeUser);
             if (serviceEnabled2 === false)
                 return;
-            console.log('github bug 401 bad credentials');
             if (reaction.name === 'Create issue')
                 githubController.githubReaction(workflow);
+            else if (reaction.name === 'Add reaction')
+                githubController.githubReaction2(workflow);
             break;
         default:
             break;
