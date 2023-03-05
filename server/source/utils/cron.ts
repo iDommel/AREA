@@ -6,6 +6,7 @@ import spotifyController from '../controllers/spotify';
 import weatherController from '../controllers/weather';
 import githubController from '../controllers/github';
 import gitlabController from '../controllers/gitlab';
+import microsoftController from '../controllers/microsoft';
 import Service from '../models/service';
 import serviceStatus from '../models/serviceStatus';
 import { getUserIdFromCookie } from './utils';
@@ -34,22 +35,31 @@ const checkReaction = async (workflow: any) => {
             const serviceEnabled = await checkServiceEnabled("Spotify", workflow.relativeUser);
             if (serviceEnabled === false)
                 return;
-            console.log('spotify bug fetch user');
-            spotifyController.spotifyReaction(workflow.relativeUser, workflow.description);
+            spotifyController.spotifyReaction(workflow);
             break;
         case 'github':
             const serviceEnabled2 = await checkServiceEnabled("GitHub", workflow.relativeUser);
             if (serviceEnabled2 === false)
                 return;
-            console.log('github bug 401 bad credentials');
             if (reaction.name === 'Create issue')
                 githubController.githubReaction(workflow);
+            else if (reaction.name === 'Add reaction')
+                githubController.githubReaction2(workflow);
             break;
-        case 'gitlab':
-            const serviceEnabled3 = await checkServiceEnabled("GitLab", workflow.relativeUser);
+        case 'microsoft':
+            const serviceEnabled3 = await checkServiceEnabled("Microsoft", workflow.relativeUser);
             if (serviceEnabled3 === false)
                 return;
-            //console.log('gitlab bug 401 bad credentials');
+            console.log('microsoft reaction');
+            if (reaction.name === 'Send email')
+                microsoftController.sendEmail(workflow);
+            else if (reaction.name === 'Create event')
+                microsoftController.createEvent(workflow);
+            break;
+        case 'gitlab':
+            const serviceEnabled4 = await checkServiceEnabled("GitLab", workflow.relativeUser);
+            if (serviceEnabled4 === false)
+                return;
             if (reaction.name === 'Create commit')
                 gitlabController.gitlabCommit(workflow);
             break;
@@ -121,6 +131,15 @@ const checkActions = async () => {
                             checkReaction(workflow);
                         }
                         break;
+                    case 'IsPlaying':
+                        const serviceEnabled4 = await checkServiceEnabled("Spotify", workflow.relativeUser);
+                        if (serviceEnabled4 === false)
+                            return;
+                        const isPlaying = await spotifyController.ifPlaying(workflow);
+                        if (isPlaying && workflow.relativeUser && workflow.relativeUser !== '' && serviceEnabled4) {
+                            console.log('Is playing?', isPlaying);
+                            checkReaction(workflow);
+                        }
                 }
             });
         });

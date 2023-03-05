@@ -8,8 +8,8 @@ import SpotifyWebApi from 'spotify-web-api-node';
 import ServiceStatus from '../models/serviceStatus';
 import Service from '../models/service';
 
-let client_id = 'd21affede3984ecea64c0ebaceff41e3'; // Your client id
-let client_secret = '734ebfb934c84261963f5794e5783c9f'; // Your secret
+const client_id = process.env.SPOTIFY_CLIENT_ID as string;
+const client_secret = process.env.SPOTIFY_CLIENT_SECRET as string;
 let endpoint = 'http://localhost:8080';
 let redirect_uri = `${endpoint}/spotify/callback`; // Your redirect uri
 
@@ -148,8 +148,8 @@ type ActionType = {
 };
 
 let spotifyApi = new SpotifyWebApi({
-    clientId: 'd21affede3984ecea64c0ebaceff41e3',
-    clientSecret: '734ebfb934c84261963f5794e5783c9f',
+    clientId: client_id,
+    clientSecret: client_secret,
     redirectUri: 'http://localhost:3000/Home'
 });
 
@@ -159,13 +159,15 @@ type ServiceType = {
     refreshToken: string;
 };
 
-const spotifyReaction = async (relativeUser: string, newName: string) => {
+const spotifyReaction = async (workflow : any) => {
     try {
-        const serviceStatus = await ServiceStatus.findOne({ user: relativeUser, serviceName: 'Spotify' });
+        const info = workflow.additionalData[0]
+        const id = info.playlistUrl.split('/playlist/')[1];
+        const serviceStatus = await ServiceStatus.findOne({ user: workflow.relativeUser, serviceName: 'Spotify' });
         if (!serviceStatus) return;
         spotifyApi.setAccessToken(serviceStatus.auth.accessToken);
-        const res = await spotifyApi.changePlaylistDetails('0y0zkkH8WQCCKSXbG39dOa', {
-            name: newName,
+        const res = await spotifyApi.changePlaylistDetails(id, {
+            name: info.newPlaylistName,
             public: false
         });
         console.log('Playlist is now private!');
@@ -173,6 +175,31 @@ const spotifyReaction = async (relativeUser: string, newName: string) => {
         console.log('Something went wrong!', error);
     }
 };
+
+const ifPlaying = async (workflow : any) => {
+    try {
+        const info = workflow.additionalData[0]
+        const serviceStatus = await ServiceStatus.findOne({ user: workflow.relativeUser, serviceName: 'Spotify' });
+        if (!serviceStatus) return;
+        spotifyApi.setAccessToken(serviceStatus.auth.accessToken);
+
+        const res = await axios.get('https://api.spotify.com/v1/me/player/currently-playing', {
+            headers: {
+                contentType: 'application/json',
+                Authorization: 'Bearer ' + serviceStatus.auth.accessToken
+            }
+        });
+        const isPlaying = res.data.is_playing;
+        if (isPlaying && res.data.item.name.toLowerCase() === info.trackName.toLowerCase()) {
+            return true
+        } else if (isPlaying && info.trackName === '') {
+            return true
+        }
+        return false
+    } catch (error: any) {
+        console.log('Something went wrong!', error);
+    }
+};  
 
 const logout = async (req: Request, res: Response) => {
     try {
@@ -190,4 +217,4 @@ const logout = async (req: Request, res: Response) => {
 }
 
 
-export default { loginFunction, callbackFunction, refreshToken, spotifyReaction, logout };
+export default { loginFunction, callbackFunction, refreshToken, spotifyReaction, ifPlaying, logout };

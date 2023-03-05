@@ -96,10 +96,14 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
+  flex-wrap: wrap;
+  overflow-x: hidden;
+  flex-shrink: 0;
 }
 
 .service {
-  margin-left: 5%;
+  margin-right: 7%;
+  margin-top: 3%;
   width: 12%;
   height: 70%;
 }
