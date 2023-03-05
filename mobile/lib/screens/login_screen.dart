@@ -1,8 +1,6 @@
-import 'dart:convert';
-import 'dart:developer' as dev;
-import 'package:area_app/screens/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:area_app/screens/auth.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -11,46 +9,19 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late TextEditingController _valuePasswordController, _valueEmailController;
-
-  late bool status_;
-  late String message;
-
-  String serverUrl = "http://localhost:8080/services";
-  @override
-  void initState() {
-    _valuePasswordController = TextEditingController();
-    _valueEmailController = TextEditingController();
-
-    status_ = false;
-    message = "";
-
-    super.initState();
-  }
-
-  Future<void> getService() async {
-    final response = await http.get(Uri.parse(serverUrl),
-        headers: {"Content-Type": "application/json"});
-
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body);
-      setState(() {
-        status_ = false;
-        message = "good";
-        dev.log(data.toString());
-      });
-    }
-  }
+  String email = '';
+  String password = '';
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthContext>(context);
     return Scaffold(
         appBar: AppBar(
             automaticallyImplyLeading: false,
             centerTitle: true,
-            backgroundColor: Color.fromARGB(255, 73, 71, 131),
+            backgroundColor: const Color.fromARGB(255, 73, 71, 131),
             toolbarHeight: 88,
-            title: SizedBox(
+            title: const SizedBox(
               width: 101,
               height: 101,
               child: Card(
@@ -63,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: <Widget>[
-              SizedBox(
+              const SizedBox(
                 height: 63,
               ),
               Stack(alignment: Alignment.center, children: <Widget>[
@@ -73,15 +44,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Card(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
-                    color: Color.fromARGB(255, 217, 217, 217),
+                    color: const Color.fromARGB(255, 217, 217, 217),
                     child: Column(
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           height: 85,
                         ),
-                        Text('Login',
+                        const Text('Login',
                             textScaleFactor: 2, textAlign: TextAlign.left),
-                        SizedBox(
+                        const SizedBox(
                           height: 12,
                         ),
                         SizedBox(
@@ -90,19 +61,22 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Card(
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10)),
-                              color: Color.fromARGB(255, 61, 61, 61),
+                              color: const Color.fromARGB(255, 61, 61, 61),
                               child: TextField(
-                                controller: _valueEmailController,
+                                controller: TextEditingController(text: email),
+                                onChanged: (value) {
+                                  email = value;
+                                },
                                 keyboardType: TextInputType.name,
                                 scribbleEnabled: false,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: Color.fromARGB(255, 255, 255, 255)),
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                     hintStyle: TextStyle(color: Colors.white54),
                                     labelText: 'Enter your Email'),
                               ),
                             )),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         SizedBox(
@@ -111,40 +85,49 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Card(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10)),
-                                color: Color.fromARGB(255, 61, 61, 61),
+                                color: const Color.fromARGB(255, 61, 61, 61),
                                 child: TextField(
                                   obscureText: true,
-                                  decoration: InputDecoration(
+                                  controller:
+                                      TextEditingController(text: password),
+                                  onChanged: (value) {
+                                    password = value;
+                                  },
+                                  decoration: const InputDecoration(
                                     hintStyle: TextStyle(color: Colors.white54),
                                     labelText: 'Enter your Password',
                                   ),
                                 ))),
-                        Text(
+                        const Text(
                           'Forgot Password',
                           textScaleFactor: 0.5,
                           textAlign: TextAlign.right,
                           style: (TextStyle(color: Colors.blueAccent)),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Container(
-                          width: 177,
-                          height: 48,
-                          color: Color.fromARGB(255, 73, 71, 131),
-                          child: TextButton(
-                            onPressed: () {
-                              setState(() {});
-                              Navigator.pushNamed(context, '/homePage');
-                            },
-                            child: Text('Connect',
-                                style: TextStyle(color: Colors.white)),
-                          ),
-                        ),
-                        Text(status_ ? message : message),
-                        Text('Connect With :',
+                            width: 177,
+                            height: 48,
+                            color: const Color.fromARGB(255, 73, 71, 131),
+                            child: Consumer<AuthContext>(
+                                builder: (context, auth, child) {
+                              return TextButton(
+                                onPressed: () {
+                                  setState(() {});
+                                  auth.login(email, password);
+                                  if (auth.isAuthenticated) {
+                                    Navigator.pushNamed(context, '/homePage');
+                                  }
+                                },
+                                child: const Text('Connect',
+                                    style: TextStyle(color: Colors.white)),
+                              );
+                            })),
+                        const Text('Connect With :',
                             textScaleFactor: 1.5, textAlign: TextAlign.right),
-                        SizedBox(
+                        const SizedBox(
                           height: 9,
                         ),
                         Row(
@@ -157,9 +140,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: () {},
                                   style: ButtonStyle(
                                     shape: MaterialStateProperty.all(
-                                        CircleBorder()),
+                                        const CircleBorder()),
                                     padding: MaterialStateProperty.all(
-                                        EdgeInsets.all(5)),
+                                        const EdgeInsets.all(5)),
                                     backgroundColor: MaterialStateProperty.all(
                                         Colors.white), // <-- Button color
                                     overlayColor: MaterialStateProperty
@@ -171,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       return null; // <-- Splash color
                                     }),
                                   ),
-                                  child: Image.asset('assets/google.png'),
+                                  child: Image.asset('assets/Google.png'),
                                 )),
                             SizedBox(
                                 width: 50,
@@ -180,9 +163,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: () {},
                                   style: ButtonStyle(
                                     shape: MaterialStateProperty.all(
-                                        CircleBorder()),
+                                        const CircleBorder()),
                                     padding: MaterialStateProperty.all(
-                                        EdgeInsets.all(5)),
+                                        const EdgeInsets.all(5)),
                                     backgroundColor: MaterialStateProperty.all(
                                         Colors.white), // <-- Button color
                                     overlayColor: MaterialStateProperty
@@ -194,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       return null; // <-- Splash color
                                     }),
                                   ),
-                                  child: Image.asset('assets/microsoft.png'),
+                                  child: Image.asset('assets/Microsoft.png'),
                                 )),
                             SizedBox(
                                 width: 50,
@@ -203,9 +186,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: () {},
                                   style: ButtonStyle(
                                     shape: MaterialStateProperty.all(
-                                        CircleBorder()),
+                                        const CircleBorder()),
                                     padding: MaterialStateProperty.all(
-                                        EdgeInsets.all(5)),
+                                        const EdgeInsets.all(5)),
                                     backgroundColor: MaterialStateProperty.all(
                                         Colors.white), // <-- Button color
                                     overlayColor: MaterialStateProperty
@@ -217,7 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       return null; // <-- Splash color
                                     }),
                                   ),
-                                  child: Image.asset('assets/github.png'),
+                                  child: Image.asset('assets/GitHub.png'),
                                 ))
                           ],
                         )
@@ -226,7 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ]),
-              Stack(alignment: Alignment.bottomCenter, children: <Widget>[
+              const Stack(alignment: Alignment.bottomCenter, children: <Widget>[
                 SizedBox(
                   width: 177,
                   height: 10,
@@ -244,15 +227,15 @@ Widget workflow() {
     children: <Widget>[
       TextButton(
         onPressed: () {},
-        child: Text("+"),
+        child: const Text("+"),
       ),
       TextButton(
         onPressed: () {},
-        child: Text("+"),
+        child: const Text("+"),
       ),
       TextButton(
         onPressed: () {},
-        child: Text("+"),
+        child: const Text("+"),
       ),
     ],
   );

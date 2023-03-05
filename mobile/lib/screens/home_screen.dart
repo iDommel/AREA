@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'dart:developer' as dev;
-import 'package:area_app/screens/create_workflow_screen.dart';
-import 'package:area_app/screens/login_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:area_app/screens/auth.dart';
 import 'package:http/http.dart' as http;
+import 'package:area_app/parser.dart';
 
 import 'package:flutter/material.dart';
 
@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> getService() async {
-    final response = await http.get(Uri.parse(serverUrl),
+    final response = await http.get(Uri.parse("$serverUrl?populate=service"),
         headers: {"Content-Type": "application/json"});
 
     if (response.statusCode == 200) {
@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         status_ = false;
         message = "good";
-        dev.log(data.toString());
+        //dev.log(json.encode(data));
       });
     }
   }
@@ -51,11 +51,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthContext>(context);
     return Scaffold(
         appBar: AppBar(
             automaticallyImplyLeading: false,
             centerTitle: true,
-            backgroundColor: Color.fromARGB(255, 73, 71, 131),
+            backgroundColor: const Color.fromARGB(255, 73, 71, 131),
             toolbarHeight: 88,
             title: SizedBox(
               width: 101,
@@ -66,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () {
                     Navigator.pushNamed(context, '/');
                   },
-                  child: Text('Disconnect'),
+                  child: const Text('Disconnect'),
                 ),
               ),
             )),
@@ -75,11 +76,12 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.all(1.0),
             child: Column(
               children: <Widget>[
-                SizedBox(
+                const SizedBox(
                   height: 55,
                 ),
-                Text('Workflow', textScaleFactor: 3, textAlign: TextAlign.left),
-                SizedBox(
+                const Text('Workflow',
+                    textScaleFactor: 3, textAlign: TextAlign.left),
+                const SizedBox(
                   height: 28,
                 ),
                 Stack(alignment: Alignment.bottomCenter, children: <Widget>[
@@ -89,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Card(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
-                      color: Color.fromARGB(255, 61, 61, 61),
+                      color: const Color.fromARGB(255, 61, 61, 61),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
@@ -98,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: 80,
                               child: ListView(
                                 scrollDirection: Axis.horizontal,
-                                children: [
+                                children: const [
                                   WorkflowBox(),
                                 ],
                               ))
@@ -107,11 +109,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ]),
-                SizedBox(
+                const SizedBox(
                   height: 55,
                 ),
-                Text('Services', textScaleFactor: 3, textAlign: TextAlign.left),
-                SizedBox(
+                const Text('Services',
+                    textScaleFactor: 3, textAlign: TextAlign.left),
+                const SizedBox(
                   height: 28,
                 ),
                 Stack(alignment: Alignment.bottomCenter, children: <Widget>[
@@ -121,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Card(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
-                      color: Color.fromARGB(255, 61, 61, 61),
+                      color: const Color.fromARGB(255, 61, 61, 61),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
@@ -130,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: 80,
                               child: ListView(
                                 scrollDirection: Axis.horizontal,
-                                children: [
+                                children: const [
                                   ServiceBox(),
                                 ],
                               ))
@@ -146,6 +149,42 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+Future<ServiceStatuses?> getServicesSatusesHttp(String auth) async {
+  final response = await http.get(
+      Uri.parse("http://localhost:8080/service-statuses?user=$auth"),
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Charset": 'utf-8'
+      });
+  print(auth);
+  final ServiceStatuses serviceStatuses;
+  if (response.statusCode == 200) {
+    serviceStatuses = serviceStatusesFromJson(response.body);
+    return serviceStatuses;
+  } else if (response.statusCode != 200) {
+    return null;
+  }
+  return null;
+}
+
+Future<WorkflowStatuses?> getWorkflowSatusesHttp(String auth) async {
+  final response = await http.get(
+      Uri.parse("http://localhost:8080/workflows?relativeUser=$auth"),
+      headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Charset": 'utf-8'
+      });
+  print(auth);
+  final WorkflowStatuses workflowStatuses;
+  if (response.statusCode == 200) {
+    workflowStatuses = workflowStatusesFromJson(response.body);
+    return workflowStatuses;
+  } else if (response.statusCode != 200) {
+    return null;
+  }
+  return null;
+}
+
 class ServiceBox extends StatelessWidget {
   const ServiceBox({
     Key? key,
@@ -153,25 +192,79 @@ class ServiceBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthContext>(context);
+    ServiceStatuses serviceStatuses;
     return SizedBox(
-        width: 80,
+        width: 300,
         height: 80,
-        child: ElevatedButton(
-          onPressed: () {},
-          style: ButtonStyle(
-            shape: MaterialStateProperty.all(CircleBorder()),
-            padding: MaterialStateProperty.all(EdgeInsets.all(20)),
-            backgroundColor:
-                MaterialStateProperty.all(Colors.blue), // <-- Button color
-            overlayColor: MaterialStateProperty.resolveWith<Color?>((states) {
-              if (states.contains(MaterialState.pressed)) {
-                return Colors.red;
+        child: FutureBuilder(
+            future: getServicesSatusesHttp(auth.user),
+            builder: ((context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done &&
+                  snapshot.data != null) {
+                serviceStatuses = snapshot.data!;
+                List<Widget> services = getListService(serviceStatuses);
+                return ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: services,
+                );
+              } else {
+                print(snapshot.data);
+                return const CircularProgressIndicator();
               }
-              return null; // <-- Splash color
-            }),
+            })));
+  }
+
+  List<Widget> getListService(ServiceStatuses serviceStatuses) {
+    List<Widget> services = [];
+    for (var serviceStatus in serviceStatuses.serviceStatuses) {
+      services.add(
+        ElevatedButton(
+          onPressed: () async {
+            if (serviceStatus.isEnabled == true &&
+                serviceStatus.isConnected == true) {
+              serviceStatus.isEnabled = false;
+            } else {
+              serviceStatus.isEnabled = true;
+            }
+            // if (serviceStatus.isConnected == true) {
+            // serviceStatus.isConnected = false;
+            // } else {
+            // final response = await http.get(Uri.parse(
+            // "http://localhost:8080${serviceStatus.service.route}"));
+            // if (response.statusCode == 200) {
+            // Uri url = Uri.parse(response.body);
+            // if (await canLaunchUrl(url)) {
+            // await launchUrl(url);
+            // } else {
+            // throw 'Could not launch $url';
+            // }
+            // } else {
+            // throw 'Request failed with status: ${response.statusCode}.';
+            // }
+            // }
+          },
+          style: ButtonStyle(
+            shape: MaterialStateProperty.all(const CircleBorder()),
+            padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+            backgroundColor:
+                MaterialStateProperty.resolveWith<Color?>((states) {
+              if (serviceStatus.isEnabled == true) {
+                return Colors.green;
+              }
+              if (serviceStatus.isEnabled == false &&
+                  serviceStatus.isConnected == true) {
+                return Colors.red;
+              } else {
+                return Colors.grey;
+              }
+            }), // <-- Button color
           ),
-          child: Image.asset('assets/spotify.png'),
-        ));
+          child: Image.asset('assets/${serviceStatus.serviceName}.png'),
+        ),
+      );
+    }
+    return services;
   }
 }
 
@@ -182,31 +275,68 @@ class WorkflowBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthContext>(context);
+    WorkflowStatuses workflowStatuses;
+
     return SizedBox(
-      width: 80,
+      width: 300,
       height: 80,
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        color: Color.fromARGB(255, 217, 217, 217),
-        child: TextButton(
+      child: FutureBuilder(
+          future: getWorkflowSatusesHttp(auth.user),
+          builder: ((context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done &&
+                snapshot.data != null) {
+              workflowStatuses = snapshot.data!;
+              List<Widget> services =
+                  getListWorkflow(workflowStatuses, context);
+              return ListView(
+                scrollDirection: Axis.horizontal,
+                children: services,
+              );
+            } else {
+              print(snapshot.data);
+              return const CircularProgressIndicator();
+            }
+          })),
+    );
+  }
+
+  List<Widget> getListWorkflow(
+      WorkflowStatuses workflowStatuses, BuildContext context) {
+    List<Widget> workflow = [];
+    for (var workflowStatus in workflowStatuses.workflows) {
+      workflow.add(
+        SizedBox(
+          width: 80,
+          height: 80,
+          child: ElevatedButton(
+              onPressed: () async {},
+              style: ButtonStyle(
+                padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+                backgroundColor: MaterialStateProperty.all(Colors.grey),
+              ),
+              child: Text(workflowStatus.name)),
+        ),
+      );
+    }
+    workflow.add(
+      SizedBox(
+        width: 80,
+        height: 80,
+        child: ElevatedButton(
             onPressed: () {
               Navigator.pushNamed(context, '/homePage/createWorkflow');
             },
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                  (Set<MaterialState> states) {
-                if (states.contains(MaterialState.pressed)) {
-                  return Theme.of(context).colorScheme.primary.withOpacity(1);
-                }
-                return null;
-              }),
+              backgroundColor: MaterialStateProperty.all(Colors.grey),
             ),
-            child: Center(
+            child: const Center(
               child: Row(
                 children: <Widget>[Icon(Icons.add)],
               ),
             )),
       ),
     );
+    return workflow;
   }
 }
