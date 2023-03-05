@@ -96,9 +96,9 @@ class AddReactionView extends StatelessWidget {
                                     return null;
                                   }),
                                 ),
-                                child: const Center(
+                                child: Center(
                                   child: Row(
-                                    children: [
+                                    children: const [
                                       Text(
                                         'Ajouter une réaction',
                                         style: TextStyle(color: Colors.white),
@@ -134,9 +134,9 @@ class AddReactionView extends StatelessWidget {
                                     return null;
                                   }),
                                 ),
-                                child: const Center(
+                                child: Center(
                                   child: Row(
-                                    children: [
+                                    children: const [
                                       Text('Sauvegarder',
                                           style: TextStyle(color: Colors.white))
                                     ],

@@ -330,9 +330,9 @@ class WorkflowBox extends StatelessWidget {
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(Colors.grey),
             ),
-            child: const Center(
+            child:  Center(
               child: Row(
-                children: <Widget>[Icon(Icons.add)],
+                children: const <Widget>[Icon(Icons.add)],
               ),
             )),
       ),

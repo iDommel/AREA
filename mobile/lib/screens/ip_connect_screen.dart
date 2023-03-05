@@ -91,7 +91,7 @@ class _IpConnectScreenState extends State<IpConnectScreen> {
                   ),
                 ),
               ]),
-              const Stack(alignment: Alignment.bottomCenter, children: <Widget>[
+               Stack(alignment: Alignment.bottomCenter, children: const <Widget>[
                 SizedBox(
                   width: 177,
                   height: 10,
